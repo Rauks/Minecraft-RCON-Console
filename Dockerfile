@@ -1,5 +1,11 @@
 FROM alpine:3.21.0
 
+# Unprivileged user settings
+ENV USER_ID=65535
+ENV GROUP_ID=65535
+ENV USER_NAME=minecraft-rcon
+ENV GROUP_NAME=minecraft-rcon
+
 # Minecraft RCON Environment
 ENV RCON_HOST=localhost
 ENV RCON_PORT=25575
@@ -22,16 +28,18 @@ ARG VERSION_SLUG
 ENV VERSION_SLUG=${VERSION_SLUG}
 
 # Unprivileged user
-RUN adduser \
-        --uid 2500 \
-        --no-create-home \
-        --home /opt \
-        --disabled-login \
+RUN addgroup \
+        -g $GROUP_ID \
+        $GROUP_NAME \
+    && adduser \
         --shell /sbin/nologin \
-        minecraft-rcon \
-    && chown -R minecraft-rcon:minecraft-rcon /opt
- 
-USER minecraft-rcon
+        --disabled-password \
+        --no-create-home \
+        --uid $USER_ID \
+        --ingroup $GROUP_NAME \
+        $USER_NAME
+
+USER $USER_NAME
 
 WORKDIR /opt
 CMD ["./minecraft-rcon"]
