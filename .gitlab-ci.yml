@@ -90,9 +90,8 @@ quality-sonarqube:
   variables:
     SONAR_USER_HOME: "${CI_PROJECT_DIR}/.sonar"
     GIT_DEPTH: "0"
-  only:
-    refs:
-      - develop
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
   allow_failure: true
   script:
     - sonar-scanner -X -Dsonar.projectKey=${SONAR_PROJECT} -Dsonar.projectVersion=${CI_COMMIT_BRANCH}.${CI_COMMIT_SHORT_SHA}
@@ -112,7 +111,7 @@ build-rust:
   artifacts:
     name: api
     paths:
-      - target/release/media
+      - target/release/minecraft-rcon
 
 deploy-kaniko:
   image:
