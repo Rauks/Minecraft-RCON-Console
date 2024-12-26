@@ -1,6 +1,44 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": [
-    "config:recommended"
+    "config:recommended",
+    "mergeConfidence:all-badges",
+    "npm:unpublishSafe",
+    ":prHourlyLimitNone"
+  ],
+  "labels": [
+    "dependencies"
+  ],
+  "packageRules": [
+    {
+      "matchPackageNames": ["@angular/core", "@angular/cli"],
+      "postUpgradeTasks": {
+        "commands": [
+          "cd ./ui && npx ng update {{{depName}}} --from={{{currentVersion}}} --to={{{newVersion}}} --migrate-only --allow-dirty --force"
+        ]
+      }
+    },
+    {
+      "matchManagers": ["cargo"],
+      "rangeStrategy": "bump"
+    },
+    {
+      "matchCategories": ["docker"],
+      "addLabels": ["docker"],
+      "minimumReleaseAge": "1 day"
+    },
+    {
+      "matchCategories": ["rust"],
+      "addLabels": ["rust"]
+    },
+    {
+      "matchCategories": ["js"],
+      "addLabels": ["typescript"]
+    },
+    {
+      "matchCategories": ["ci"],
+      "addLabels": ["pipeline"],
+      "minimumReleaseAge": "1 day"
+    }
   ]
 }
