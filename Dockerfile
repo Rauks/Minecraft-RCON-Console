@@ -15,7 +15,7 @@ ENV ROCKET_LIMITS={json="1 MiB"}
 # Rust API
 COPY /config /opt/config
 COPY /target/release /opt
-RUN chmod +x /opt/media
+RUN chmod +x /opt/minecraft-rcon
 
 # Environment
 ARG VERSION_SLUG
