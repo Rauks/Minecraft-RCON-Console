@@ -1,34 +1,23 @@
 # Minecraft-RCON
-Simple Minecraft RCON Web Console (using PHP, Bootstrap and Javascript) 
 
-Inspired by [Minecraft-RCON-Console](https://github.com/ekaomk/Minecraft-RCON-Console) and using [PHP-Minecraft-Rcon](https://github.com/thedudeguy/PHP-Minecraft-Rcon).
+Work in progress.
 
-![Sample](samples/sample.png)
+## Features
 
-![Sample Mobile](samples/sample-mobile.png)
-
-## Configuration
-
-1. Edit your Minecraft server `server.properties` configuration file in order to enable RCON:
-```
-enable-rcon=true
-rcon.port=25575
-rcon.password=xtMJsVtmx0XypuId7jIb
-```
-2. Restart your Minecraft server.
-3. Download/Clone the Minecraft RCON Web Console files and edit the `config.php` file. Use the same rcon password and port than the one set in `server.properties`:
-```
-$rconHost = "localhost";
-$rconPort = 25575;
-$rconPassword = "xtMJsVtmx0XypuId7jIb";
-```
+- `swagger`: Enable the openapi endpoint and the swagger UI (accessible at `/swagger-ui`).
+- `metrics`: Enable the prometheus metrics endpoint (accessible at `/metrics`)
 
 ## Warnings
 
-* Provided as it is, **this console has no authentication check**, so anybody with access to this console can run any commands on the Minecraft server. Please check at least the documentations below, about how to setup some basic http authentification on your web server, in order to restrict the access to the console:
- * [For Apache 2.4 users](https://httpd.apache.org/docs/2.4/howto/auth.html)
- * [For NGinx users](https://nginx.org/en/docs/http/ngx_http_auth_basic_module.html)
-* Use a strong custom random RCON password (change the default one provided here) for more security.
-* Set up your firewall in order to allow only the web server to communicate with the Minecraft server through the RCON port set, for more security.
+* Provided as it is, **this console has no authentication check**, so anybody with access to this console can run any commands on the Minecraft server.
 
+  Please consider setting up a reverse proxy with an authentification layer in front of this console, or any other security measures, in order to restrict the access to the console.
 
+  Please check at least the documentations below:
+
+  * [Awesome list of reverse proxies](https://awesome-selfhosted.net/tags/web-servers.html)
+  * [Awesome list of identity management](https://github.com/awesome-foss/awesome-sysadmin?tab=readme-ov-file#identity-management---single-sign-on-sso)
+
+* Use a strong custom random RCON password (change the default `insecure_password` from the examples) for more security.
+
+* Set up your firewall in order to allow only the console to communicate with the Minecraft server through the RCON port set, for more security.

@@ -1,0 +1,26 @@
+[package]
+name = "minecraft-rcon"
+edition = "2021"
+
+[dependencies]
+cfg-if = "1.0.0"
+dotenvy = "0.15.7"
+log = "0.4.22"
+rocket = { version = "0.5.1", features = ["json"] }
+rocket_prometheus = { version = "0.10.1", optional = true }
+serde = "1.0.216"
+serde_json = { version = "1.0.134", features = ["indexmap"] }
+thiserror = "2.0.9"
+tokio = { version = "1.42.0", features = ["process"] }
+utoipa = { version = "5.3.0", features = ["uuid", "rocket_extras"], optional = true }
+utoipa-swagger-ui = { version = "8.1.0", features = ["rocket", "vendored"], optional = true }
+
+[dev-dependencies]
+test-case = "3.3.1"
+
+[features]
+default = ["swagger", "metrics"]
+release = ["swagger", "metrics"]
+
+swagger = ["dep:utoipa", "dep:utoipa-swagger-ui"]
+metrics = ["dep:rocket_prometheus"]
