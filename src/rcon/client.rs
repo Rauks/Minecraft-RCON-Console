@@ -1,13 +1,23 @@
+use super::{RconRequest, RconResponse};
 use std::env;
 use thiserror::Error;
-use tokio::net::TcpStream;
+use tokio::{
+    io::{AsyncReadExt, AsyncWriteExt},
+    net::TcpStream,
+};
 
 #[derive(Debug, Error, PartialEq, Eq)]
 pub enum RconError {
     #[error("Invalid RCON configuration: {cause}")]
     Configuration { cause: String },
-    #[error("Failed to connect to the RCON server {cause}")]
+    #[error("Failed to connect to the RCON server: {cause}")]
     Connection { cause: String },
+    #[error("Failed to send data to the RCON server: {cause}")]
+    Send { cause: String },
+    #[error("Failed to receive data from the RCON server: {cause}")]
+    Receive { cause: String },
+    #[error("Failed to shutdown the RCON connection: {cause}")]
+    Shutdown { cause: String },
 }
 
 #[derive(Debug, Clone)]
@@ -18,7 +28,42 @@ pub struct RconConfiguration {
     pub timeout: u64,
 }
 
-static DEFAULT_TIMEOUT: u64 = 5000;
+/// Default timeout for requests in milliseconds.
+const DEFAULT_TIMEOUT: u64 = 5000;
+
+/// Maximum packet size for sending data.
+///
+/// # Note:
+///
+/// The maximum length of the payload is 1446 bytes.
+/// The message lenght is 4 bytes.
+/// The request ID is 4 bytes.
+/// The request type is 4 bytes.
+/// The null terminator for the payload is 1 byte.
+/// The null terminator for the packet is 1 byte.
+///
+/// Total: 1446 + 4 + 4 + 4 + 1 + 1 = 1460
+///
+/// - [Fragmentation](https://minecraft.wiki/w/RCON#Fragmentation)
+/// - [Packet format](https://minecraft.wiki/w/RCON#Packet_format)
+const MAX_REQUEST_SIZE: usize = 1460;
+
+/// Maximum packet size for receiving data.
+///     
+/// # Note:
+///
+/// The maximum length of the payload is 4096 bytes.
+/// The message lenght is 4 bytes.
+/// The request ID is 4 bytes.
+/// The request type is 4 bytes.
+/// The null terminator for the payload is 1 byte.
+/// The null terminator for the packet is 1 byte.
+///
+/// Total: 4096 + 4 + 4 + 4 + 1 + 1 = 4110
+///
+/// - [Fragmentation](https://minecraft.wiki/w/RCON#Fragmentation)
+/// - [Packet format](https://minecraft.wiki/w/RCON#Packet_format)
+const MAX_RESPONSE_SIZE: usize = 4110;
 
 #[derive(Default)]
 pub struct Rcon {}
@@ -73,19 +118,78 @@ impl Rcon {
                 cause: err.to_string(),
             })
     }
+
+    async fn send(request: &RconRequest) -> Result<RconResponse, RconError> {
+        let bytes = request.to_rcon_bytes();
+
+        if bytes.len() > MAX_REQUEST_SIZE {
+            return Err(RconError::Send {
+                cause: String::from("Request size exceeds the maximum size"),
+            });
+        }
+
+        // Connect to the server
+        let mut stream = Rcon::connect().await?;
+
+        // Send the request
+        stream
+            .write_all(&bytes)
+            .await
+            .map_err(|err| RconError::Send {
+                cause: err.to_string(),
+            })?;
+
+        // Receive the response
+        let mut response_buffer = [0u8; MAX_RESPONSE_SIZE];
+        stream
+            .read_exact(&mut response_buffer)
+            .await
+            .map_err(|err| RconError::Receive {
+                cause: err.to_string(),
+            })?;
+
+        // Close connection
+        stream.shutdown().await.map_err(|err| RconError::Shutdown {
+            cause: err.to_string(),
+        })?;
+
+        let response = RconResponse::try_from_rcon_bytes(&response_buffer).map_err(|err| {
+            RconError::Receive {
+                cause: err.to_string(),
+            }
+        })?;
+
+        Ok(response)
+    }
 }
 
 #[cfg(test)]
 mod tests {
     use crate::rcon::{
         client::{RconError, DEFAULT_TIMEOUT},
-        Rcon,
+        Rcon, RconRequest, RconRequestType, RconResponseType,
     };
     use serial_test::serial;
     use std::env;
+    use tokio::io::AsyncWriteExt;
 
     #[tokio::test]
     #[serial(rcon_environment)]
+    #[ignore]
+    async fn test_connect() {
+        let result = Rcon::connect().await;
+        assert!(result.is_ok());
+
+        let mut stream = result.unwrap();
+        assert!(stream.peer_addr().is_ok());
+
+        // Close the stream
+        stream.shutdown().await.ok();
+    }
+
+    #[tokio::test]
+    #[serial(rcon_environment)]
+    #[ignore]
     async fn test_connect_invalid() {
         env::set_var("RCON_HOST", "localhost");
         env::set_var("RCON_PORT", "25575");
@@ -102,9 +206,21 @@ mod tests {
     #[tokio::test]
     #[serial(rcon_environment)]
     #[ignore]
-    async fn test_connect() {
-        let result = Rcon::connect().await;
+    async fn test_send_login() {
+        let password = env::var("RCON_PASSWORD").unwrap();
+
+        let request = RconRequest::new(RconRequestType::Login, password);
+
+        let result = Rcon::send(&request).await;
         assert!(result.is_ok());
+
+        let response = result.unwrap();
+        assert_eq!(response.response_id, request.request_id);
+        assert!(matches!(
+            response.response_type,
+            RconResponseType::MultiPacketResponse
+        ));
+        assert_eq!(response.response_payload, String::from("Login successful"));
     }
 
     #[test]
