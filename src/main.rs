@@ -16,7 +16,7 @@ use rocket::{launch, routes, Build, Rocket};
 /// A `Rocket<Build>` instance.
 async fn rocket() -> Rocket<Build> {
     // Load environment
-    dotenv().expect("Failed to load .env file");
+    dotenv().ok();
 
     // Rcon client
     let rcon = Rcon::default();
