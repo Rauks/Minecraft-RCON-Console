@@ -1,8 +1,10 @@
 use super::{RconConfiguration, RconError, RconRequest, RconRequestType, RconResponse};
 use log::{debug, info, warn};
+use std::time::Duration;
 use tokio::{
     io::{AsyncReadExt, AsyncWriteExt},
     net::TcpStream,
+    time::timeout,
 };
 
 /// Maximum packet size for sending data.
@@ -183,12 +185,19 @@ impl ConnectedRconClient {
         let mut response_buffer = [0u8; MAX_RCON_RESPONSE_SIZE];
 
         debug!("Receiving response from the RCON server...");
-        self.stream
-            .read(&mut response_buffer)
-            .await
-            .map_err(|err| RconError::Receive {
-                cause: err.to_string(),
-            })?;
+
+        let configuration = RconConfiguration::try_new()?;
+        timeout(
+            Duration::from_millis(configuration.timeout),
+            self.stream.read(&mut response_buffer),
+        )
+        .await
+        .map_err(|_| RconError::Timeout {
+            elapsed_ms: configuration.timeout,
+        })?
+        .map_err(|err| RconError::Receive {
+            cause: err.to_string(),
+        })?;
 
         debug!("Response bytes: {:?}", response_buffer);
 

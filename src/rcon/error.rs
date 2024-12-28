@@ -12,4 +12,6 @@ pub enum RconError {
     Receive { cause: String },
     #[error("Failed to shutdown the RCON connection: {cause}")]
     Shutdown { cause: String },
+    #[error("Timeout waiting for RCON response, elapsed time: {elapsed_ms}ms")]
+    Timeout { elapsed_ms: u64 },
 }
