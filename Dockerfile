@@ -19,6 +19,9 @@ COPY /config /opt/config
 COPY /target/release /opt
 RUN chmod +x /opt/minecraft-rcon
 
+# Angluar UI
+COPY /ui/dist/browser /opt/www
+
 # Environment
 ARG VERSION_SLUG
 ENV VERSION_SLUG=${VERSION_SLUG}
