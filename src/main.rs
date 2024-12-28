@@ -92,9 +92,10 @@ async fn rocket() -> Rocket<Build> {
 mod tests {
     use rocket::http::Status;
     use rocket::local::asynchronous::Client;
+    use serial_test::serial;
 
     #[tokio::test]
-    #[ignore]
+    #[serial(rcon)]
     async fn api_rcon() {
         let rocket = crate::rocket().await;
         let client = Client::tracked(rocket).await.unwrap();

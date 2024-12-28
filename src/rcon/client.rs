@@ -212,7 +212,6 @@ mod tests {
 
     #[tokio::test]
     #[serial(rcon)]
-    #[ignore]
     async fn test_connect() {
         // Get a new connection
         let connection_result = RconClient::default().get_connection().await;
@@ -229,7 +228,6 @@ mod tests {
 
     #[tokio::test]
     #[serial(rcon)]
-    #[ignore]
     async fn test_connect_invalid() {
         async_with_vars(
             [
@@ -252,7 +250,6 @@ mod tests {
 
     #[tokio::test]
     #[serial(rcon)]
-    #[ignore]
     async fn test_login() {
         let mut connection = RconClient::default().get_connection().await.unwrap();
 
@@ -267,7 +264,6 @@ mod tests {
 
     #[tokio::test]
     #[serial(rcon)]
-    #[ignore]
     async fn test_login_wrong_password() {
         async_with_vars([("RCON_PASSWORD", Some("wrong_password"))], async {
             let mut connection = RconClient::default().get_connection().await.unwrap();
@@ -285,7 +281,6 @@ mod tests {
 
     #[tokio::test]
     #[serial(rcon)]
-    #[ignore]
     async fn test_double_login() {
         let mut connection = RconClient::default().get_connection().await.unwrap();
 
@@ -306,7 +301,6 @@ mod tests {
 
     #[tokio::test]
     #[serial(rcon)]
-    #[ignore]
     async fn test_request_with_login() {
         let mut connection = RconClient::default().get_connection().await.unwrap();
         connection.login().await.ok();
@@ -329,7 +323,6 @@ mod tests {
 
     #[tokio::test]
     #[serial(rcon)]
-    #[ignore]
     async fn test_request_without_login() {
         let mut connection = RconClient::default().get_connection().await.unwrap();
 
