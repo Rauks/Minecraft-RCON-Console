@@ -2,6 +2,7 @@ use super::RconError;
 use std::env;
 
 /// Default timeout for requests in milliseconds.
+#[allow(unused)]
 pub const DEFAULT_RCON_TIMEOUT: u64 = 5000;
 
 #[derive(Debug, Clone)]

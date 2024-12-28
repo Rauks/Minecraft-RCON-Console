@@ -1,5 +1,4 @@
-use super::{RconConfiguration, RconError, RconRequest, RconResponse};
-use std::env;
+use super::{RconConfiguration, RconError, RconRequest, RconRequestType, RconResponse};
 use tokio::{
     io::{AsyncReadExt, AsyncWriteExt},
     net::TcpStream,
@@ -67,6 +66,29 @@ pub struct ConnectedRconClient {
 }
 
 impl ConnectedRconClient {
+    /// Sends a request to the server and receives a response.
+    ///
+    /// # Parameters
+    ///
+    /// - `request`: The request to send to the server.
+    ///
+    /// # Returns
+    ///
+    /// The response from the server.
+    pub async fn login(&mut self) -> Result<bool, RconError> {
+        let configuration = RconConfiguration::try_new()?;
+        let login_request = RconRequest::new(RconRequestType::Auth, configuration.password);
+
+        // Send the request
+        let response = self.request(&login_request).await?;
+
+        // If authentication was successful, the ID assigned by the request.
+        // If auth failed, -1.
+        //
+        // - [RCON Auth Response](https://developer.valvesoftware.com/wiki/Source_RCON_Protocol#SERVERDATA_AUTH_RESPONSE)
+        Ok(response.response_id != -1)
+    }
+
     /// Sends a request to the server and receives a response.
     ///
     /// # Parameters
@@ -165,9 +187,7 @@ impl ConnectedRconClient {
 
 #[cfg(test)]
 mod tests {
-    use crate::rcon::{
-        RconClient, RconConfiguration, RconError, RconRequest, RconRequestType, RconResponseType,
-    };
+    use crate::rcon::{RconClient, RconError, RconRequest, RconRequestType, RconResponseType};
     use serial_test::serial;
     use temp_env::async_with_vars;
 
@@ -214,26 +234,99 @@ mod tests {
     #[tokio::test]
     #[serial(rcon)]
     #[ignore]
-    async fn test_request_login() {
+    async fn test_login() {
         let mut connection = RconClient::default().get_connection().await.unwrap();
-        let configuration = RconConfiguration::try_new().unwrap();
-        let request = RconRequest::new(RconRequestType::Auth, configuration.password);
 
-        let request_result = connection.request(&request).await;
-        assert!(request_result.is_ok());
+        let login_result = connection.login().await;
+        assert!(login_result.is_ok());
+
+        let is_login_valid = login_result.unwrap();
+        assert!(is_login_valid);
 
         connection.disconnect().await.ok();
+    }
 
-        let response = request_result.unwrap();
+    #[tokio::test]
+    #[serial(rcon)]
+    #[ignore]
+    async fn test_login_wrong_password() {
+        async_with_vars([("RCON_PASSWORD", Some("wrong_password"))], async {
+            let mut connection = RconClient::default().get_connection().await.unwrap();
 
-        assert!(matches!(
-            response.response_type,
-            RconResponseType::AuthResponse
-        ));
-        assert!(response.response_payload.is_empty());
+            let login_result = connection.login().await;
+            assert!(login_result.is_ok());
+
+            let is_login_valid = login_result.unwrap();
+            assert!(!is_login_valid);
+
+            connection.disconnect().await.ok();
+        })
+        .await;
+    }
+
+    #[tokio::test]
+    #[serial(rcon)]
+    #[ignore]
+    async fn test_double_login() {
+        let mut connection = RconClient::default().get_connection().await.unwrap();
+
+        let first_login_result = connection.login().await;
+        assert!(first_login_result.is_ok());
+
+        let is_first_login_valid = first_login_result.unwrap();
+        assert!(is_first_login_valid);
+
+        let second_login_result = connection.login().await;
+        assert!(second_login_result.is_ok());
+
+        let is_second_login_valid = second_login_result.unwrap();
+        assert!(is_second_login_valid);
+
+        connection.disconnect().await.ok();
+    }
+
+    #[tokio::test]
+    #[serial(rcon)]
+    #[ignore]
+    async fn test_request_with_login() {
+        let mut connection = RconClient::default().get_connection().await.unwrap();
+        connection.login().await.ok();
+
+        let request = RconRequest::new(RconRequestType::ExecCommand, String::from("help"));
+        let response_result = connection.request(&request).await;
+        assert!(response_result.is_ok());
+
+        let response = response_result.unwrap();
 
         // If authentication was successful, the ID assigned by the request.
         // If auth failed, -1.
+        //
+        // - [RCON Auth Response](https://developer.valvesoftware.com/wiki/Source_RCON_Protocol#SERVERDATA_AUTH_RESPONSE)
+        assert_eq!(response.response_type, RconResponseType::ResponseValue);
         assert_eq!(response.response_id, request.request_id);
+
+        connection.disconnect().await.ok();
+    }
+
+    #[tokio::test]
+    #[serial(rcon)]
+    #[ignore]
+    async fn test_request_without_login() {
+        let mut connection = RconClient::default().get_connection().await.unwrap();
+
+        let request = RconRequest::new(RconRequestType::ExecCommand, String::from("help"));
+        let response_result = connection.request(&request).await;
+        assert!(response_result.is_ok());
+
+        let response = response_result.unwrap();
+
+        // If authentication was successful, the ID assigned by the request.
+        // If auth failed, -1.
+        //
+        // - [RCON Auth Response](https://developer.valvesoftware.com/wiki/Source_RCON_Protocol#SERVERDATA_AUTH_RESPONSE)
+        assert_eq!(response.response_type, RconResponseType::AuthResponse);
+        assert_eq!(response.response_id, -1);
+
+        connection.disconnect().await.ok();
     }
 }
