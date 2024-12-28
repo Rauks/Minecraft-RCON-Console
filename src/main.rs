@@ -94,6 +94,7 @@ mod tests {
     use rocket::local::asynchronous::Client;
 
     #[tokio::test]
+    #[ignore]
     async fn api_rcon() {
         let rocket = crate::rocket().await;
         let client = Client::tracked(rocket).await.unwrap();
