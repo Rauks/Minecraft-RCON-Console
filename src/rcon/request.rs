@@ -64,15 +64,29 @@ impl RconRequest {
 
 #[derive(Debug, Clone)]
 pub enum RconRequestType {
-    Command,
-    Login,
+    ExecCommand,
+    Auth,
 }
 
 impl From<&RconRequestType> for i32 {
+    /// Convert the RCON request type to an integer.
+    /// 
+    /// # Arguments
+    /// 
+    /// * `kind` - The RCON request type to convert.
+    /// 
+    /// # Returns
+    /// 
+    /// An integer representing the RCON request type.
+    /// 
+    /// # Notes
+    /// 
+    /// - [Minecraft types codes](https://minecraft.wiki/w/RCON#Packet_format)
+    /// - [RCON packets types](https://developer.valvesoftware.com/wiki/Source_RCON_Protocol#Packet_Type)
     fn from(kind: &RconRequestType) -> i32 {
         match kind {
-            RconRequestType::Command => 2,
-            RconRequestType::Login => 3,
+            RconRequestType::ExecCommand => 2,
+            RconRequestType::Auth => 3,
         }
     }
 }

@@ -49,6 +49,8 @@ impl RconResponse {
             .map_err(|e| RconResponseError::Decode { cause: e })?;
 
         let last_payload_byte = response_size as usize
+            // Response size padding
+            + 4
             // Null terminator for the packet
             - 1
             // Null terminator for the payload
@@ -71,15 +73,31 @@ impl RconResponse {
 
 #[derive(Debug, Clone)]
 pub enum RconResponseType {
-    MultiPacketResponse,
+    AuthResponse,
+    ResponseValue,
 }
 
 impl TryFrom<i32> for RconResponseType {
     type Error = String;
 
+    /// Attempts to convert an `i32` to an `RconResponseType`.
+    ///
+    /// # Arguments
+    ///
+    /// * `code` - The integer to convert.
+    ///
+    /// # Returns
+    ///
+    /// An `RconResponseType` if the conversion was successful, otherwise a `String`.
+    ///
+    /// # Notes
+    ///
+    /// - [Minecraft types codes](https://minecraft.wiki/w/RCON#Packet_format)
+    /// - [RCON packets types](https://developer.valvesoftware.com/wiki/Source_RCON_Protocol#Packet_Type)
     fn try_from(code: i32) -> Result<RconResponseType, Self::Error> {
         match code {
-            0 => Ok(RconResponseType::MultiPacketResponse),
+            0 => Ok(RconResponseType::ResponseValue),
+            2 => Ok(RconResponseType::AuthResponse),
             _ => Err(format!("Unknown RCON response type: {}", code)),
         }
     }
