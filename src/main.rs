@@ -4,7 +4,7 @@ mod rcon;
 
 use app::ui;
 use dotenvy::dotenv;
-use rcon::Rcon;
+use rcon::RconClient;
 use rocket::{launch, routes, Build, Rocket};
 
 #[launch]
@@ -19,7 +19,7 @@ async fn rocket() -> Rocket<Build> {
     dotenv().ok();
 
     // Rcon client
-    let rcon = Rcon::default();
+    let rcon = RconClient::default();
 
     // Prepare the webserver
     let mut rocket = rocket::build()
