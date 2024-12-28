@@ -1,4 +1,5 @@
 use super::RconError;
+use log::debug;
 use std::env;
 
 /// Default timeout for requests in milliseconds.
@@ -20,6 +21,8 @@ impl RconConfiguration {
     ///
     /// The configuration.
     pub fn try_new() -> Result<RconConfiguration, RconError> {
+        debug!("Attempting to create RCON configuration from environment variables...");
+
         let host = env::var("RCON_HOST").map_err(|_| RconError::Configuration {
             cause: String::from("Environment variable 'RCON_HOST' is not set"),
         })?;

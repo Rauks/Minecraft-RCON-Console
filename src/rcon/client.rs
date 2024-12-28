@@ -1,4 +1,5 @@
 use super::{RconConfiguration, RconError, RconRequest, RconRequestType, RconResponse};
+use log::{debug, info, warn};
 use tokio::{
     io::{AsyncReadExt, AsyncWriteExt},
     net::TcpStream,
@@ -49,8 +50,10 @@ impl RconClient {
     /// A connected `TcpStream` instance.
     pub async fn get_connection(&self) -> Result<ConnectedRconClient, RconError> {
         let configuration = RconConfiguration::try_new()?;
+        let address = format!("{}:{}", configuration.host, configuration.port);
 
-        let stream = TcpStream::connect(format!("{}:{}", configuration.host, configuration.port))
+        info!("Getting a new RCON connection to '{}'...", address);
+        let stream = TcpStream::connect(address)
             .await
             .map_err(|err| RconError::Connection {
                 cause: err.to_string(),
@@ -80,13 +83,22 @@ impl ConnectedRconClient {
         let login_request = RconRequest::new(RconRequestType::Auth, configuration.password);
 
         // Send the request
+        info!("Logging in to the RCON server...");
         let response = self.request(&login_request).await?;
 
         // If authentication was successful, the ID assigned by the request.
         // If auth failed, -1.
         //
         // - [RCON Auth Response](https://developer.valvesoftware.com/wiki/Source_RCON_Protocol#SERVERDATA_AUTH_RESPONSE)
-        Ok(response.response_id != -1)
+        let login_status = response.response_id != -1;
+
+        if !login_status {
+            warn!("Failed to login to the RCON server");
+        } else {
+            debug!("Logged in to the RCON server successfully");
+        }
+
+        Ok(login_status)
     }
 
     /// Sends a request to the server and receives a response.
@@ -100,10 +112,14 @@ impl ConnectedRconClient {
     /// The response from the server.
     pub async fn request(&mut self, request: &RconRequest) -> Result<RconResponse, RconError> {
         // Send the request
+        info!("Sending a request to the RCON server...");
         self.send(request).await?;
+        debug!("Request sent successfully");
 
         // Receive the response
+        info!("Waiging for response...");
         let response = self.receive().await?;
+        debug!("Response received successfully");
 
         Ok(response)
     }
@@ -114,6 +130,7 @@ impl ConnectedRconClient {
     ///
     /// A result indicating the success of the operation.
     pub async fn disconnect(&mut self) -> Result<(), RconError> {
+        info!("Disconnecting from the RCON server...");
         self.stream
             .shutdown()
             .await
@@ -132,11 +149,10 @@ impl ConnectedRconClient {
     ///
     /// A result indicating the success of the operation.
     async fn send(&mut self, request: &RconRequest) -> Result<(), RconError> {
-        println!("{:?}", request);
+        info!("Request: {:?}", request);
 
         let bytes = request.to_rcon_bytes();
-
-        println!("{:?}", bytes);
+        debug!("Request bytes: {:?}", bytes);
 
         if bytes.len() > MAX_RCON_REQUEST_SIZE {
             return Err(RconError::Send {
@@ -144,6 +160,7 @@ impl ConnectedRconClient {
             });
         }
 
+        debug!("Sending request to the RCON server...");
         self.stream
             .write_all(&bytes)
             .await
@@ -151,6 +168,7 @@ impl ConnectedRconClient {
                 cause: err.to_string(),
             })?;
 
+        debug!("Flushing...");
         self.stream.flush().await.map_err(|err| RconError::Send {
             cause: err.to_string(),
         })
@@ -164,6 +182,7 @@ impl ConnectedRconClient {
     async fn receive(&mut self) -> Result<RconResponse, RconError> {
         let mut response_buffer = [0u8; MAX_RCON_RESPONSE_SIZE];
 
+        debug!("Receiving response from the RCON server...");
         self.stream
             .read(&mut response_buffer)
             .await
@@ -171,7 +190,7 @@ impl ConnectedRconClient {
                 cause: err.to_string(),
             })?;
 
-        println!("{:?}", response_buffer);
+        debug!("Response bytes: {:?}", response_buffer);
 
         let response = RconResponse::try_from_rcon_bytes(&response_buffer).map_err(|err| {
             RconError::Receive {
@@ -179,7 +198,7 @@ impl ConnectedRconClient {
             }
         })?;
 
-        println!("{:?}", response);
+        info!("Response: {:?}", response);
 
         Ok(response)
     }

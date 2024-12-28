@@ -1,10 +1,11 @@
+mod api;
 mod app;
 mod config;
 mod rcon;
 
+use api::{ApiRconResponse, RconManagedState};
 use app::ui;
 use dotenvy::dotenv;
-use rcon::RconClient;
 use rocket::{launch, routes, Build, Rocket};
 
 #[launch]
@@ -19,12 +20,12 @@ async fn rocket() -> Rocket<Build> {
     dotenv().ok();
 
     // Rcon client
-    let rcon = RconClient::default();
+    let rcon = RconManagedState::default();
 
     // Prepare the webserver
     let mut rocket = rocket::build()
         .manage(rcon)
-        .mount("/api", routes![])
+        .mount("/api", routes![api::handle_rcon])
         .mount("/", routes![ui::files]);
 
     cfg_if::cfg_if! {
@@ -48,7 +49,19 @@ async fn rocket() -> Rocket<Build> {
 
             // Initialize the OpenAPI
             #[derive(OpenApi)]
-            #[openapi(info(title = "Minecraft RCON"), paths(), components(schemas()))]
+            #[openapi(
+                info(
+                    title = "Minecraft RCON"
+                ),
+                paths(
+                    api::handle_rcon,
+                ),
+                components(
+                    schemas(
+                        ApiRconResponse,
+                    )
+                )
+            )]
             struct ApiDoc;
 
             let mut openapi = ApiDoc::openapi();
@@ -73,4 +86,20 @@ async fn rocket() -> Rocket<Build> {
     }
 
     rocket
+}
+
+#[cfg(test)]
+mod tests {
+    use rocket::http::Status;
+    use rocket::local::asynchronous::Client;
+
+    #[tokio::test]
+    async fn api_rcon() {
+        let rocket = crate::rocket().await;
+        let client = Client::tracked(rocket).await.unwrap();
+
+        let response = client.post("/api/rcon").body("help").dispatch().await;
+
+        assert_eq!(response.status(), Status::Ok);
+    }
 }
