@@ -4,6 +4,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { BehaviorSubject, throwError } from 'rxjs';
 import { RconService } from 'src/services';
 import { Localizer } from 'src/utils';
+import { v4 as uuid } from 'uuid';
 import colorCodes from '../../config/minecraft-color-codes.json';
 import styleCodes from '../../config/minecraft-style-codes.json';
 import { ConsoleComponent } from './console.component';
@@ -35,16 +36,54 @@ describe('ConsoleComponent', () => {
             .and
             .returnValue(new BehaviorSubject("test response"));
 
-        component.commandResult$.subscribe((value) => {
-            expect(value.sourceCommand).toBe("test");
-            expect(value.matchedStatus).toBe("unknown");
-            expect(value.decodedReply).toEqual(component.decodeResponse("test response"));
-        });
+        component.commandForm.setValue({ command: "test" });
+        component.onSubmit();
+
+        const currentHsitory = component.commandResultHistory$.value;
+        expect(currentHsitory.length).toBe(1);
+
+        expect(currentHsitory[0].sourceCommand).toBe("test");
+        expect(currentHsitory[0].matchedStatus).toBe("unknown");
+        expect(currentHsitory[0].decodedReply).toEqual(component.decodeResponse("test response"));
+
+        expect(spy).toHaveBeenCalledWith("test");
+    });
+
+    it("should reset the command form after sending a command", () => {
+        spyOn(component["rconService"], "sendCommand")
+            .and
+            .returnValue(new BehaviorSubject("test response"));
 
         component.commandForm.setValue({ command: "test" });
         component.onSubmit();
 
-        expect(spy).toHaveBeenCalledWith("test");
+        expect(component.commandForm.value.command).toBeNull();
+    });
+
+    it("should add the command result to the top of the history", () => {
+        const spy = spyOn(component["rconService"], "sendCommand")
+            .and
+            .returnValues(
+                new BehaviorSubject("test response 1"),
+                new BehaviorSubject("test response 2"),
+                new BehaviorSubject("test response 3"),
+            );
+
+        component.commandForm.setValue({ command: "test 1" });
+        component.onSubmit();
+
+        component.commandForm.setValue({ command: "test 2" });
+        component.onSubmit();
+
+        component.commandForm.setValue({ command: "test 3" });
+        component.onSubmit();
+
+        const currentHsitory = component.commandResultHistory$.value;
+        expect(currentHsitory.length).toBe(3);
+
+        expect(currentHsitory[0].sourceCommand).toBe("test 3");
+        expect(currentHsitory[1].sourceCommand).toBe("test 2");
+        expect(currentHsitory[2].sourceCommand).toBe("test 1");
     });
 
     it("should send the placeholder command if no command is entered", () => {
@@ -74,11 +113,12 @@ describe('ConsoleComponent', () => {
         let lastReplyCard = fixture.nativeElement.querySelector(".card-text");
         expect(lastReplyCard).toBeNull();
 
-        component.commandResult$.next({
+        component.commandResultHistory$.next([{
+            id: uuid(),
             sourceCommand: "test",
             matchedStatus: "unknown",
             decodedReply: component.decodeResponse("test response"),
-        });
+        }]);
         fixture.detectChanges();
 
         lastReplyCard = fixture.nativeElement.querySelector(".card-text");
@@ -162,11 +202,12 @@ describe('ConsoleComponent', () => {
     it("should display the command error status", () => {
         fixture.detectChanges();
 
-        component.commandResult$.next({
+        component.commandResultHistory$.next([{
+            id: uuid(),
             sourceCommand: "test",
             matchedStatus: "error",
             decodedReply: component.decodeResponse("test response"),
-        });
+        }]);
         fixture.detectChanges();
 
         let card = fixture.nativeElement.querySelector(".card-header");
@@ -176,11 +217,12 @@ describe('ConsoleComponent', () => {
     it("should display the command invalid status", () => {
         fixture.detectChanges();
 
-        component.commandResult$.next({
+        component.commandResultHistory$.next([{
+            id: uuid(),
             sourceCommand: "test",
             matchedStatus: "invalid",
             decodedReply: component.decodeResponse("test response"),
-        });
+        }]);
         fixture.detectChanges();
 
         let card = fixture.nativeElement.querySelector(".card-header");
@@ -190,11 +232,12 @@ describe('ConsoleComponent', () => {
     it("should display the command success status", () => {
         fixture.detectChanges();
 
-        component.commandResult$.next({
+        component.commandResultHistory$.next([{
+            id: uuid(),
             sourceCommand: "test",
             matchedStatus: "unknown",
             decodedReply: component.decodeResponse("test response"),
-        });
+        }]);
         fixture.detectChanges();
 
         let card = fixture.nativeElement.querySelector(".card-header");
@@ -204,11 +247,12 @@ describe('ConsoleComponent', () => {
     it("should display the com error status", () => {
         fixture.detectChanges();
 
-        component.commandResult$.next({
+        component.commandResultHistory$.next([{
+            id: uuid(),
             sourceCommand: "test",
             matchedStatus: "com",
             decodedReply: component.decodeResponse("test response"),
-        });
+        }]);
         fixture.detectChanges();
 
         let card = fixture.nativeElement.querySelector(".card-header");

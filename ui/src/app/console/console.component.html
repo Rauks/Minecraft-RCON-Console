@@ -23,39 +23,54 @@
 </form>
 
 
-@if (commandResult$ | async; as commandResult) {
-    <div class="card mt-3">
-        @switch (commandResult.matchedStatus) {
-            @case ("error") {
-                <div class="card-header border-danger">
-                    <fa-icon icon="triangle-exclamation" [fixedWidth]="true"></fa-icon>
-                    <span class="ms-2">{{ commandResult.sourceCommand }}</span>
-                </div>
+@if (commandResultHistory$ | async; as commandResult) {
+    @for (item of commandResult; track item.id) {
+        <div class="card mt-3">
+            @switch (item.matchedStatus) {
+                @case ("error") {
+                    <div class="card-header border-danger">
+                        <fa-icon 
+                            class="text-danger" 
+                            icon="triangle-exclamation" 
+                            [fixedWidth]="true">
+                        </fa-icon>
+                        <span class="ms-2">{{ item.sourceCommand }}</span>
+                    </div>
+                }
+                @case ("invalid") {
+                    <div class="card-header border-warning">
+                        <fa-icon 
+                            class="text-warning" 
+                            icon="hexagon-exclamation">
+                        </fa-icon>
+                        <span class="ms-2">{{ item.sourceCommand }}</span>
+                    </div>
+                }
+                @case ("com") {
+                    <div class="card-header border-danger">
+                        <fa-icon 
+                            class="text-danger" 
+                            icon="wifi-exclamation">
+                        </fa-icon>
+                        <span class="ms-2">{{ item.sourceCommand }}</span>
+                    </div>
+                }
+                @default {
+                    <div class="card-header border-success">
+                        <fa-icon 
+                            class="text-success" 
+                            icon="circle-check">
+                        </fa-icon>
+                        <span class="ms-2">{{ item.sourceCommand }}</span>
+                    </div>
+                }
             }
-            @case ("invalid") {
-                <div class="card-header border-warning">
-                    <fa-icon icon="hexagon-exclamation"></fa-icon>
-                    <span class="ms-2">{{ commandResult.sourceCommand }}</span>
-                </div>
-            }
-            @case ("com") {
-                <div class="card-header border-danger">
-                    <fa-icon icon="wifi-exclamation" ></fa-icon>
-                    <span class="ms-2">{{ commandResult.sourceCommand }}</span>
-                </div>
-            }
-            @default {
-                <div class="card-header border-success">
-                    <fa-icon icon="circle-check"></fa-icon>
-                    <span class="ms-2">{{ commandResult.sourceCommand }}</span>
-                </div>
-            }
-        }
-        <div class="card-body">
-            <p 
-                class="card-text console-output" 
-                [innerHtml]="bypassSecurityTrustHtml(commandResult.decodedReply)">
-            </p>
+            <div class="card-body">
+                <p 
+                    class="card-text console-output" 
+                    [innerHtml]="bypassSecurityTrustHtml(item.decodedReply)">
+                </p>
+            </div>
         </div>
-    </div>
+    }
 }

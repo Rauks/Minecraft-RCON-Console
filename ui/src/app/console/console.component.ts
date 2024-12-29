@@ -3,9 +3,10 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { minimatch } from 'minimatch';
-import { Subject } from 'rxjs';
+import { BehaviorSubject } from 'rxjs';
 import { RconService } from 'src/services';
 import { Localizer } from 'src/utils';
+import { v4 as uuid } from 'uuid';
 import colorCodes from '../../config/minecraft-color-codes.json';
 import statusMatchers from '../../config/minecraft-status-matchers.json';
 import styleCodes from '../../config/minecraft-style-codes.json';
@@ -44,13 +45,14 @@ export class ConsoleComponent {
     });
 
     /**
-     * The subject to emit the result of the commands.
+     * The history of the command results.
      */
-    public readonly commandResult$: Subject<{
+    public readonly commandResultHistory$: BehaviorSubject<{
+        id: string,
         sourceCommand: string,
         matchedStatus: CommandResultStatus,
         decodedReply: string | null
-    }> = new Subject();
+    }[]> = new BehaviorSubject([]);
 
     constructor(
         private readonly rconService: RconService,
@@ -114,23 +116,35 @@ export class ConsoleComponent {
         const rawCommand = (this.commandForm.value.command ?? "").trim();
         const command = rawCommand.length > 0 ? rawCommand : this.placeholderCommand;
 
+        // Send the command
         this.rconService.sendCommand(command).subscribe({
             next: (reply) => {
-                this.commandResult$.next({
-                    sourceCommand: command,
-                    matchedStatus: this.matchStatus(reply),
-                    decodedReply: this.decodeResponse(reply),
-                });
+                this.commandResultHistory$.next([
+                    {
+                        id: uuid(),
+                        sourceCommand: command,
+                        matchedStatus: this.matchStatus(reply),
+                        decodedReply: this.decodeResponse(reply),
+                    },
+                    ...this.commandResultHistory$.value
+                ]);
             },
             error: (error) => {
-                this.commandResult$.next({
-                    sourceCommand: command,
-                    matchedStatus: "com",
-                    decodedReply: error?.message
-                        ?? Localizer.getInstance().translate("tk.error.com.unknown"),
-                });
+                this.commandResultHistory$.next([
+                    {
+                        id: uuid(),
+                        sourceCommand: command,
+                        matchedStatus: "com",
+                        decodedReply: error?.message
+                            ?? Localizer.getInstance().translate("tk.error.com.unknown"),
+                    },
+                    ...this.commandResultHistory$.value
+                ]);
             }
         });
+
+        // Reset the form
+        this.commandForm.reset();
     }
 
     /**
