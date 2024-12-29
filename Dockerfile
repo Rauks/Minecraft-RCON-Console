@@ -11,6 +11,7 @@ ENV RCON_PASSWORD=insecure_secret
 ENV ROCKET_ADDRESS=0.0.0.0
 ENV ROCKET_PORT=8888
 ENV ROCKET_LIMITS={json="1 MiB"}
+ENV ROCKET_IP_HEADER=X-Forwarded-For
 
 # Rust API
 COPY /target/release /opt
