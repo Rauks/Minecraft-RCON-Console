@@ -26,7 +26,7 @@
 @if (lastDecodedReply$ | async; as lastDecodedReply) {
     <div class="card mt-3">
         <div class="card-body">
-            <p class="card-text" [innerHtml]="bypassSecurityTrustHtml(lastDecodedReply)"></p>
+            <p class="card-text console-output" [innerHtml]="bypassSecurityTrustHtml(lastDecodedReply)"></p>
         </div>
     </div>
 }
