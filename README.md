@@ -1,23 +1,135 @@
 # Minecraft-RCON
 
-Work in progress.
+A simple RCON console for Minecraft servers, with a REST API.
+
+![Overview](./docs/overview.png)
+
+## Usage
+
+### Warnings
+
+* Provided as it is, **this console has no authentication check**, so anybody with access to this console can run any commands on the Minecraft server.
+* Please **do not expose this console to the internet without any security measures**.
+* Please consider setting up a reverse proxy with an authentification layer in front of this console, or any other security measures, in order to restrict the access.
+  The following links can help you to find and setup a reverse proxy:
+  * [Awesome list of reverse proxies](https://awesome-selfhosted.net/tags/web-servers.html)
+  * [Awesome list of identity management](https://github.com/awesome-foss/awesome-sysadmin?tab=readme-ov-file#identity-management---single-sign-on-sso)
+* Use a strong custom random RCON password for more security.
+
+### Docker
+
+Below is an example of a `docker-compose.yml` file to run the Minecraft server and the RCON console:
+
+Please really read the [warnings above](#warnings) before running this example.
+
+```yml
+version: "3"
+
+services:
+
+  minecraft:
+    image: itzg/minecraft-server
+    container_name: minecraft
+    restart: unless-stopped
+    environment:
+      TYPE: PAPER
+      VERSION: latest
+      PAPER_CHANNEL: experimental
+      EULA: "TRUE"
+      ENABLE_RCON: true
+      RCON_PASSWORD: ${RCON_PASSWORD}
+    tty: true
+    stdin_open: true
+    volumes:
+      - data:/data
+    ports:
+      - 25565:25575
+
+  rcon:
+    image: registry.kirauks.net/kirauks/minecraft-rcon:latest
+    container_name: minecraft-rcon
+    read_only: true
+    restart: unless-stopped
+    environment:
+      RCON_HOST: minecraft
+      RCON_PORT: 25575
+      RCON_PASSWORD: ${RCON_PASSWORD}
+    ports:
+      - 8888:8888
+
+volumes:
+  data:
+```
+
+# Backend API
+
+The backend is build using [Rust](https://www.rust-lang.org/) and the [Rocket](https://rocket.rs/) web framework.
 
 ## Features
 
-- `swagger`: Enable the openapi endpoint and the swagger UI (accessible at `/swagger-ui`).
-- `metrics`: Enable the prometheus metrics endpoint (accessible at `/metrics`)
+- `swagger`: Enable the openapi endpoint and the swagger UI (accessible at `/swagger-ui`). Enabled by default.
+- `metrics`: Enable the prometheus metrics endpoint (accessible at `/metrics`) Enabled by default.
 
-## Warnings
+## Build
 
-* Provided as it is, **this console has no authentication check**, so anybody with access to this console can run any commands on the Minecraft server.
+You can build the backend with the following command:
 
-  Please consider setting up a reverse proxy with an authentification layer in front of this console, or any other security measures, in order to restrict the access to the console.
+```sh
+cargo build --release
+```
 
-  Please check at least the documentations below:
+## Run for development
 
-  * [Awesome list of reverse proxies](https://awesome-selfhosted.net/tags/web-servers.html)
-  * [Awesome list of identity management](https://github.com/awesome-foss/awesome-sysadmin?tab=readme-ov-file#identity-management---single-sign-on-sso)
+You can run the backend with the following command:
 
-* Use a strong custom random RCON password (change the default `insecure_password` from the examples) for more security.
+```sh
+cargo run
+```
 
-* Set up your firewall in order to allow only the console to communicate with the Minecraft server through the RCON port set, for more security.
+## Execute the tests
+
+To be able to execute all the tests, you need to have setup the environement variables below on your
+development environment:
+- `RCON_HOST`: The Minecraft server hostname or IP address.
+- `RCON_PORT`: The Minecraft server RCON port.
+- `RCON_PASSWORD`: The Minecraft server RCON password.
+
+And then you can run the tests with the following command:
+
+```sh
+cargo test
+```
+
+# Frontend WebUI
+
+The frontend is build using [TypeScript](https://www.typescriptlang.org/) and the [Angular](https://angular.io/) web framework.
+
+## Build
+
+You can build the frontend with the following command:
+
+```sh
+cd ui
+npm ci
+npm run build
+```
+
+## Run for development
+
+You can run the frontend with the following command:
+
+```sh
+cd ui
+npm ci
+npm run start
+```
+
+## Execute the tests
+
+You can run the tests with the following command:
+
+```sh
+cd ui
+npm ci
+npm run test
+```
