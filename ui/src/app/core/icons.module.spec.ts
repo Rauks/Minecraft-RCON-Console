@@ -3,7 +3,7 @@ import { IconsModule } from "./icons.module";
 
 describe("IconsModule", () => {
     it("should be created", () => {
-        let iconsModule = new IconsModule(new FaIconLibrary());
+        const iconsModule = new IconsModule(new FaIconLibrary());
 
         expect(iconsModule).toBeTruthy();
     });

@@ -13,8 +13,8 @@ describe("Localizer", () => {
     });
 
     it("should have a singleton instance", () => {
-        let instance1 = Localizer.getInstance();
-        let instance2 = Localizer.getInstance();
+        const instance1 = Localizer.getInstance();
+        const instance2 = Localizer.getInstance();
 
         expect(instance1).toBe(instance2);
     });

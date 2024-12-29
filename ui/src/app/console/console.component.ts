@@ -2,11 +2,16 @@ import { AsyncPipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
+import { minimatch } from 'minimatch';
 import { Subject } from 'rxjs';
 import { RconService } from 'src/services';
-import colorCodes from '../../config/color-codes.json';
-import styleCodes from '../../config/style-codes.json';
+import { Localizer } from 'src/utils';
+import colorCodes from '../../config/minecraft-color-codes.json';
+import statusMatchers from '../../config/minecraft-status-matchers.json';
+import styleCodes from '../../config/minecraft-style-codes.json';
 import { IconsModule, LocalizePipe } from '../core';
+
+export type CommandResultStatus = "unknown" | "error" | "invalid" | "com";
 
 @Component({
     selector: 'console',
@@ -18,16 +23,34 @@ import { IconsModule, LocalizePipe } from '../core';
     standalone: true,
 })
 export class ConsoleComponent {
-
+    /**
+     * Bypasses the security of the HTML, to be user in the view
+     * only for the decoded reply.
+     */
     public readonly bypassSecurityTrustHtml: (value: string) => SafeHtml;
 
+    /**
+     * The placeholder command to display and use if no command is entered.
+     */
+    public readonly placeholderCommand = "help";
+
+    /**
+     * The form to send commands to the RCON server.
+     */
     public readonly commandForm: FormGroup<{
         command: FormControl<string | null>
     }> = new FormGroup({
         command: new FormControl(null),
     });
 
-    public readonly lastDecodedReply$: Subject<string> = new Subject();
+    /**
+     * The subject to emit the result of the commands.
+     */
+    public readonly commandResult$: Subject<{
+        sourceCommand: string,
+        matchedStatus: CommandResultStatus,
+        decodedReply: string | null
+    }> = new Subject();
 
     constructor(
         private readonly rconService: RconService,
@@ -65,13 +88,48 @@ export class ConsoleComponent {
     }
 
     /**
+     * Matches the reply to a status
+     * 
+     * @param reply The reply to match
+     * 
+     * @returns The status of the reply
+     */
+    public matchStatus(reply: string): CommandResultStatus {
+        for (const [status, matchers] of Object.entries(statusMatchers)) {
+            for (const matcher of matchers) {
+
+                console.log(reply, matcher);
+                if (minimatch(reply, matcher)) {
+                    return status as CommandResultStatus;
+                }
+            }
+        }
+        return "unknown";
+    }
+
+    /**
      * Sends the command to the RCON server
      */
     public onSubmit(): void {
-        const command = this.commandForm.value.command;
+        const rawCommand = (this.commandForm.value.command ?? "").trim();
+        const command = rawCommand.length > 0 ? rawCommand : this.placeholderCommand;
 
-        this.rconService.sendCommand(command).subscribe((reply: string) => {
-            this.lastDecodedReply$.next(this.decodeResponse(reply));
+        this.rconService.sendCommand(command).subscribe({
+            next: (reply) => {
+                this.commandResult$.next({
+                    sourceCommand: command,
+                    matchedStatus: this.matchStatus(reply),
+                    decodedReply: this.decodeResponse(reply),
+                });
+            },
+            error: (error) => {
+                this.commandResult$.next({
+                    sourceCommand: command,
+                    matchedStatus: "com",
+                    decodedReply: error?.message
+                        ?? Localizer.getInstance().translate("tk.error.com.unknown"),
+                });
+            }
         });
     }
 

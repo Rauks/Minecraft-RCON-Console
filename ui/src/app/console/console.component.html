@@ -3,7 +3,7 @@
         <span class="input-group-text">
             <fa-icon icon="terminal"></fa-icon>
         </span>
-            <input type="text" class="form-control" formControlName="command" [placeholder]="'help'" />
+        <input type="text" class="form-control" formControlName="command" [placeholder]="placeholderCommand" />
         <button 
             class="btn btn-outline-secondary" 
             type="button" 
@@ -23,10 +23,39 @@
 </form>
 
 
-@if (lastDecodedReply$ | async; as lastDecodedReply) {
+@if (commandResult$ | async; as commandResult) {
     <div class="card mt-3">
+        @switch (commandResult.matchedStatus) {
+            @case ("error") {
+                <div class="card-header border-danger">
+                    <fa-icon icon="triangle-exclamation" [fixedWidth]="true"></fa-icon>
+                    <span class="ms-2">{{ commandResult.sourceCommand }}</span>
+                </div>
+            }
+            @case ("invalid") {
+                <div class="card-header border-warning">
+                    <fa-icon icon="hexagon-exclamation"></fa-icon>
+                    <span class="ms-2">{{ commandResult.sourceCommand }}</span>
+                </div>
+            }
+            @case ("com") {
+                <div class="card-header border-danger">
+                    <fa-icon icon="wifi-exclamation" ></fa-icon>
+                    <span class="ms-2">{{ commandResult.sourceCommand }}</span>
+                </div>
+            }
+            @default {
+                <div class="card-header border-success">
+                    <fa-icon icon="circle-check"></fa-icon>
+                    <span class="ms-2">{{ commandResult.sourceCommand }}</span>
+                </div>
+            }
+        }
         <div class="card-body">
-            <p class="card-text console-output" [innerHtml]="bypassSecurityTrustHtml(lastDecodedReply)"></p>
+            <p 
+                class="card-text console-output" 
+                [innerHtml]="bypassSecurityTrustHtml(commandResult.decodedReply)">
+            </p>
         </div>
     </div>
 }

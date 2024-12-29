@@ -5,6 +5,8 @@
 
     "tk.loading": "Loading...",
 
+    "tk.error.com.unknown": "An unknown communication error occurred.",
+
     "tk.command.reset": "Reset",
     "tk.command.send": "Send",
 
