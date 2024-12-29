@@ -32,7 +32,7 @@ module.exports = function (config) {
             suppressSummary: false,
         },
         coverageReporter: {
-            dir: require("path").join(__dirname, "./coverage/media"),
+            dir: require("path").join(__dirname, "./coverage/minecraft-rcon"),
             subdir: ".",
             reporters: [
                 { type: "html" },
