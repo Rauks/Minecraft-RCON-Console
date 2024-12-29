@@ -1,6 +1,5 @@
 mod api;
 mod app;
-mod config;
 mod rcon;
 
 use api::{ApiRconResponse, RconManagedState};
