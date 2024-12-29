@@ -1,0 +1,9 @@
+{
+    "error": [
+        "*must not be*, found*"
+    ],
+    "invalid": [
+        "*Unknown command*",
+        "*Unknown or incomplete command*"
+    ]
+}

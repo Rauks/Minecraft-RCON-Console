@@ -1,0 +1,76 @@
+<form [formGroup]="commandForm" (ngSubmit)="onSubmit()">
+    <div class="input-group">
+        <span class="input-group-text">
+            <fa-icon icon="terminal"></fa-icon>
+        </span>
+        <input type="text" class="form-control" formControlName="command" [placeholder]="placeholderCommand" />
+        <button 
+            class="btn btn-outline-secondary" 
+            type="button" 
+            [title]="'tk.command.reset' | localize"
+            (click)="onReset()"
+        >
+            <fa-icon icon="undo-alt"></fa-icon>
+        </button>
+        <button 
+            class="btn btn-outline-success" 
+            type="submit"
+            [title]="'tk.command.send' | localize"
+        >
+            <fa-icon icon="paper-plane-top"></fa-icon>
+        </button>
+    </div>
+</form>
+
+
+@if (commandResultHistory$ | async; as commandResult) {
+    @for (item of commandResult; track item.id) {
+        <div class="card mt-3">
+            @switch (item.matchedStatus) {
+                @case ("error") {
+                    <div class="card-header border-danger">
+                        <fa-icon 
+                            class="text-danger" 
+                            icon="triangle-exclamation" 
+                            [fixedWidth]="true">
+                        </fa-icon>
+                        <span class="ms-2">{{ item.sourceCommand }}</span>
+                    </div>
+                }
+                @case ("invalid") {
+                    <div class="card-header border-warning">
+                        <fa-icon 
+                            class="text-warning" 
+                            icon="hexagon-exclamation">
+                        </fa-icon>
+                        <span class="ms-2">{{ item.sourceCommand }}</span>
+                    </div>
+                }
+                @case ("com") {
+                    <div class="card-header border-danger">
+                        <fa-icon 
+                            class="text-danger" 
+                            icon="wifi-exclamation">
+                        </fa-icon>
+                        <span class="ms-2">{{ item.sourceCommand }}</span>
+                    </div>
+                }
+                @default {
+                    <div class="card-header border-success">
+                        <fa-icon 
+                            class="text-success" 
+                            icon="circle-check">
+                        </fa-icon>
+                        <span class="ms-2">{{ item.sourceCommand }}</span>
+                    </div>
+                }
+            }
+            <div class="card-body">
+                <p 
+                    class="card-text console-output" 
+                    [innerHtml]="bypassSecurityTrustHtml(item.decodedReply)">
+                </p>
+            </div>
+        </div>
+    }
+}

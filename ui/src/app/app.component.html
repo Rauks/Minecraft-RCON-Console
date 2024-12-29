@@ -1,0 +1,71 @@
+@if (ready$ | async) {
+    <nav class="navbar navbar-expand-md fixed-top navbar-dark bg-dark">
+        <div class="container">
+
+            <a class="navbar-brand" routerLink="/">
+                <fa-icon icon="cube"></fa-icon>
+                {{ 'tk.app' | localize }}
+            </a>
+
+            @if (navbarState$ | async; as navbarState) {
+                <button 
+                    class="navbar-toggler" 
+                    (click)="toggleNavbarCollapse()" 
+                    type="button" 
+                    data-toggle="collapse"
+                    data-target="#navbarNav"
+                >
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div [collapse]="navbarState.collapsed" class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav ms-auto">
+                        <li class="nav-item setting" (click)="toggleTheme()" (keypress)="toggleTheme()">
+                            <div class="navbar-text px-md-2">
+                                @if (theme$ | async; as theme) {
+                                    @switch (theme) {
+                                        @case ("dark") {
+                                            <fa-icon 
+                                                icon="moon" 
+                                                [title]="'tk.theme.light.enable' | localize" 
+                                                [fixedWidth]="true">
+                                            </fa-icon>
+                                            <span class="d-inline d-md-none ms-1">{{
+                                                "tk.theme.dark.enabled" | localize
+                                            }}</span>
+                                        }
+                                        @case ("light") {
+                                            <fa-icon
+                                                icon="sun"
+                                                [title]="'tk.theme.dark.enable' | localize"
+                                                [fixedWidth]="true"
+                                            >
+                                            </fa-icon>
+                                            <span class="d-inline d-md-none ms-1">{{
+                                                "tk.theme.light.enabled" | localize
+                                            }}</span>
+                                        }
+                                    }
+                                }
+                            </div>
+                        </li>
+                    </ul>
+                    <ul class="navbar-nav">
+                        <li class="nav-item">
+                            <a class="nav-link" href="/swagger-ui/" target="_blank">
+                                <fa-icon icon="gear-code" [title]="'tk.openapi' | localize" [fixedWidth]="true">
+                                </fa-icon>
+                                <span class="d-inline d-md-none ms-1">{{ 'tk.openapi' | localize }}</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            }
+
+        </div>
+    </nav>
+    <div class="container">
+        <router-outlet></router-outlet>
+    </div>
+} @else {
+    <loader class="mx-auto mt5"></loader>
+}

@@ -1,0 +1,17 @@
+{
+    "tk.app": "Minecraft RCON",
+
+    "tk.openapi": "Open API",
+
+    "tk.loading": "Loading...",
+
+    "tk.error.com.unknown": "An unknown communication error occurred.",
+
+    "tk.command.reset": "Reset",
+    "tk.command.send": "Send",
+
+    "tk.theme.dark.enable": "Switch to night mode",
+    "tk.theme.light.enable": "Switch to day mode",
+    "tk.theme.dark.enabled": "Night mode enabled",
+    "tk.theme.light.enabled": "Day mode enabled"
+}
