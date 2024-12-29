@@ -3,11 +3,11 @@ import { ChangeDetectionStrategy, Component, Inject, OnDestroy, OnInit, Renderer
 import { RouterOutlet } from '@angular/router';
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { SettingsService, StorageService } from 'src/services';
-import { CollapseDirective, IconsModule, LoaderComponent } from './core';
+import { CollapseDirective, IconsModule, LoaderComponent, LocalizePipe } from './core';
 
 @Component({
     selector: 'app-root',
-    imports: [RouterOutlet, AsyncPipe, IconsModule, LoaderComponent, CollapseDirective],
+    imports: [RouterOutlet, AsyncPipe, LocalizePipe, IconsModule, LoaderComponent, CollapseDirective],
     providers: [SettingsService, StorageService],
     templateUrl: './app.component.html',
     styleUrl: './app.component.scss',

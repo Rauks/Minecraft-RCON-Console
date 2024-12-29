@@ -1,9 +1,10 @@
 import { ChangeDetectionStrategy, Component, Input } from "@angular/core";
+import { LocalizePipe } from "../pipes";
 
 @Component({
     selector: "loader",
+    imports: [LocalizePipe],
     templateUrl: "./loader.component.html",
-    styleUrls: [],
     changeDetection: ChangeDetectionStrategy.OnPush,
     standalone: true
 })

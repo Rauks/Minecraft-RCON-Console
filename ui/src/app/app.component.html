@@ -4,12 +4,17 @@
 
             <a class="navbar-brand" routerLink="/">
                 <fa-icon icon="cube"></fa-icon>
-                APP_NAME_TO_TRANSLATE
+                {{ 'tk.app' | localize }}
             </a>
 
             @if (navbarState$ | async; as navbarState) {
-                <button class="navbar-toggler" (click)="toggleNavbarCollapse()" type="button" data-toggle="collapse"
-                    data-target="#navbarNav">
+                <button 
+                    class="navbar-toggler" 
+                    (click)="toggleNavbarCollapse()" 
+                    type="button" 
+                    data-toggle="collapse"
+                    data-target="#navbarNav"
+                >
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div [collapse]="navbarState.collapsed" class="collapse navbar-collapse" id="navbarNav">
@@ -19,14 +24,25 @@
                                 @if (theme$ | async; as theme) {
                                     @switch (theme) {
                                         @case ("dark") {
-                                            <fa-icon icon="moon" title="ENABLE_LIGHT_THEME_TO_TRANSLATE" [fixedWidth]="true">
+                                            <fa-icon 
+                                                icon="moon" 
+                                                [title]="'tk.theme.light.enable' | localize" 
+                                                [fixedWidth]="true">
                                             </fa-icon>
-                                            <span class="d-inline d-md-none ms-1">DARK_THEME_ENABLED_TO_TRANSLATE</span>
-                                            }
+                                            <span class="d-inline d-md-none ms-1">{{
+                                                "tk.theme.dark.enabled" | localize
+                                            }}</span>
+                                        }
                                         @case ("light") {
-                                            <fa-icon icon="sun" title="ENABLE_DARK_THEME_TO_TRANSLATE" [fixedWidth]="true">
+                                            <fa-icon
+                                                icon="sun"
+                                                [title]="'tk.theme.dark.enable' | localize"
+                                                [fixedWidth]="true"
+                                            >
                                             </fa-icon>
-                                            <span class="d-inline d-md-none ms-1">LIGHT_THEME_ENABLED_TO_TRANSLATE</span>
+                                            <span class="d-inline d-md-none ms-1">{{
+                                                "tk.theme.light.enabled" | localize
+                                            }}</span>
                                         }
                                     }
                                 }
@@ -36,9 +52,9 @@
                     <ul class="navbar-nav">
                         <li class="nav-item">
                             <a class="nav-link" href="/swagger-ui/" target="_blank">
-                                <fa-icon icon="gear-code" title="SWAGGER_TITLE_TO_TRANSLATE" [fixedWidth]="true">
+                                <fa-icon icon="gear-code" [title]="'tk.openapi' | localize" [fixedWidth]="true">
                                 </fa-icon>
-                                <span class="d-inline d-md-none ms-1">SWAGGER_TITLE_TO_TRANSLATE</span>
+                                <span class="d-inline d-md-none ms-1">{{ 'tk.openapi' | localize }}</span>
                             </a>
                         </li>
                     </ul>
