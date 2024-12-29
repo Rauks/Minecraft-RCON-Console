@@ -1,0 +1,7 @@
+{
+    "k": "text-decoration: blink;",
+    "l": "font-weight: bold;",
+    "m": "text-decoration: line-through;",
+    "n": "text-decoration: underline;",
+    "o": "font-style: italic;"
+}

@@ -15,7 +15,7 @@
         <button 
             class="btn btn-outline-success" 
             type="submit"
-            [title]="'tk.reset.send' | localize"
+            [title]="'tk.command.send' | localize"
         >
             <fa-icon icon="paper-plane-top"></fa-icon>
         </button>
@@ -23,10 +23,10 @@
 </form>
 
 
-@if (lastReply$ | async; as lastReply) {
+@if (lastDecodedReply$ | async; as lastDecodedReply) {
     <div class="card mt-3">
         <div class="card-body">
-            <p class="card-text">{{lastReply}}</p>
+            <p class="card-text" [innerHtml]="bypassSecurityTrustHtml(lastDecodedReply)"></p>
         </div>
     </div>
 }
