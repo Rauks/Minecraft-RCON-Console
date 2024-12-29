@@ -87,11 +87,8 @@ By default, a Swagger UI is available at `/swagger-ui` to interact with the API.
   - **502 Bad Gateway**: Unable to connect to the RCON server. Please check the values of the `RCON_HOST`, `RCON_PORT` environment variables.
   - **503 Service Unavailable**: The RCON server did not respond as expected.
   - **511 Network Authentication Required**: The RCON server refused the connection. Please check the value of the `RCON_PASSWORD` environment variable.
-
 - `GET /api-docs/openapi.json`: OpenAPI endpoint. Returns the [OpenAPI](https://swagger.io/specification/) specification of the API.
-
 - `GET /metrics`: Prometheus metrics endpoint. Returns various metrics about the backend using the [OpenMetrics](https://openmetrics.io/) format.
-
 
 ## Build
 
@@ -116,17 +113,17 @@ cargo run
 
 ## Execute the tests
 
+You can run the tests with the following command:
+
+```sh
+cargo test
+```
+
 To be able to execute all the tests, you need to have setup the environement variables below on your
 development environment:
 - `RCON_HOST`: The Minecraft server hostname or IP address.
 - `RCON_PORT`: The Minecraft server RCON port.
 - `RCON_PASSWORD`: The Minecraft server RCON password.
-
-And then you can run the tests with the following command:
-
-```sh
-cargo test
-```
 
 # Frontend WebUI
 
@@ -142,6 +139,13 @@ npm ci
 npm run build
 ```
 
+To build the frontend, you may need a [FontAwesome Pro](https://fontawesome.com/plans) license to install the icons used in the UI.
+If you don't have a FontAwesome Pro license, you can remove the icons from the UI and replace them with free icons:
+- Update the `/ui/.npmrc` file to remove the `@fortawesome:registry` and `@awesome.me:registry` lines.
+- Delete the `/ui/package-lock.json` file and the `/ui/node_modules` directory.
+- Run the `npm install` command to install the packages from scratch and without the FontAwesome Pro registry.
+- Replace any `fa-icon` raising an error with a free icon from [FontAwesome Free](https://fontawesome.com/v6/search?o=r&m=free).
+
 ## Run for development
 
 You can run the frontend with the following command:
@@ -154,10 +158,6 @@ npm run start
 
 ## Execute the tests
 
-The tests are configured to run with both a headless Chrome browser and a Firefox browser by default.
-
-To change the browser used for the tests, you can modify the `browsers` option in the `/ui/karma.conf.js` file. Please refer to the [Karma documentation](https://karma-runner.github.io/6.4/config/configuration-file.html#browsers) for more information.
-
 You can run the tests with the following command:
 
 ```sh
@@ -165,3 +165,8 @@ cd ui
 npm ci
 npm run test
 ```
+
+The tests are configured to run with both a headless Chrome browser and a Firefox browser by default.
+
+To change the browser used for the tests, you can modify the `browsers` option in the `/ui/karma.conf.js` file.
+Please refer to the [Karma documentation](https://karma-runner.github.io/6.4/config/configuration-file.html#browsers) for more information.
