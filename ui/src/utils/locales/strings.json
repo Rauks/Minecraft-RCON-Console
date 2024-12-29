@@ -5,6 +5,9 @@
 
     "tk.loading": "Loading...",
 
+    "tk.command.reset": "Reset",
+    "tk.command.send": "Send",
+
     "tk.theme.dark.enable": "Switch to night mode",
     "tk.theme.light.enable": "Switch to day mode",
     "tk.theme.dark.enabled": "Night mode enabled",

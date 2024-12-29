@@ -1,5 +1,5 @@
 import { Pipe, PipeTransform } from "@angular/core";
-import { Localizer } from "src/app/utils";
+import { Localizer } from "src/utils";
 
 /**
  * Localize pipe

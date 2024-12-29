@@ -1,0 +1,32 @@
+<form [formGroup]="commandForm" (ngSubmit)="onSubmit()">
+    <div class="input-group">
+        <span class="input-group-text">
+            <fa-icon icon="terminal"></fa-icon>
+        </span>
+            <input type="text" class="form-control" formControlName="command" [placeholder]="'help'" />
+        <button 
+            class="btn btn-outline-secondary" 
+            type="button" 
+            [title]="'tk.command.reset' | localize"
+            (click)="onReset()"
+        >
+            <fa-icon icon="undo-alt"></fa-icon>
+        </button>
+        <button 
+            class="btn btn-outline-success" 
+            type="submit"
+            [title]="'tk.reset.send' | localize"
+        >
+            <fa-icon icon="paper-plane-top"></fa-icon>
+        </button>
+    </div>
+</form>
+
+
+@if (lastReply$ | async; as lastReply) {
+    <div class="card mt-3">
+        <div class="card-body">
+            <p class="card-text">{{lastReply}}</p>
+        </div>
+    </div>
+}
