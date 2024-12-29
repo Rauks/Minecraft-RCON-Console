@@ -70,6 +70,7 @@ The following environment variables can be set to configure the backend:
 - `RCON_HOST`: The Minecraft server hostname or IP address. Set to `localhost` by default.
 - `RCON_PORT`: The Minecraft server RCON port. Set to `25575` by default.
 - `RCON_PASSWORD`: The Minecraft server RCON password. Set to `insecure_secret` by default, please change it to a strong random password.
+- `RCON_TIMEOUT`: The timeout in milliseconds for the RCON replies waiting. Set to `5000` by default.
 - `ROCKET_ADDRESS`: The address to bind the Rocket server to. Set to `0.0.0.0` by default.
 - `ROCKET_PORT`: The port to bind the Rocket server to. Set to `8888` by default.
 - `ROCKET_IP_HEADER`: The maximum size of the request body in bytes. Set to `X-Forwarded-For` by default, to be updated depending on your reverse proxy configuration.
