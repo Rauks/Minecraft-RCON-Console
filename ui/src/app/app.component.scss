@@ -1,0 +1,15 @@
+:host {
+    display: flex;
+    padding-top: 4rem;
+    padding-bottom: 4rem;
+    
+    .navbar{
+        border-bottom: 1px solid var(--media-navbar-border-color);
+        
+        .navbar-nav{
+            .nav-item.setting {
+                cursor: pointer;
+            }
+        }
+    }
+}
