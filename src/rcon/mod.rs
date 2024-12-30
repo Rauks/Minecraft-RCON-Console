@@ -1,4 +1,5 @@
 pub mod client;
+pub mod client_test;
 pub mod configuration;
 pub mod configuration_test;
 pub mod error;
