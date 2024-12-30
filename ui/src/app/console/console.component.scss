@@ -1,5 +1,11 @@
 :host {
-    .console-output, .card-header {
-        font-family: monospace, monospace;
+
+    .card-body {
+        background-color: var(--minecraft-rcon-console-reply-bg-color);
+
+        .console-output, .card-header {
+            font-family: monospace, monospace;
+        }
     }
+    
 }

@@ -1,3 +1,8 @@
+# Used only in development mode.
+#
+# The production configuration is done with environment variables
+# in the Dockerfile.
+
 [default]
 address = "0.0.0.0"
 port = 8888
