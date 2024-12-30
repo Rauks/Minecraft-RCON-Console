@@ -1,7 +1,7 @@
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { BehaviorSubject, throwError } from 'rxjs';
+import { BehaviorSubject, Subject, throwError } from 'rxjs';
 import { RconService } from 'src/services';
 import { Localizer } from 'src/utils';
 import { v4 as uuid } from 'uuid';
@@ -49,6 +49,31 @@ describe('ConsoleComponent', () => {
         expect(spy).toHaveBeenCalledWith("test");
     });
 
+    it("should count the pending commands", () => {
+        const firstResponseSubject = new Subject<string>();
+        const secondResponseSubject = new Subject<string>();
+
+        spyOn(component["rconService"], "sendCommand")
+            .and
+            .returnValues(firstResponseSubject, secondResponseSubject);
+
+        expect(component.pendingCommandsCount$.value).toBe(0);
+
+        component.commandForm.setValue({ command: "test 1" });
+        component.onSubmit();
+        expect(component.pendingCommandsCount$.value).toBe(1);
+
+        component.commandForm.setValue({ command: "test2" });
+        component.onSubmit();
+        expect(component.pendingCommandsCount$.value).toBe(2);
+
+        firstResponseSubject.next("test response 1");
+        expect(component.pendingCommandsCount$.value).toBe(1);
+
+        secondResponseSubject.next("test response 2");
+        expect(component.pendingCommandsCount$.value).toBe(0);
+    });
+
     it("should reset the command form after sending a command", () => {
         spyOn(component["rconService"], "sendCommand")
             .and
@@ -58,6 +83,19 @@ describe('ConsoleComponent', () => {
         component.onSubmit();
 
         expect(component.commandForm.value.command).toBeNull();
+    });
+
+    it("should display a loader when a command reply is pending", () => {
+        fixture.detectChanges();
+
+        let loader = fixture.nativeElement.querySelector("loader");
+        expect(loader).toBeNull();
+
+        component.pendingCommandsCount$.next(1);
+        fixture.detectChanges();
+
+        loader = fixture.nativeElement.querySelector("loader");
+        expect(loader).not.toBeNull();
     });
 
     it("should add the command result to the top of the history", () => {
@@ -84,6 +122,44 @@ describe('ConsoleComponent', () => {
         expect(currentHsitory[0].sourceCommand).toBe("test 3");
         expect(currentHsitory[1].sourceCommand).toBe("test 2");
         expect(currentHsitory[2].sourceCommand).toBe("test 1");
+    });
+
+    it("should display the command result history", () => {
+        fixture.detectChanges();
+
+        component.commandResultHistory$.next([
+            {
+                id: uuid(),
+                sourceCommand: "test 3",
+                matchedStatus: "unknown",
+                decodedReply: component.decodeResponse("test response 3"),
+            },
+            {
+                id: uuid(),
+                sourceCommand: "test 2",
+                matchedStatus: "unknown",
+                decodedReply: component.decodeResponse("test response 2"),
+            },
+            {
+                id: uuid(),
+                sourceCommand: "test 1",
+                matchedStatus: "unknown",
+                decodedReply: component.decodeResponse("test response 1"),
+            },
+        ]);
+        fixture.detectChanges();
+
+        const cards = fixture.nativeElement.querySelectorAll(".card");
+        expect(cards.length).toBe(3);
+
+        expect(cards[0].querySelector(".card-header").textContent).toBe("test 3");
+        expect(cards[0].querySelector(".card-text").textContent).toBe("test response 3");
+
+        expect(cards[1].querySelector(".card-header").textContent).toBe("test 2");
+        expect(cards[1].querySelector(".card-text").textContent).toBe("test response 2");
+
+        expect(cards[2].querySelector(".card-header").textContent).toBe("test 1");
+        expect(cards[2].querySelector(".card-text").textContent).toBe("test response 1");
     });
 
     it("should send the placeholder command if no command is entered", () => {
@@ -258,5 +334,4 @@ describe('ConsoleComponent', () => {
         let card = fixture.nativeElement.querySelector(".card-header");
         expect(card).toHaveClass("border-danger");
     });
-
 });

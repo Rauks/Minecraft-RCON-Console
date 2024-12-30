@@ -3,7 +3,7 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { minimatch } from 'minimatch';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, take } from 'rxjs';
 import { RconService } from 'src/services';
 import { Localizer } from 'src/utils';
 import { v4 as uuid } from 'uuid';
@@ -11,12 +11,13 @@ import colorCodes from '../../config/minecraft-color-codes.json';
 import statusMatchers from '../../config/minecraft-status-matchers.json';
 import styleCodes from '../../config/minecraft-style-codes.json';
 import { IconsModule, LocalizePipe } from '../core';
+import { LoaderComponent } from "../core/loader/loader.component";
 
 export type CommandResultStatus = "unknown" | "error" | "invalid" | "com";
 
 @Component({
     selector: 'console',
-    imports: [AsyncPipe, LocalizePipe, IconsModule, ReactiveFormsModule],
+    imports: [AsyncPipe, LocalizePipe, IconsModule, ReactiveFormsModule, LoaderComponent],
     providers: [RconService],
     templateUrl: './console.component.html',
     styleUrl: './console.component.scss',
@@ -43,6 +44,11 @@ export class ConsoleComponent {
     }> = new FormGroup({
         command: new FormControl(null),
     });
+
+    /**
+     * The number of pending commands that are waiting for a response.
+     */
+    public readonly pendingCommandsCount$: BehaviorSubject<number> = new BehaviorSubject(0);
 
     /**
      * The history of the command results.
@@ -99,8 +105,6 @@ export class ConsoleComponent {
     public matchStatus(reply: string): CommandResultStatus {
         for (const [status, matchers] of Object.entries(statusMatchers)) {
             for (const matcher of matchers) {
-
-                console.log(reply, matcher);
                 if (minimatch(reply, matcher)) {
                     return status as CommandResultStatus;
                 }
@@ -117,31 +121,44 @@ export class ConsoleComponent {
         const command = rawCommand.length > 0 ? rawCommand : this.placeholderCommand;
 
         // Send the command
-        this.rconService.sendCommand(command).subscribe({
-            next: (reply) => {
-                this.commandResultHistory$.next([
-                    {
-                        id: uuid(),
-                        sourceCommand: command,
-                        matchedStatus: this.matchStatus(reply),
-                        decodedReply: this.decodeResponse(reply),
-                    },
-                    ...this.commandResultHistory$.value
-                ]);
-            },
-            error: (error) => {
-                this.commandResultHistory$.next([
-                    {
-                        id: uuid(),
-                        sourceCommand: command,
-                        matchedStatus: "com",
-                        decodedReply: error?.message
-                            ?? Localizer.getInstance().translate("tk.error.com.unknown"),
-                    },
-                    ...this.commandResultHistory$.value
-                ]);
-            }
-        });
+        this.pendingCommandsCount$.next(
+            this.pendingCommandsCount$.value + 1
+        );
+        this.rconService.sendCommand(command)
+            .pipe(
+                take(1),
+            )
+            .subscribe({
+                next: (reply) => {
+                    this.commandResultHistory$.next([
+                        {
+                            id: uuid(),
+                            sourceCommand: command,
+                            matchedStatus: this.matchStatus(reply),
+                            decodedReply: this.decodeResponse(reply),
+                        },
+                        ...this.commandResultHistory$.value
+                    ]);
+                    this.pendingCommandsCount$.next(
+                        this.pendingCommandsCount$.value - 1
+                    );
+                },
+                error: (error) => {
+                    this.commandResultHistory$.next([
+                        {
+                            id: uuid(),
+                            sourceCommand: command,
+                            matchedStatus: "com",
+                            decodedReply: error?.message
+                                ?? Localizer.getInstance().translate("tk.error.com.unknown"),
+                        },
+                        ...this.commandResultHistory$.value
+                    ]);
+                    this.pendingCommandsCount$.next(
+                        this.pendingCommandsCount$.value - 1
+                    );
+                },
+            });
 
         // Reset the form
         this.commandForm.reset();

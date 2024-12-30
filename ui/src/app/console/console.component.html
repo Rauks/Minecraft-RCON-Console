@@ -4,6 +4,13 @@
             <fa-icon icon="terminal"></fa-icon>
         </span>
         <input type="text" class="form-control" formControlName="command" [placeholder]="placeholderCommand" />
+        @if (pendingCommandsCount$ | async; as pendingCommandsCount) {
+            @if (pendingCommandsCount > 0) {
+                <span class="input-group-text">
+                    <loader [small]="true"></loader>
+                </span>
+            }
+        }
         <button 
             class="btn btn-outline-secondary" 
             type="button" 
