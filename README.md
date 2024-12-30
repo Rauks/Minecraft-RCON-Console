@@ -64,7 +64,7 @@ volumes:
   data:
 ```
 
-## Environment variables
+### Environment variables
 
 The following environment variables can be set to configure the backend:
 - `RCON_HOST`: The Minecraft server hostname or IP address. Set to `localhost` by default.
@@ -73,7 +73,7 @@ The following environment variables can be set to configure the backend:
 - `RCON_TIMEOUT`: The timeout in milliseconds for the RCON replies waiting. Set to `5000` by default.
 - `ROCKET_ADDRESS`: The address to bind the Rocket server to. Set to `0.0.0.0` by default.
 - `ROCKET_PORT`: The port to bind the Rocket server to. Set to `8888` by default.
-- `ROCKET_IP_HEADER`: The maximum size of the request body in bytes. Set to `X-Forwarded-For` by default, to be updated depending on your reverse proxy configuration.
+- `ROCKET_IP_HEADER`: The header to use to get the client IP address from the reverse proxy. Set to `X-Forwarded-For` by default, to be updated depending on your reverse proxy configuration.
 
 # Backend API
 
@@ -98,8 +98,10 @@ By default, a Swagger UI is available at `/swagger-ui` to interact with the API.
   - **502 Bad Gateway**: Unable to connect to the RCON server. Please check the values of the `RCON_HOST`, `RCON_PORT` environment variables.
   - **503 Service Unavailable**: The RCON server did not respond as expected.
   - **511 Network Authentication Required**: The RCON server refused the connection. Please check the value of the `RCON_PASSWORD` environment variable.
+
 - `GET /api-docs/openapi.json`: OpenAPI endpoint. Returns the [OpenAPI](https://swagger.io/specification/) specification of the API.
-- `GET /metrics`: Prometheus metrics endpoint. Returns various metrics about the backend using the [OpenMetrics](https://openmetrics.io/) format.
+
+- `GET /metrics`: Prometheus metrics endpoint. Returns various metrics about the backend using the [OpenMetrics](https://openmetrics.io/) format. More information about the metrics can be found in the [Rocket Prometheus](https://github.com/sd2k/rocket_prometheus) documentation.
 
 ## Build
 
