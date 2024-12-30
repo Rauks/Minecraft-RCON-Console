@@ -3,7 +3,7 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { minimatch } from 'minimatch';
-import { BehaviorSubject, take } from 'rxjs';
+import { BehaviorSubject, debounceTime, map, Observable, take } from 'rxjs';
 import { RconService } from 'src/services';
 import { Localizer } from 'src/utils';
 import { v4 as uuid } from 'uuid';
@@ -14,6 +14,8 @@ import { IconsModule, LocalizePipe } from '../core';
 import { LoaderComponent } from "../core/loader/loader.component";
 
 export type CommandResultStatus = "unknown" | "error" | "invalid" | "com";
+
+export const SLOW_COMMAND_DEBOUNCE_TIME = 500;
 
 @Component({
     selector: 'console',
@@ -49,6 +51,7 @@ export class ConsoleComponent {
      * The number of pending commands that are waiting for a response.
      */
     public readonly pendingCommandsCount$: BehaviorSubject<number> = new BehaviorSubject(0);
+    public readonly hasPendingSlowCommands$: Observable<boolean>;
 
     /**
      * The history of the command results.
@@ -65,6 +68,11 @@ export class ConsoleComponent {
         private readonly sanitizer: DomSanitizer,
     ) {
         this.bypassSecurityTrustHtml = this.sanitizer.bypassSecurityTrustHtml.bind(this.sanitizer);
+
+        this.hasPendingSlowCommands$ = this.pendingCommandsCount$.pipe(
+            map(count => count > 0),
+            debounceTime(SLOW_COMMAND_DEBOUNCE_TIME),
+        );
     }
 
     /**

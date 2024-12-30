@@ -1,13 +1,14 @@
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, fakeAsync, TestBed } from '@angular/core/testing';
 import { BehaviorSubject, Subject, throwError } from 'rxjs';
 import { RconService } from 'src/services';
+import { advance, advanceWithDelay } from 'src/testing';
 import { Localizer } from 'src/utils';
 import { v4 as uuid } from 'uuid';
 import colorCodes from '../../config/minecraft-color-codes.json';
 import styleCodes from '../../config/minecraft-style-codes.json';
-import { ConsoleComponent } from './console.component';
+import { ConsoleComponent, SLOW_COMMAND_DEBOUNCE_TIME } from './console.component';
 
 describe('ConsoleComponent', () => {
     let component: ConsoleComponent;
@@ -85,18 +86,24 @@ describe('ConsoleComponent', () => {
         expect(component.commandForm.value.command).toBeNull();
     });
 
-    it("should display a loader when a command reply is pending", () => {
+    it("should display a loader when a command reply is pending and is slow", fakeAsync(() => {
         fixture.detectChanges();
 
+        advance(fixture);
         let loader = fixture.nativeElement.querySelector("loader");
         expect(loader).toBeNull();
 
         component.pendingCommandsCount$.next(1);
         fixture.detectChanges();
 
+        advance(fixture);
+        loader = fixture.nativeElement.querySelector("loader");
+        expect(loader).toBeNull();
+
+        advanceWithDelay(fixture, SLOW_COMMAND_DEBOUNCE_TIME + 1);
         loader = fixture.nativeElement.querySelector("loader");
         expect(loader).not.toBeNull();
-    });
+    }));
 
     it("should add the command result to the top of the history", () => {
         const spy = spyOn(component["rconService"], "sendCommand")
