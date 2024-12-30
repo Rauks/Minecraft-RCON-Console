@@ -2,7 +2,7 @@ mod api;
 mod app;
 mod rcon;
 
-use api::{ApiRconResponse, RconManagedState};
+use api::RconManagedState;
 use app::ui;
 use dotenvy::dotenv;
 use rocket::{launch, routes, Build, Rocket};
@@ -22,6 +22,7 @@ async fn rocket() -> Rocket<Build> {
     let rcon = RconManagedState::default();
 
     // Prepare the webserver
+    #[allow(unused_mut)]
     let mut rocket = rocket::build()
         .manage(rcon)
         .mount("/api", routes![api::handle_rcon])
@@ -43,6 +44,7 @@ async fn rocket() -> Rocket<Build> {
 
     cfg_if::cfg_if! {
         if #[cfg(feature = "swagger")] {
+            use api::ApiRconResponse;
             use utoipa::OpenApi;
             use utoipa_swagger_ui::{Config as SwaggerConfig, SwaggerUi};
 

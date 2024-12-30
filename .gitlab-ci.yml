@@ -15,12 +15,14 @@ stages:
   - deploy
   - audit
 
+# Secrets leak prevention
 scan-gitguardian:
   image: gitguardian/ggshield:v1.34.0
   stage: scan
   script: ggshield secret scan ci --ignore-known-secrets
   allow_failure: true
 
+# Dependency scanning
 scan-fossa:
   image: rust:1.83.0
   stage: scan
@@ -33,6 +35,7 @@ scan-fossa:
     - if: $CI_COMMIT_BRANCH
   allow_failure: true
 
+# Backend linting
 scan-rust:
   image: rust:1.83.0
   stage: scan
@@ -50,6 +53,7 @@ scan-rust:
     paths:
       - clippy.json
 
+# Frontend testing
 test-angular:
   image: node:lts
   stage: test
@@ -79,6 +83,7 @@ test-angular:
         coverage_format: cobertura
         path: ui/coverage/**/cobertura-coverage.xml
 
+# Backend testing
 test-rust:
   image: rust:1.83.0
   stage: test
@@ -102,6 +107,7 @@ test-rust:
         coverage_format: cobertura
         path: cobertura.xml
 
+# Quality reports
 quality-sonarqube:
   image:
     name: sonarsource/sonar-scanner-cli:11
@@ -126,7 +132,8 @@ quality-sonarqube:
   allow_failure: true
   script:
     - sonar-scanner -X -Dsonar.projectKey=${SONAR_PROJECT} -Dsonar.projectVersion=${CI_COMMIT_BRANCH}.${CI_COMMIT_SHORT_SHA}
-  
+
+# Frontend build
 build-angular:
   image: node:lts
   stage: build
@@ -149,6 +156,7 @@ build-angular:
     paths:
       - ui/dist/*
 
+# Backend build
 build-rust:
   image: rust:1.83.0
   stage: build
@@ -166,6 +174,26 @@ build-rust:
     paths:
       - target/release/minecraft-rcon
 
+# Backend per-feature builds validation
+build-rust-features:
+  image: rust:1.83.0
+  stage: build
+  dependencies: []
+  cache:
+    key: cargo-$CI_COMMIT_REF_SLUG
+    paths:   
+      - .cargo
+  parallel:
+    matrix:
+      - FEATURE: 
+        - metrics
+        - swagger
+  before_script:
+    - cargo --version
+  script:
+    - cargo build --no-default-features --features $FEATURE --release --verbose
+
+# Docker image build and push
 deploy-kaniko:
   image:
     name: gcr.io/kaniko-project/executor:v1.23.2-debug
@@ -196,6 +224,7 @@ deploy-kaniko:
       variables:
         FULL_IMAGE_NAME: "${CI_REGISTRY_IMAGE}:${CI_COMMIT_REF_SLUG}"
 
+# Docker image audit
 audit-trivy:
   image:
     name: docker.io/aquasec/trivy:0.58.1
