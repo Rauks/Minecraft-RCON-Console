@@ -101,7 +101,7 @@ By default, a Swagger UI is available at `/swagger-ui` to interact with the API.
 
 - `GET /api-docs/openapi.json`: OpenAPI endpoint. Returns the [OpenAPI](https://swagger.io/specification/) specification of the API.
 
-- `GET /metrics`: Prometheus metrics endpoint. Returns various metrics about the backend using the [OpenMetrics](https://openmetrics.io/) format. More information about the metrics can be found in the [Rocket Prometheus](https://github.com/sd2k/rocket_prometheus) documentation.
+- `GET /metrics`: Prometheus metrics endpoint. Returns various metrics about the backend using the [OpenMetrics](https://openmetrics.io/) format. More information about the metrics can be found in the [Rocket Prometheus documentation](https://github.com/sd2k/rocket_prometheus).
 
 ## Build
 
