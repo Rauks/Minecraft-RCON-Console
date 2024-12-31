@@ -364,4 +364,118 @@ describe('ConsoleComponent', () => {
 
         expect(component.prefillCommand).toHaveBeenCalledWith("test updated");
     });
+
+    it("should remove the command result from the history", () => {
+        expect(component.commandResultHistory$.value.length).toBe(0);
+
+        const id = uuid();
+        component.commandResultHistory$.next([
+            { id, sourceCommand: "test", matchedStatus: "unknown", decodedReply: "test response" },
+        ]);
+        expect(component.commandResultHistory$.value.length).toBe(1);
+
+        component.removeFromHistory(uuid());
+        expect(component.commandResultHistory$.value.length).toBe(1);
+
+        component.removeFromHistory(id);
+        expect(component.commandResultHistory$.value.length).toBe(0);
+    });
+
+    it("should disable the resend button if the reply status means the command is not resendable", () => {
+        component.commandResultHistory$.next([
+            { id: uuid(), sourceCommand: "test unknown", matchedStatus: "unknown", decodedReply: "test unknown response" },
+            { id: uuid(), sourceCommand: "test error", matchedStatus: "error", decodedReply: "test error response" },
+            { id: uuid(), sourceCommand: "test invalid", matchedStatus: "invalid", decodedReply: "test invalid response" },
+            { id: uuid(), sourceCommand: "test com", matchedStatus: "com", decodedReply: "test com response" },
+        ]);
+
+        fixture.detectChanges();
+
+        let buttons = fixture.debugElement.queryAll(By.css(".reply-resend"));
+        expect(buttons[0].nativeElement).not.toHaveClass("disabled"); // unknown
+        expect(buttons[1].nativeElement).toHaveClass("disabled"); // error
+        expect(buttons[2].nativeElement).toHaveClass("disabled"); // invalid
+        expect(buttons[3].nativeElement).not.toHaveClass("disabled"); // com
+    });
+
+    it("should resend the command when the resent button is clicked", () => {
+        const prefillSpy = spyOn(component, "prefillCommand").and.callThrough();
+        const sendSpy = spyOn(component, "onSubmit");
+
+        component.commandResultHistory$.next([
+            { id: uuid(), sourceCommand: "test", matchedStatus: "unknown", decodedReply: "test response" },
+        ]);
+
+        fixture.detectChanges();
+
+        let button = fixture.debugElement.query(By.css(".reply-resend"));
+        button.nativeElement.click();
+
+        expect(prefillSpy).toHaveBeenCalledWith("test");
+        expect(sendSpy).toHaveBeenCalled();
+    });
+
+    it("should not resend the command when the resent button is clicked and the status is not resendable", () => {
+        const prefillSpy = spyOn(component, "prefillCommand").and.callThrough();
+        const sendSpy = spyOn(component, "onSubmit");
+
+        component.commandResultHistory$.next([
+            { id: uuid(), sourceCommand: "test", matchedStatus: "error", decodedReply: "test response" },
+        ]);
+
+        fixture.detectChanges();
+
+        let button = fixture.debugElement.query(By.css(".reply-resend"));
+        button.nativeElement.click();
+
+        expect(prefillSpy).not.toHaveBeenCalled();
+        expect(sendSpy).not.toHaveBeenCalled();
+    });
+
+    it("should autofill the command form when the autofill button is clicked", () => {
+        const prefillSpy = spyOn(component, "prefillCommand").and.callThrough();
+
+        component.commandResultHistory$.next([
+            { id: uuid(), sourceCommand: "test", matchedStatus: "unknown", decodedReply: "test response" },
+        ]);
+
+        fixture.detectChanges();
+
+        let button = fixture.debugElement.query(By.css(".reply-autofill"));
+        button.nativeElement.click();
+
+        expect(prefillSpy).toHaveBeenCalledWith("test");
+    });
+
+    it("should not send the command when the autofill button is clicked", () => {
+        const sendSpy = spyOn(component, "onSubmit");
+
+        component.commandResultHistory$.next([
+            { id: uuid(), sourceCommand: "test", matchedStatus: "unknown", decodedReply: "test response" },
+        ]);
+
+        fixture.detectChanges();
+
+        let button = fixture.debugElement.query(By.css(".reply-autofill"));
+        button.nativeElement.click();
+
+        expect(sendSpy).not.toHaveBeenCalled();
+    });
+
+    it("should remove the command result from the history when the remove button is clicked", () => {
+        const removeSpy = spyOn(component, "removeFromHistory").and.callThrough();
+
+        const id = uuid();
+        component.commandResultHistory$.next([
+            { id, sourceCommand: "test", matchedStatus: "unknown", decodedReply: "test response" },
+        ]);
+
+        fixture.detectChanges();
+
+        let button = fixture.debugElement.query(By.css(".reply-remove"));
+        button.nativeElement.click();
+
+        expect(removeSpy).toHaveBeenCalledWith(id);
+    });
+
 });
