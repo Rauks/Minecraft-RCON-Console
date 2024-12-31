@@ -27,6 +27,7 @@
     </div>
 </form>
 
+<shortcuts class="d-block py-2 text-center" (shortcutClicked)="onShortcutClicked($event)"></shortcuts>
 
 @if (commandResultHistory$ | async; as commandResult) {
     @for (item of commandResult; track item.id) {

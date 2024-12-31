@@ -12,6 +12,7 @@ import statusMatchers from '../../config/minecraft-status-matchers.json';
 import styleCodes from '../../config/minecraft-style-codes.json';
 import { IconsModule, LocalizePipe } from '../core';
 import { LoaderComponent } from "../core/loader/loader.component";
+import { ShortcutsComponent } from "../shortcuts/shortcuts.component";
 
 export type CommandResultStatus = "unknown" | "error" | "invalid" | "com";
 
@@ -19,7 +20,7 @@ export const SLOW_COMMAND_DEBOUNCE_TIME = 500;
 
 @Component({
     selector: 'console',
-    imports: [AsyncPipe, LocalizePipe, IconsModule, ReactiveFormsModule, LoaderComponent],
+    imports: [AsyncPipe, LocalizePipe, IconsModule, ReactiveFormsModule, LoaderComponent, ShortcutsComponent],
     providers: [RconService],
     templateUrl: './console.component.html',
     styleUrl: './console.component.scss',
@@ -119,6 +120,26 @@ export class ConsoleComponent {
             }
         }
         return "unknown";
+    }
+
+    /**
+     * Prefills the command form with a command
+     * 
+     * @param command The command to prefill
+     */
+    public prefillCommand(command: string): void {
+        this.commandForm.patchValue({
+            command,
+        });
+    }
+
+    /**
+     * Handles the click event on a shortcut
+     * 
+     * @param shortcut The shortcut that was clicked
+     */
+    public onShortcutClicked(shortcut: { command: string }): void {
+        this.prefillCommand(shortcut.command);
     }
 
     /**

@@ -1,6 +1,7 @@
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, fakeAsync, TestBed } from '@angular/core/testing';
+import { By } from '@angular/platform-browser';
 import { BehaviorSubject, Subject, throwError } from 'rxjs';
 import { RconService } from 'src/services';
 import { advance, advanceWithDelay } from 'src/testing';
@@ -90,18 +91,18 @@ describe('ConsoleComponent', () => {
         fixture.detectChanges();
 
         advance(fixture);
-        let loader = fixture.nativeElement.querySelector("loader");
+        let loader = fixture.debugElement.query(By.css("loader"));
         expect(loader).toBeNull();
 
         component.pendingCommandsCount$.next(1);
         fixture.detectChanges();
 
         advance(fixture);
-        loader = fixture.nativeElement.querySelector("loader");
+        loader = fixture.debugElement.query(By.css("loader"));
         expect(loader).toBeNull();
 
         advanceWithDelay(fixture, SLOW_COMMAND_DEBOUNCE_TIME + 1);
-        loader = fixture.nativeElement.querySelector("loader");
+        loader = fixture.debugElement.query(By.css("loader"));
         expect(loader).not.toBeNull();
     }));
 
@@ -193,7 +194,7 @@ describe('ConsoleComponent', () => {
     it("should display the last decoded reply", () => {
         fixture.detectChanges();
 
-        let lastReplyCard = fixture.nativeElement.querySelector(".card-text");
+        let lastReplyCard = fixture.debugElement.query(By.css(".card-text"));
         expect(lastReplyCard).toBeNull();
 
         component.commandResultHistory$.next([{
@@ -204,9 +205,9 @@ describe('ConsoleComponent', () => {
         }]);
         fixture.detectChanges();
 
-        lastReplyCard = fixture.nativeElement.querySelector(".card-text");
+        lastReplyCard = fixture.debugElement.query(By.css(".card-text"));
         expect(lastReplyCard).not.toBeNull();
-        expect(lastReplyCard.textContent).toBe("test response");
+        expect(lastReplyCard.nativeElement.textContent).toBe("test response");
     });
 
     it("should display a com error in case of http error", () => {
@@ -220,12 +221,12 @@ describe('ConsoleComponent', () => {
 
         fixture.detectChanges();
 
-        let lastReplyCard = fixture.nativeElement.querySelector(".card-text");
+        let lastReplyCard = fixture.debugElement.query(By.css(".card-text"));
         expect(lastReplyCard).not.toBeNull();
-        expect(lastReplyCard.textContent).toBe("this is a com error");
+        expect(lastReplyCard.nativeElement.textContent).toBe("this is a com error");
 
-        let card = fixture.nativeElement.querySelector(".card-header");
-        expect(card).toHaveClass("border-danger");
+        let card = fixture.debugElement.query(By.css(".card-header"));
+        expect(card.nativeElement).toHaveClass("border-danger");
     });
 
     it("should display a generic communcation error in case of http error without message", () => {
@@ -239,12 +240,12 @@ describe('ConsoleComponent', () => {
 
         fixture.detectChanges();
 
-        let lastReplyCard = fixture.nativeElement.querySelector(".card-text");
+        let lastReplyCard = fixture.debugElement.query(By.css(".card-text"));
         expect(lastReplyCard).not.toBeNull();
-        expect(lastReplyCard.textContent).toBe(Localizer.getInstance().translate("tk.error.com.unknown"));
+        expect(lastReplyCard.nativeElement.textContent).toBe(Localizer.getInstance().translate("tk.error.com.unknown"));
 
-        let card = fixture.nativeElement.querySelector(".card-header");
-        expect(card).toHaveClass("border-danger");
+        let card = fixture.debugElement.query(By.css(".card-header"));
+        expect(card.nativeElement).toHaveClass("border-danger");
     });
 
     it("should reset the command form", () => {
@@ -293,8 +294,8 @@ describe('ConsoleComponent', () => {
         }]);
         fixture.detectChanges();
 
-        let card = fixture.nativeElement.querySelector(".card-header");
-        expect(card).toHaveClass("border-danger");
+        let card = fixture.debugElement.query(By.css(".card-header"));
+        expect(card.nativeElement).toHaveClass("border-danger");
     });
 
     it("should display the command invalid status", () => {
@@ -308,8 +309,8 @@ describe('ConsoleComponent', () => {
         }]);
         fixture.detectChanges();
 
-        let card = fixture.nativeElement.querySelector(".card-header");
-        expect(card).toHaveClass("border-warning");
+        let card = fixture.debugElement.query(By.css(".card-header"));
+        expect(card.nativeElement).toHaveClass("border-warning");
     });
 
     it("should display the command success status", () => {
@@ -323,8 +324,8 @@ describe('ConsoleComponent', () => {
         }]);
         fixture.detectChanges();
 
-        let card = fixture.nativeElement.querySelector(".card-header");
-        expect(card).toHaveClass("border-success");
+        let card = fixture.debugElement.query(By.css(".card-header"));
+        expect(card.nativeElement).toHaveClass("border-success");
     });
 
     it("should display the com error status", () => {
@@ -338,7 +339,29 @@ describe('ConsoleComponent', () => {
         }]);
         fixture.detectChanges();
 
-        let card = fixture.nativeElement.querySelector(".card-header");
-        expect(card).toHaveClass("border-danger");
+        let card = fixture.debugElement.query(By.css(".card-header"));
+        expect(card.nativeElement).toHaveClass("border-danger");
+    });
+
+    it("should prefill the command form", () => {
+        component.prefillCommand("test");
+
+        expect(component.commandForm.value.command).toBe("test");
+
+        component.prefillCommand("test updated");
+
+        expect(component.commandForm.value.command).toBe("test updated");
+    });
+
+    it("should prefill the command form when a shortcut is clicked", () => {
+        component.prefillCommand = jasmine.createSpy("prefillCommand");
+
+        component.onShortcutClicked({ command: "test" });
+
+        expect(component.prefillCommand).toHaveBeenCalledWith("test");
+
+        component.onShortcutClicked({ command: "test updated" });
+
+        expect(component.prefillCommand).toHaveBeenCalledWith("test updated");
     });
 });
