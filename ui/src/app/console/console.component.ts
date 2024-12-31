@@ -208,4 +208,11 @@ export class ConsoleComponent {
     public onReset(): void {
         this.commandForm.reset();
     }
+
+    /**
+     * Scrolls the window to the top
+     */
+    public scrollToTop(): void {
+        window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
+    }
 }

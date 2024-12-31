@@ -7,12 +7,12 @@
 
     "tk.error.com.unknown": "An unknown communication error occurred.",
 
-    "tk.command.reset": "Reset",
-    "tk.command.send": "Send",
+    "tk.command.reset": "Reset command prompt",
+    "tk.command.send": "Send command",
     
-    "tk.reply.remove": "Clean",
-    "tk.reply.autofill": "Autofill",
-    "tk.reply.resend": "Resend",
+    "tk.reply.remove": "Remove from history",
+    "tk.reply.autofill": "Autofill into command prompt",
+    "tk.reply.resend": "Send command again",
 
     "tk.theme.dark.enable": "Switch to night mode",
     "tk.theme.light.enable": "Switch to day mode",

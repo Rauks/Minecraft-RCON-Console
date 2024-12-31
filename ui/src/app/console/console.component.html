@@ -82,22 +82,23 @@
                     <button 
                         class="reply-autofill btn btn-sm btn-outline-blue" 
                         type="button"
-                        (click)="prefillCommand(item.sourceCommand)">
+                        (click)="prefillCommand(item.sourceCommand); scrollToTop()"
+                        [title]="'tk.reply.autofill' | localize">
                         <fa-icon icon="rotate-left"></fa-icon>
-                        <span class="ms-2">{{ 'tk.reply.autofill' | localize }}</span>
                     </button>
                     @if (!['error', 'invalid'].includes(item.matchedStatus)) {
                         <button 
                             class="reply-resend btn btn-sm btn-outline-green" 
                             type="button"
-                            (click)="prefillCommand(item.sourceCommand); onSubmit()">
+                            (click)="prefillCommand(item.sourceCommand); scrollToTop(); onSubmit()"
+                            [title]="'tk.reply.resend' | localize">
                             <fa-icon icon="paper-plane-top"></fa-icon>
-                            <span class="ms-2">{{ 'tk.reply.resend' | localize }}</span>
                         </button>
                     } @else {
                         <button 
                             class="reply-resend disabled btn btn-sm btn-outline-gray"
-                            type="button">
+                            type="button"
+                            [title]="'tk.reply.resend' | localize">
                             <fa-icon icon="paper-plane-top"></fa-icon>
                             <span class="ms-2">{{ 'tk.reply.resend' | localize }}</span>
                         </button>
@@ -105,9 +106,9 @@
                     <button 
                         class="reply-remove btn btn-sm btn-outline-orange" 
                         type="button"
-                        (click)="removeFromHistory(item.id)">
+                        (click)="removeFromHistory(item.id)"
+                        [title]="'tk.reply.remove' | localize">
                         <fa-icon icon="trash-can"></fa-icon>
-                        <span class="ms-2">{{ 'tk.reply.remove' | localize }}</span>
                     </button>
                 </div>
             </div>
