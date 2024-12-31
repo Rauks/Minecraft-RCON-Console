@@ -3,7 +3,7 @@
         <span class="input-group-text">
             <fa-icon icon="terminal"></fa-icon>
         </span>
-        <input type="text" class="form-control" formControlName="command" [placeholder]="placeholderCommand" />
+        <input type="text" class="form-control" formControlName="command" />
         @if (hasPendingSlowCommands$ | async) {
             <span class="input-group-text">
                 <loader [small]="true"></loader>
