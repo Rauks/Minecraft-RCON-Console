@@ -1,0 +1,74 @@
+[
+    {
+        "name": "Help",
+        "icon": "question",
+        "color": "gray",
+        "command": "help"
+    },
+    {
+        "name": "List Players",
+        "icon": "gamepad-modern",
+        "color": "purple",
+        "command": "list"
+    },
+    {
+        "name": "Change Time to Day",
+        "icon": "sun",
+        "color": "blue",
+        "command": "time set day"
+    },
+    {
+        "name": "Change Time to Night",
+        "icon": "moon",
+        "color": "blue",
+        "command": "time set night"
+    },
+    {
+        "name": "Change Weather to Clear",
+        "icon": "sun",
+        "color": "cyan",
+        "command": "weather clear"
+    },
+    {
+        "name": "Change Weather to Rain",
+        "icon": "cloud-rain",
+        "color": "cyan",
+        "command": "weather rain"
+    },
+    {
+        "name": "Change Weather to Thunder",
+        "icon": "bolt",
+        "color": "cyan",
+        "command": "weather thunder"
+    },
+    {
+        "name": "List Whitelisted Players",
+        "icon": "users",
+        "color": "brown",
+        "command": "whitelist list"
+    },
+    {
+        "name": "Add Player to Whitelist",
+        "icon": "user-plus",
+        "color": "brown",
+        "command": "whitelist add <player>"
+    },
+    {
+        "name": "Remove Player from Whitelist",
+        "icon": "user-minus",
+        "color": "brown",
+        "command": "whitelist remove <player>"
+    },
+    {
+        "name": "Op Player",
+        "icon": "shield",
+        "color": "red",
+        "command": "op <player>"
+    },
+    {
+        "name": "Deop Player",
+        "icon": "shield-slash",
+        "color": "red",
+        "command": "deop <player>"
+    }
+]

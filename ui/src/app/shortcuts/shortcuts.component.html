@@ -1,0 +1,7 @@
+
+@for (shortcut of shortcuts; track $index) {
+    <span [class]="getTagClass(shortcut)" (click)="onClick(shortcut)" (keypress)="onClick(shortcut)">
+        <fa-icon class="me-1" [icon]="shortcut.icon"></fa-icon>
+        <ng-container>{{ shortcut.name }}</ng-container>
+    </span>
+}
