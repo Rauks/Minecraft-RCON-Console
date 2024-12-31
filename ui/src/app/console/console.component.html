@@ -31,7 +31,7 @@
 
 @if (commandResultHistory$ | async; as commandResult) {
     @for (item of commandResult; track item.id) {
-        <div class="card mt-3">
+        <div class="card mt-3" [@fade]>
             @switch (item.matchedStatus) {
                 @case ("error") {
                     <div class="card-header border-danger">

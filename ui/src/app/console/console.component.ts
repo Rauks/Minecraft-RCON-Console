@@ -4,6 +4,7 @@ import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { minimatch } from 'minimatch';
 import { BehaviorSubject, debounceTime, map, Observable, take } from 'rxjs';
+import { fade } from 'src/animations';
 import { RconService } from 'src/services';
 import { Localizer } from 'src/utils';
 import { v4 as uuid } from 'uuid';
@@ -24,6 +25,7 @@ export const SLOW_COMMAND_DEBOUNCE_TIME = 500;
     providers: [RconService],
     templateUrl: './console.component.html',
     styleUrl: './console.component.scss',
+    animations: [fade],
     changeDetection: ChangeDetectionStrategy.OnPush,
     standalone: true,
 })
