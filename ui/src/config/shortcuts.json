@@ -55,7 +55,7 @@
     },
     {
         "name": "Remove Player from Whitelist",
-        "icon": "user-minus",
+        "icon": "user-slash",
         "color": "brown",
         "command": "whitelist remove <player>"
     },
