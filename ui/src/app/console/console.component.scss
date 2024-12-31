@@ -1,5 +1,9 @@
 :host {
 
+    .btn.disabled {
+        cursor: not-allowed;
+    }
+
     .card-body {
         background-color: var(--minecraft-rcon-console-reply-bg-color);
 

@@ -123,6 +123,15 @@ export class ConsoleComponent {
     }
 
     /**
+     * Removes a command result from the history
+     */
+    public removeFromHistory(id: string): void {
+        this.commandResultHistory$.next(
+            this.commandResultHistory$.value.filter(result => result.id !== id)
+        );
+    }
+
+    /**
      * Prefills the command form with a command
      * 
      * @param command The command to prefill

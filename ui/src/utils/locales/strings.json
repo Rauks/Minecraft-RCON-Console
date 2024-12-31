@@ -9,6 +9,10 @@
 
     "tk.command.reset": "Reset",
     "tk.command.send": "Send",
+    
+    "tk.reply.remove": "Clean",
+    "tk.reply.autofill": "Autofill",
+    "tk.reply.resend": "Resend",
 
     "tk.theme.dark.enable": "Switch to night mode",
     "tk.theme.light.enable": "Switch to day mode",
