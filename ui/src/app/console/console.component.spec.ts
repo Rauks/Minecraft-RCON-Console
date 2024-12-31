@@ -2,6 +2,7 @@ import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http'
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, fakeAsync, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { BehaviorSubject, Subject, throwError } from 'rxjs';
 import { RconService } from 'src/services';
 import { advance, advanceWithDelay } from 'src/testing';
@@ -17,7 +18,7 @@ describe('ConsoleComponent', () => {
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
-            imports: [ConsoleComponent],
+            imports: [ConsoleComponent, NoopAnimationsModule],
             providers: [
                 RconService,
                 provideHttpClient(withInterceptorsFromDi()),
