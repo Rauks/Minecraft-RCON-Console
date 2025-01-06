@@ -13,7 +13,7 @@ serde = "1.0.217"
 serde_json = { version = "1.0.134", features = ["indexmap"] }
 thiserror = "2.0.9"
 tokio = { version = "1.42.0", features = ["process"] }
-utoipa = { version = "5.3.0", features = ["uuid", "rocket_extras"] }
+utoipa = { version = "5.3.1", features = ["uuid", "rocket_extras"] }
 utoipa-swagger-ui = { version = "8.1.0", features = ["rocket", "vendored"], optional = true }
 
 [dev-dependencies]
