@@ -224,6 +224,19 @@ deploy-kaniko:
       variables:
         FULL_IMAGE_NAME: "${CI_REGISTRY_IMAGE}:${CI_COMMIT_REF_SLUG}"
 
+# Portainer deployment
+deploy-portainer:
+  image:
+    name: alpine/curl:8.10.0
+  stage: deploy
+  needs:
+    - job: deploy-kaniko
+  script:
+    - curl -sSfk -X POST "${PORTAINER_WEBHOOK}" 
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+  allow_failure: true
+
 # Docker image audit
 audit-trivy:
   image:
