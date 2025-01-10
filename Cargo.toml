@@ -12,7 +12,7 @@ rocket_prometheus = { version = "0.10.1", optional = true }
 serde = "1.0.217"
 serde_json = { version = "1.0.135", features = ["indexmap"] }
 thiserror = "2.0.10"
-tokio = { version = "1.42.0", features = ["process"] }
+tokio = { version = "1.43.0", features = ["process"] }
 utoipa = { version = "5.3.1", features = ["uuid", "rocket_extras"] }
 utoipa-swagger-ui = { version = "8.1.1", features = ["rocket", "vendored"], optional = true }
 
