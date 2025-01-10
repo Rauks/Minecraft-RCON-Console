@@ -17,7 +17,7 @@ stages:
 
 # Secrets leak prevention
 scan-gitguardian:
-  image: gitguardian/ggshield:v1.34.0
+  image: gitguardian/ggshield:v1.35.0
   stage: scan
   script: ggshield secret scan ci --ignore-known-secrets
   allow_failure: true
