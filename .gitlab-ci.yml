@@ -24,7 +24,7 @@ scan-gitguardian:
 
 # Dependency scanning
 scan-fossa:
-  image: rust:1.83.0
+  image: rust:1.84.0
   stage: scan
   script: 
     - apt-get update && apt-get install -y curl git bash
@@ -37,7 +37,7 @@ scan-fossa:
 
 # Backend linting
 scan-rust:
-  image: rust:1.83.0
+  image: rust:1.84.0
   stage: scan
   cache:
     key: cargo-$CI_COMMIT_REF_SLUG
@@ -85,7 +85,7 @@ test-angular:
 
 # Backend testing
 test-rust:
-  image: rust:1.83.0
+  image: rust:1.84.0
   stage: test
   dependencies: []
   cache:
@@ -158,7 +158,7 @@ build-angular:
 
 # Backend build
 build-rust:
-  image: rust:1.83.0
+  image: rust:1.84.0
   stage: build
   dependencies: []
   cache:
@@ -176,7 +176,7 @@ build-rust:
 
 # Backend per-feature builds validation
 build-rust-features:
-  image: rust:1.83.0
+  image: rust:1.84.0
   stage: build
   dependencies: []
   cache:
