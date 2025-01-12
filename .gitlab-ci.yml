@@ -47,7 +47,7 @@ scan-rust:
     - cargo --version
     - rustup component add clippy
   script:
-    - cargo clippy --message-format=json &> clippy.json
+    - cargo clippy --message-format=json | tee clippy.json
   artifacts:
     name: scan-rust
     paths:
