@@ -6,6 +6,7 @@ variables:
 default:
   tags:
     - docker
+    - amd64
 
 stages:
   - scan
