@@ -240,7 +240,7 @@ deploy-portainer:
 # Docker image audit
 audit-trivy:
   image:
-    name: docker.io/aquasec/trivy:0.58.1
+    name: docker.io/aquasec/trivy:0.58.2
     entrypoint: [""]
   stage: audit
   dependencies: []
