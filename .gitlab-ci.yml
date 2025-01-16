@@ -6,7 +6,7 @@ variables:
 default:
   tags:
     - docker
-    - amd64
+    - linux/amd64
 
 stages:
   - scan
@@ -86,6 +86,10 @@ test-angular:
 
 # Backend testing
 test-rust:
+  tags:
+    - docker
+    - linux/amd64
+    - privileged
   image: rust:1.84.0
   stage: test
   dependencies: []
