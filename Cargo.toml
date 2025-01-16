@@ -14,7 +14,7 @@ serde_json = { version = "1.0.135", features = ["indexmap"] }
 thiserror = "2.0.11"
 tokio = { version = "1.43.0", features = ["process"] }
 utoipa = { version = "5.3.1", features = ["uuid", "rocket_extras"] }
-utoipa-swagger-ui = { version = "8.1.1", features = ["rocket", "vendored"], optional = true }
+utoipa-swagger-ui = { version = "9.0.0", features = ["rocket", "vendored"], optional = true }
 
 [dev-dependencies]
 serial_test = "3.2.0"
