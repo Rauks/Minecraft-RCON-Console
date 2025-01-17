@@ -152,10 +152,10 @@ quality-sonarqube:
   script:
     - >- 
       sonar-scanner 
-        -X 
-        -Dsonar.projectKey=${CI_PROJECT_PATH_SLUG} 
-        -Dsonar.projectName=${CI_PROJECT_PATH_SLUG} 
-        -Dsonar.projectVersion=${CI_COMMIT_BRANCH}.${CI_COMMIT_SHORT_SHA}
+      -X 
+      -Dsonar.projectKey=${CI_PROJECT_PATH_SLUG} 
+      -Dsonar.projectName=${CI_PROJECT_PATH_SLUG} 
+      -Dsonar.projectVersion=${CI_COMMIT_BRANCH}.${CI_COMMIT_SHORT_SHA}
   
 build-angular:
   image: node:lts
@@ -233,11 +233,11 @@ build-rust-arm64:
   script:
     - >-
       /kaniko/executor 
-        --context "${CI_PROJECT_DIR}" 
-        --dockerfile "${CI_PROJECT_DIR}/Dockerfile.${ARCH}" 
-        --build-arg VERSION_SLUG=${VERSION_SLUG} 
-        --destination "${CI_REGISTRY_IMAGE}:${IMAGE_TAG}-${ARCH}" 
-        --custom-platform "linux/${ARCH}"
+      --context "${CI_PROJECT_DIR}" 
+      --dockerfile "${CI_PROJECT_DIR}/Dockerfile.${ARCH}" 
+      --build-arg VERSION_SLUG=${VERSION_SLUG} 
+      --destination "${CI_REGISTRY_IMAGE}:${IMAGE_TAG}-${ARCH}" 
+      --custom-platform "linux/${ARCH}"
   rules:
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
     - if: $CI_COMMIT_BRANCH
@@ -280,13 +280,13 @@ publish-manifest:
   script:
     - >-
       manifest-tool 
-        --username ${CI_REGISTRY_USER} 
-        --password ${CI_REGISTRY_PASSWORD} 
-        push 
-        from-args 
-        --platforms linux/amd64,linux/arm64 
-        --template "${CI_REGISTRY_IMAGE}:${IMAGE_TAG}-ARCH" 
-        --target "${CI_REGISTRY_IMAGE}:${IMAGE_TAG}"
+      --username ${CI_REGISTRY_USER} 
+      --password ${CI_REGISTRY_PASSWORD} 
+      push 
+      from-args 
+      --platforms linux/amd64,linux/arm64 
+      --template "${CI_REGISTRY_IMAGE}:${IMAGE_TAG}-ARCH" 
+      --target "${CI_REGISTRY_IMAGE}:${IMAGE_TAG}"
   rules:
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
     - if: $CI_COMMIT_BRANCH
