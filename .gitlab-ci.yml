@@ -1,5 +1,4 @@
 variables:
-  SONAR_PROJECT: "minecraft-rcon"
   CARGO_HOME: ${CI_PROJECT_DIR}/.cargo
   VERSION_SLUG: ${CI_COMMIT_BRANCH}.${CI_COMMIT_SHORT_SHA}
 
@@ -136,7 +135,7 @@ quality-sonarqube:
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
   allow_failure: true
   script:
-    - sonar-scanner -X -Dsonar.projectKey=${SONAR_PROJECT} -Dsonar.projectVersion=${CI_COMMIT_BRANCH}.${CI_COMMIT_SHORT_SHA}
+    - sonar-scanner -X -Dsonar.projectKey=${CI_PROJECT_PATH_SLUG} -Dsonar.projectVersion=${CI_COMMIT_BRANCH}.${CI_COMMIT_SHORT_SHA}
 
 # Frontend build
 build-angular:
