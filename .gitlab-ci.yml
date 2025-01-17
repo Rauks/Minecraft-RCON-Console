@@ -199,6 +199,7 @@ build-angular:
       - .cargo
   before_script:
     - cargo --version
+    - echo "${CI_REGISTRY_PASSWORD}" | docker login ${CI_REGISTRY} --username ${CI_REGISTRY_USER} --password-stdin
   script:
     - cross build --release --target=${RUST_TARGET} --verbose
 
