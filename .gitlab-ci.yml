@@ -221,6 +221,26 @@ build-rust-arm64:
     paths:
       - target/aarch64-unknown-linux-gnu/release/minecraft-rcon
 
+.build-rust-features:
+  extends: .build-rust
+  parallel:
+    matrix:
+      - FEATURE: 
+        - metrics
+        - swagger
+  script:
+    - cross build --no-default-features --features $FEATURE --release -target=${RUST_TARGET} --verbose
+
+build-rust-features-amd64:
+  extends: .build-rust-features
+  variables:
+    RUST_TARGET: x86_64-unknown-linux-gnu
+
+build-rust-features-arm64:
+  extends: .build-rust-features
+  variables:
+    RUST_TARGET: aarch64-unknown-linux-gnu
+
 .publish-kaniko:
   image:
     name: gcr.io/kaniko-project/executor:v1.23.2-debug
