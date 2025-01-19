@@ -186,7 +186,7 @@ build-angular:
     - privileged
   image: registry.kirauks.net/dev-ops/build-images/rust-cross:1.84.0
   services:
-    - name: docker:24.0.5-dind
+    - name: docker:27.5.0-dind
       alias: docker
       variables:
         DOCKER_DRIVER: overlay2
