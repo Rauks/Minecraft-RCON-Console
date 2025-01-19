@@ -1,4 +1,4 @@
-FROM debian:stable-slim
+FROM arm64v8/debian:stable-slim
 
 ENV DEBIAN_FRONTEND=noninteractive
 
@@ -14,7 +14,7 @@ ENV ROCKET_LIMITS={json="1 MiB"}
 ENV ROCKET_IP_HEADER=X-Forwarded-For
 
 # Rust API
-COPY /target/release /opt
+COPY /target/aarch64-unknown-linux-gnu/release /opt
 RUN chmod +x /opt/minecraft-rcon
 
 # Angluar UI

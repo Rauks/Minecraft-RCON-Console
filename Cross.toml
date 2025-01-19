@@ -1,0 +1,8 @@
+[target.x86_64-unknown-linux-gnu]
+image = "registry.kirauks.net/dev-ops/cross-images/x86_64-unknown-linux-gnu:0.2.5"
+
+[target.aarch64-unknown-linux-gnu]
+image = "registry.kirauks.net/dev-ops/cross-images/aarch64-unknown-linux-gnu:0.2.5"
+
+[build.env]
+passthrough = ["VERSION_SLUG"]
