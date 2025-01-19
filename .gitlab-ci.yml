@@ -43,17 +43,17 @@ scan-gitguardian:
   script: ggshield secret scan ci --ignore-known-secrets
   allow_failure: true
 
-  scan-fossa:
-    image: registry.kirauks.net/dev-ops/build-images/rust-fossa:1.84.0
-    stage: scan
-    dependencies: []
-    before_script:
-      - export FOSSA_API_KEY=$FOSSA_API_KEY
-    script:
-      - fossa analyze --branch $CI_COMMIT_BRANCH
-    rules:
-      - if: $CI_COMMIT_BRANCH
-    allow_failure: true
+scan-fossa:
+  image: registry.kirauks.net/dev-ops/build-images/rust-fossa:1.84.0
+  stage: scan
+  dependencies: []
+  before_script:
+    - export FOSSA_API_KEY=$FOSSA_API_KEY
+  script:
+    - fossa analyze --branch $CI_COMMIT_BRANCH
+  rules:
+    - if: $CI_COMMIT_BRANCH
+  allow_failure: true
 
 scan-rust:
   image: registry.kirauks.net/dev-ops/build-images/rust-cross:1.84.0
