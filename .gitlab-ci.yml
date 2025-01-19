@@ -225,11 +225,11 @@ build-rust-arm64:
   extends: .build-rust
   parallel:
     matrix:
-      - FEATURE: 
+      - FEATURES: 
         - metrics
         - swagger
   script:
-    - cross build --no-default-features --features $FEATURE --release -target=${RUST_TARGET} --verbose
+    - cross build --no-default-features --features=$FEATURES --release --target=${RUST_TARGET} --verbose
 
 build-rust-features-amd64:
   extends: .build-rust-features
