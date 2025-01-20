@@ -309,7 +309,7 @@ publish-manifest:
     
 deploy-portainer:
   image:
-    name: alpine/curl:8.10.0
+    name: alpine/curl:8.11.1
   stage: deploy
   dependencies: []
   script:
