@@ -37,8 +37,7 @@
     },
     {
       "matchCategories": ["ci"],
-      "addLabels": ["pipeline"],
-      "minimumReleaseAge": "1 day"
+      "addLabels": ["pipeline"]
     }
   ]
 }
