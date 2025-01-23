@@ -38,6 +38,23 @@
     {
       "matchCategories": ["ci"],
       "addLabels": ["pipeline"]
+    },
+    {
+      "matchSourceUrls": ["https://gitlab.kirauks.net/**"],
+      "extends": [":automergeStableNonMajor"]
+    }
+  ],
+  "customManagers": [
+    {
+      "customType": "regex",
+      "fileMatch": [
+        "(^|/)Cross\\.toml$"
+      ],
+      "matchStrings": [
+        "image =\\s*\"(?<depName>[^:\"]+):(?<currentValue>[^@\"]+)(@(?<currentDigest>sha256:[a-f0-9]+))?\""
+      ],
+      "datasourceTemplate": "docker",
+      "versioningTemplate": "docker"
     }
   ]
 }
