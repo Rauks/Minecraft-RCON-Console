@@ -44,7 +44,7 @@
       "extends": [":automergeStableNonMajor"]
     },
     {
-      "matchManagers": ["cargo", "rust", "js"],
+      "matchCategories": ["rust", "js"],
       "extends": [":automergePatch"]
     }
   ],
