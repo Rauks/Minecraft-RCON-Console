@@ -34,7 +34,7 @@ include:
       job-name: sonarqube
       stage: quality
 
-  - component: gitlab.kirauks.net/dev-ops/components/rust/clippy@0.0.6
+  - component: gitlab.kirauks.net/dev-ops/components/rust/clippy@1.0.0
     inputs:
       job-name: rust-clippy
       stage: scan
@@ -46,11 +46,11 @@ include:
       stage: test
       prefix: ./ui
 
-  - component: gitlab.kirauks.net/dev-ops/components/rust/test@0.0.6
+  - component: gitlab.kirauks.net/dev-ops/components/rust/test@1.0.0
     inputs:
       job-name: rust-test
       stage: test
-  - component: gitlab.kirauks.net/dev-ops/components/rust/test@0.0.6
+  - component: gitlab.kirauks.net/dev-ops/components/rust/test@1.0.0
     inputs:
       job-name: rust-test-features
       stage: test
@@ -65,13 +65,13 @@ include:
       prefix: ./ui
       artifacts: "*"
 
-  - component: gitlab.kirauks.net/dev-ops/components/rust/cross-build@0.0.6
+  - component: gitlab.kirauks.net/dev-ops/components/rust/cross-build@1.0.0
     inputs:
       job-name: rust-build-amd64
       stage: build
       target: x86_64-unknown-linux-gnu
       artifacts: minecraft-rcon
-  - component: gitlab.kirauks.net/dev-ops/components/rust/cross-build@0.0.6
+  - component: gitlab.kirauks.net/dev-ops/components/rust/cross-build@1.0.0
     inputs:
       job-name: rust-build-features-amd64
       stage: build
@@ -80,13 +80,13 @@ include:
       features: $FEATURES
       artifacts: minecraft-rcon
 
-  - component: gitlab.kirauks.net/dev-ops/components/rust/cross-build@0.0.6
+  - component: gitlab.kirauks.net/dev-ops/components/rust/cross-build@1.0.0
     inputs:
       job-name: rust-build-arm64
       stage: build
       target: aarch64-unknown-linux-gnu
       artifacts: minecraft-rcon
-  - component: gitlab.kirauks.net/dev-ops/components/rust/cross-build@0.0.6
+  - component: gitlab.kirauks.net/dev-ops/components/rust/cross-build@1.0.0
     inputs:
       job-name: rust-build-features-arm64
       stage: build
