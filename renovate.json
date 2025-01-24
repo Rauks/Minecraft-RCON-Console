@@ -42,6 +42,10 @@
     {
       "matchSourceUrls": ["https://gitlab.kirauks.net/**"],
       "extends": [":automergeStableNonMajor"]
+    },
+    {
+      "matchManagers": ["cargo", "rust", "js"],
+      "extends": [":automergePatch"]
     }
   ],
   "customManagers": [
