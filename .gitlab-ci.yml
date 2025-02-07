@@ -24,15 +24,21 @@ include:
       job-name: gitguardian
       stage: scan
 
-  - component: gitlab.kirauks.net/dev-ops/components/scanners/fossa@1.1.2
+  - component: gitlab.kirauks.net/dev-ops/components/scanners/syft@1.1.4
     inputs:
-      job-name: fossa
+      job-name: syft
       stage: scan
 
   - component: gitlab.kirauks.net/dev-ops/components/scanners/sonarqube@1.1.2
     inputs:
       job-name: sonarqube
       stage: quality
+
+  - component: gitlab.kirauks.net/dev-ops/components/scanners/grype@1.1.4
+    inputs:
+      job-name: grype
+      stage: quality
+      fail-on-severity: critical
 
   - component: gitlab.kirauks.net/dev-ops/components/rust/clippy@1.0.1
     inputs:
@@ -147,9 +153,6 @@ env:
 gitguardian:
   allow_failure: true
 
-fossa:
-  allow_failure: true
-
 sonarqube:
   needs:
     - job: rust-clippy
@@ -162,6 +165,12 @@ sonarqube:
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
   allow_failure: true
   
+grype:
+  needs:
+    - job: syft
+      artifacts: true
+  allow_failure: true
+
 angular-test:
   before_script:
     - npm -v
