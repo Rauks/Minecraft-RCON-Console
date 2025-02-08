@@ -240,7 +240,7 @@ manifest:
     
 portainer:
   image:
-    name: alpine/curl:8.11.1
+    name: alpine/curl:8.12.0
   stage: deploy
   script:
     - curl -sSfk -X POST "${PORTAINER_WEBHOOK}" 
