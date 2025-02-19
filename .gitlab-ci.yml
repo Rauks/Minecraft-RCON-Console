@@ -46,7 +46,7 @@ include:
       stage: scan
 
   # Tests
-  - component: gitlab.kirauks.net/dev-ops/components/angular/test@1.0.1
+  - component: gitlab.kirauks.net/dev-ops/components/angular/test@1.0.2
     inputs:
       job-name: angular-test
       stage: test
@@ -64,7 +64,7 @@ include:
       features: $FEATURES
 
   # Builds
-  - component: gitlab.kirauks.net/dev-ops/components/angular/build@1.0.1
+  - component: gitlab.kirauks.net/dev-ops/components/angular/build@1.0.2
     inputs:
       job-name: angular-build
       stage: build
