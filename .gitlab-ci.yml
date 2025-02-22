@@ -19,22 +19,22 @@ stages:
 
 include:
   # Scanners
-  - component: gitlab.kirauks.net/dev-ops/components/scanners/gitguardian@2.0.0
+  - component: gitlab.kirauks.net/dev-ops/components/scanners/gitguardian@2.0.1
     inputs:
       job-name: gitguardian
       stage: scan
 
-  - component: gitlab.kirauks.net/dev-ops/components/scanners/syft@2.0.0
+  - component: gitlab.kirauks.net/dev-ops/components/scanners/syft@2.0.1
     inputs:
       job-name: syft
       stage: scan
 
-  - component: gitlab.kirauks.net/dev-ops/components/scanners/sonarqube@2.0.0
+  - component: gitlab.kirauks.net/dev-ops/components/scanners/sonarqube@2.0.1
     inputs:
       job-name: sonarqube
       stage: quality
 
-  - component: gitlab.kirauks.net/dev-ops/components/scanners/grype@2.0.0
+  - component: gitlab.kirauks.net/dev-ops/components/scanners/grype@2.0.1
     inputs:
       job-name: grype
       stage: quality
