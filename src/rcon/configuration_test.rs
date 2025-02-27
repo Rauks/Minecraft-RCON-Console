@@ -1,6 +1,6 @@
 #[cfg(test)]
 mod tests {
-    use crate::rcon::{RconConfiguration, RconError, DEFAULT_RCON_TIMEOUT};
+    use crate::rcon::{DEFAULT_RCON_TIMEOUT, RconConfiguration, RconError};
     use serial_test::serial;
     use temp_env::with_vars;
 
