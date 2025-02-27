@@ -1,5 +1,5 @@
 use crate::rcon::{RconClient, RconRequest, RconRequestType, RconResponse, RconResponseType};
-use rocket::{http::Status, post, serde::json::Json, State};
+use rocket::{State, http::Status, post, serde::json::Json};
 use serde::Serialize;
 use std::sync::Arc;
 use tokio::sync::Mutex;

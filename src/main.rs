@@ -5,7 +5,7 @@ mod rcon;
 use api::RconManagedState;
 use app::ui;
 use dotenvy::dotenv;
-use rocket::{launch, routes, Build, Rocket};
+use rocket::{Build, Rocket, launch, routes};
 
 #[launch]
 /// Sets up a web server using the Rocket framework and mounts routes for serving
