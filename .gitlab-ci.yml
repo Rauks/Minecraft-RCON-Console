@@ -171,6 +171,13 @@ grype:
       artifacts: true
   allow_failure: true
 
+rust-test:
+  tags:
+    - docker
+    - linux/amd64
+    - privileged
+    - vlan/dmz # Minecraft server
+
 angular-test:
   before_script:
     - npm -v
