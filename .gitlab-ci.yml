@@ -171,13 +171,6 @@ grype:
       artifacts: true
   allow_failure: true
 
-rust-test:
-  tags:
-    - docker
-    - linux/amd64
-    - privileged
-    - vlan/dmz # Minecraft server
-
 angular-test:
   before_script:
     - npm -v
@@ -191,7 +184,19 @@ angular-build:
     - npm config set "//npm.fontawesome.com/:_authToken" $FONTAWESOME_PACKAGE_TOKEN
     - sed -i -e "s|%VERSION_SLUG%|${VERSION_SLUG}|g" ui/src/environments/environment.prod.ts 
 
+rust-test:
+  tags:
+    - docker
+    - linux/amd64
+    - privileged
+    - vlan/dmz # Minecraft server
+    
 rust-test-features:
+  tags:
+    - docker
+    - linux/amd64
+    - privileged
+    - vlan/dmz # Minecraft server
   parallel:
     matrix:
       - FEATURES: 
