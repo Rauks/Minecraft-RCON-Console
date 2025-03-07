@@ -102,7 +102,7 @@ include:
       artifacts: minecraft-rcon
 
   # Containers
-  - component: gitlab.kirauks.net/dev-ops/components/containers/kaniko@2.0.0
+  - component: gitlab.kirauks.net/dev-ops/components/containers/kaniko@2.0.1
     inputs:
       job_name: kaniko-amd64
       stage: publish
@@ -110,7 +110,7 @@ include:
       platform: linux/amd64
       base_tag: ${IMAGE_TAG}
 
-  - component: gitlab.kirauks.net/dev-ops/components/containers/kaniko@2.0.0
+  - component: gitlab.kirauks.net/dev-ops/components/containers/kaniko@2.0.1
     inputs:
       job_name: kaniko-arm64
       stage: publish
@@ -118,14 +118,14 @@ include:
       platform: linux/arm64
       base_tag: ${IMAGE_TAG}
 
-  - component: gitlab.kirauks.net/dev-ops/components/containers/manifest@2.0.0
+  - component: gitlab.kirauks.net/dev-ops/components/containers/manifest@2.0.1
     inputs:
       job_name: manifest
       stage: publish
       platforms: linux/amd64,linux/arm64
       base_tag: ${IMAGE_TAG}
 
-  - component: gitlab.kirauks.net/dev-ops/components/containers/trivy@2.0.0
+  - component: gitlab.kirauks.net/dev-ops/components/containers/trivy@2.0.1
     inputs:
       job_name: trivy
       stage: audit
