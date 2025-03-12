@@ -40,7 +40,7 @@ include:
       stage: quality
       fail_on_severity: critical
 
-  - component: gitlab.kirauks.net/dev-ops/components/rust/clippy@2.0.0
+  - component: gitlab.kirauks.net/dev-ops/components/rust/clippy@3.0.1
     inputs:
       job_name: rust-clippy
       stage: scan
@@ -52,11 +52,11 @@ include:
       stage: test
       context: ./ui
 
-  - component: gitlab.kirauks.net/dev-ops/components/rust/test@2.0.0
+  - component: gitlab.kirauks.net/dev-ops/components/rust/test@3.0.1
     inputs:
       job_name: rust-test
       stage: test
-  - component: gitlab.kirauks.net/dev-ops/components/rust/test@2.0.0
+  - component: gitlab.kirauks.net/dev-ops/components/rust/test@3.0.1
     inputs:
       job_name: rust-test-features
       stage: test
@@ -71,30 +71,30 @@ include:
       context: ./ui
       artifacts: "*"
 
-  - component: gitlab.kirauks.net/dev-ops/components/rust/cross-build@2.0.0
+  - component: gitlab.kirauks.net/dev-ops/components/rust/build@3.0.1
     inputs:
-      job_name: rust-build-amd64
+      job_name: rust-build:amd64
       stage: build
       target: x86_64-unknown-linux-gnu
       artifacts: minecraft-rcon
-  - component: gitlab.kirauks.net/dev-ops/components/rust/cross-build@2.0.0
+  - component: gitlab.kirauks.net/dev-ops/components/rust/build@3.0.1
     inputs:
-      job_name: rust-build-features-amd64
+      job_name: rust-build-features:amd64
       stage: build
       target: x86_64-unknown-linux-gnu
       no_default_features: true
       features: $FEATURES
       artifacts: minecraft-rcon
 
-  - component: gitlab.kirauks.net/dev-ops/components/rust/cross-build@2.0.0
+  - component: gitlab.kirauks.net/dev-ops/components/rust/build@3.0.1
     inputs:
-      job_name: rust-build-arm64
+      job_name: rust-build:arm64
       stage: build
       target: aarch64-unknown-linux-gnu
       artifacts: minecraft-rcon
-  - component: gitlab.kirauks.net/dev-ops/components/rust/cross-build@2.0.0
+  - component: gitlab.kirauks.net/dev-ops/components/rust/build@3.0.1
     inputs:
-      job_name: rust-build-features-arm64
+      job_name: rust-build-features:arm64
       stage: build
       target: aarch64-unknown-linux-gnu
       no_default_features: true
@@ -104,7 +104,7 @@ include:
   # Containers
   - component: gitlab.kirauks.net/dev-ops/components/containers/kaniko@2.0.1
     inputs:
-      job_name: kaniko-amd64
+      job_name: kaniko:amd64
       stage: publish
       dockerfile: Dockerfile.amd64
       platform: linux/amd64
@@ -112,7 +112,7 @@ include:
 
   - component: gitlab.kirauks.net/dev-ops/components/containers/kaniko@2.0.1
     inputs:
-      job_name: kaniko-arm64
+      job_name: kaniko:arm64
       stage: publish
       dockerfile: Dockerfile.arm64
       platform: linux/arm64
@@ -203,35 +203,35 @@ rust-test-features:
         - metrics
         - swagger
 
-rust-build-features-amd64:
+rust-build-features:amd64:
   parallel:
     matrix:
       - FEATURES: 
         - metrics
         - swagger
 
-rust-build-features-arm64:
+rust-build-features:arm64:
   parallel:
     matrix:
       - FEATURES: 
         - metrics
         - swagger
 
-kaniko-amd64:
+kaniko:amd64:
   dependencies: 
     - env
     - angular-build
-    - rust-build-amd64
+    - rust-build:amd64
   rules:
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
     - if: $CI_COMMIT_BRANCH
     - if: $CI_COMMIT_TAG
 
-kaniko-arm64:
+kaniko:arm64:
   dependencies: 
     - env
     - angular-build
-    - rust-build-arm64
+    - rust-build:arm64
   rules:
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
     - if: $CI_COMMIT_BRANCH
@@ -241,9 +241,9 @@ manifest:
   needs:
     - job: env
       artifacts: true
-    - job: kaniko-amd64
+    - job: kaniko:amd64
       artifacts: false
-    - job: kaniko-arm64
+    - job: kaniko:arm64
       artifacts: false
   rules:
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
@@ -254,7 +254,7 @@ portainer:
   tags:
     - docker
     - linux/amd64
-    - vlan/dmz # Portainer
+    - vlan/dmz # Home
   image:
     name: alpine/curl:8.12.1
   stage: deploy
