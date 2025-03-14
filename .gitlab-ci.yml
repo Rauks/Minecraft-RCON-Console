@@ -1,5 +1,4 @@
 variables:
-  CARGO_HOME: ${CI_PROJECT_DIR}/.cargo
   VERSION_SLUG: ${CI_COMMIT_BRANCH}.${CI_COMMIT_SHORT_SHA}
 
 default:
@@ -19,44 +18,47 @@ stages:
 
 include:
   # Scanners
-  - component: gitlab.kirauks.net/dev-ops/components/scanners/gitguardian@3.1.1
+  - component: gitlab.kirauks.net/dev-ops/components/scanners/gitguardian@3.2.1
     inputs:
       job_name: gitguardian
       stage: scan
+      allow_failure: true
 
-  - component: gitlab.kirauks.net/dev-ops/components/scanners/syft@3.1.1
+  - component: gitlab.kirauks.net/dev-ops/components/scanners/syft@3.2.1
     inputs:
       job_name: syft
       stage: scan
+      allow_failure: true
 
-  - component: gitlab.kirauks.net/dev-ops/components/scanners/sonarqube@3.1.1
+  - component: gitlab.kirauks.net/dev-ops/components/scanners/sonarqube@3.2.1
     inputs:
       job_name: sonarqube
       stage: quality
+      allow_failure: true
 
-  - component: gitlab.kirauks.net/dev-ops/components/scanners/grype@3.1.1
+  - component: gitlab.kirauks.net/dev-ops/components/scanners/grype@3.2.1
     inputs:
       job_name: grype
       stage: quality
       fail_on_severity: critical
 
-  - component: gitlab.kirauks.net/dev-ops/components/rust/clippy@3.0.1
+  - component: gitlab.kirauks.net/dev-ops/components/rust/clippy@4.0.0
     inputs:
       job_name: rust-clippy
       stage: scan
 
   # Tests
-  - component: gitlab.kirauks.net/dev-ops/components/angular/test@2.0.0
+  - component: gitlab.kirauks.net/dev-ops/components/angular/test@3.0.0
     inputs:
       job_name: angular-test
       stage: test
       context: ./ui
 
-  - component: gitlab.kirauks.net/dev-ops/components/rust/test@3.0.1
+  - component: gitlab.kirauks.net/dev-ops/components/rust/test@4.0.0
     inputs:
       job_name: rust-test
       stage: test
-  - component: gitlab.kirauks.net/dev-ops/components/rust/test@3.0.1
+  - component: gitlab.kirauks.net/dev-ops/components/rust/test@4.0.0
     inputs:
       job_name: rust-test-features
       stage: test
@@ -64,45 +66,50 @@ include:
       features: $FEATURES
 
   # Builds
-  - component: gitlab.kirauks.net/dev-ops/components/angular/build@2.0.0
+  - component: gitlab.kirauks.net/dev-ops/components/angular/build@3.0.0
     inputs:
       job_name: angular-build
       stage: build
       context: ./ui
-      artifacts: "*"
+      artifacts:
+        - ./ui/dist/*
 
-  - component: gitlab.kirauks.net/dev-ops/components/rust/build@3.0.1
+  - component: gitlab.kirauks.net/dev-ops/components/rust/build@4.0.0
     inputs:
       job_name: rust-build:amd64
       stage: build
       target: x86_64-unknown-linux-gnu
-      artifacts: minecraft-rcon
-  - component: gitlab.kirauks.net/dev-ops/components/rust/build@3.0.1
+      artifacts:
+        - ./target/x86_64-unknown-linux-gnu/release/minecraft-rcon
+  - component: gitlab.kirauks.net/dev-ops/components/rust/build@4.0.0
     inputs:
       job_name: rust-build-features:amd64
       stage: build
       target: x86_64-unknown-linux-gnu
       no_default_features: true
       features: $FEATURES
-      artifacts: minecraft-rcon
+      artifacts:
+        - ./target/x86_64-unknown-linux-gnu/release/minecraft-rcon
 
-  - component: gitlab.kirauks.net/dev-ops/components/rust/build@3.0.1
+  - component: gitlab.kirauks.net/dev-ops/components/rust/build@4.0.0
     inputs:
       job_name: rust-build:arm64
       stage: build
       target: aarch64-unknown-linux-gnu
-      artifacts: minecraft-rcon
-  - component: gitlab.kirauks.net/dev-ops/components/rust/build@3.0.1
+      artifacts:
+        - ./target/aarch64-unknown-linux-gnu/release/minecraft-rcon
+  - component: gitlab.kirauks.net/dev-ops/components/rust/build@4.0.0
     inputs:
       job_name: rust-build-features:arm64
       stage: build
       target: aarch64-unknown-linux-gnu
       no_default_features: true
       features: $FEATURES
-      artifacts: minecraft-rcon
+      artifacts:
+        - ./target/aarch64-unknown-linux-gnu/release/minecraft-rcon
 
   # Containers
-  - component: gitlab.kirauks.net/dev-ops/components/containers/kaniko@2.0.1
+  - component: gitlab.kirauks.net/dev-ops/components/containers/kaniko@2.1.1
     inputs:
       job_name: kaniko:amd64
       stage: publish
@@ -110,7 +117,7 @@ include:
       platform: linux/amd64
       base_tag: ${IMAGE_TAG}
 
-  - component: gitlab.kirauks.net/dev-ops/components/containers/kaniko@2.0.1
+  - component: gitlab.kirauks.net/dev-ops/components/containers/kaniko@2.1.1
     inputs:
       job_name: kaniko:arm64
       stage: publish
@@ -118,18 +125,26 @@ include:
       platform: linux/arm64
       base_tag: ${IMAGE_TAG}
 
-  - component: gitlab.kirauks.net/dev-ops/components/containers/manifest@2.0.1
+  - component: gitlab.kirauks.net/dev-ops/components/containers/manifest@2.1.1
     inputs:
       job_name: manifest
       stage: publish
       platforms: linux/amd64,linux/arm64
       base_tag: ${IMAGE_TAG}
 
-  - component: gitlab.kirauks.net/dev-ops/components/containers/trivy@2.0.1
+  - component: gitlab.kirauks.net/dev-ops/components/containers/trivy@2.1.1
     inputs:
       job_name: trivy
       stage: audit
       image_tag: ${IMAGE_TAG}
+      allow_failure: true
+
+  - component: gitlab.kirauks.net/dev-ops/components/containers/portainer@2.1.1
+    inputs:
+      job_name: portainer
+      stage: deploy
+      portainer_webhook: ${PORTAINER_WEBHOOK}
+      allow_failure: true
 
 env:
   image: busybox:1.37.0
@@ -150,9 +165,6 @@ env:
     reports:
       dotenv: build.env
 
-gitguardian:
-  allow_failure: true
-
 sonarqube:
   needs:
     - job: rust-clippy
@@ -161,15 +173,11 @@ sonarqube:
       artifacts: true
     - job: rust-test
       artifacts: true
-  rules:
-    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
-  allow_failure: true
   
 grype:
   needs:
     - job: syft
       artifacts: true
-  allow_failure: true
 
 angular-test:
   before_script:
@@ -222,20 +230,12 @@ kaniko:amd64:
     - env
     - angular-build
     - rust-build:amd64
-  rules:
-    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
-    - if: $CI_COMMIT_BRANCH
-    - if: $CI_COMMIT_TAG
 
 kaniko:arm64:
   dependencies: 
     - env
     - angular-build
     - rust-build:arm64
-  rules:
-    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
-    - if: $CI_COMMIT_BRANCH
-    - if: $CI_COMMIT_TAG
 
 manifest:
   needs:
@@ -245,21 +245,4 @@ manifest:
       artifacts: false
     - job: kaniko:arm64
       artifacts: false
-  rules:
-    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
-    - if: $CI_COMMIT_BRANCH
-    - if: $CI_COMMIT_TAG
     
-portainer:
-  tags:
-    - docker
-    - linux/amd64
-    - vlan/dmz # Home
-  image:
-    name: alpine/curl:8.12.1
-  stage: deploy
-  script:
-    - curl -sSfk -X POST "${PORTAINER_WEBHOOK}" 
-  rules:
-    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
-  allow_failure: true
