@@ -147,7 +147,7 @@ include:
       allow_failure: true
 
 env:
-  image: busybox:1.37.0
+  image: ${CI_DEPENDENCY_PROXY_GROUP_IMAGE_PREFIX}/busybox:1.37.0
   stage: env
   script:
     - echo "IMAGE_TAG=${IMAGE_TAG}" > build.env
