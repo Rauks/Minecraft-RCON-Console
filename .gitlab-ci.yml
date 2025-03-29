@@ -109,7 +109,7 @@ include:
         - ./target/aarch64-unknown-linux-gnu/release/minecraft-rcon
 
   # Containers
-  - component: gitlab.kirauks.net/dev-ops/components/containers/kaniko@2.1.2
+  - component: gitlab.kirauks.net/dev-ops/components/containers/kaniko@2.1.3
     inputs:
       job_name: kaniko:amd64
       stage: publish
@@ -117,7 +117,7 @@ include:
       platform: linux/amd64
       base_tag: ${IMAGE_TAG}
 
-  - component: gitlab.kirauks.net/dev-ops/components/containers/kaniko@2.1.2
+  - component: gitlab.kirauks.net/dev-ops/components/containers/kaniko@2.1.3
     inputs:
       job_name: kaniko:arm64
       stage: publish
@@ -125,21 +125,21 @@ include:
       platform: linux/arm64
       base_tag: ${IMAGE_TAG}
 
-  - component: gitlab.kirauks.net/dev-ops/components/containers/manifest@2.1.2
+  - component: gitlab.kirauks.net/dev-ops/components/containers/manifest@2.1.3
     inputs:
       job_name: manifest
       stage: publish
       platforms: linux/amd64,linux/arm64
       base_tag: ${IMAGE_TAG}
 
-  - component: gitlab.kirauks.net/dev-ops/components/containers/trivy@2.1.2
+  - component: gitlab.kirauks.net/dev-ops/components/containers/trivy@2.1.3
     inputs:
       job_name: trivy
       stage: audit
       image_tag: ${IMAGE_TAG}
       allow_failure: true
 
-  - component: gitlab.kirauks.net/dev-ops/components/containers/portainer@2.1.2
+  - component: gitlab.kirauks.net/dev-ops/components/containers/portainer@2.1.3
     inputs:
       job_name: portainer
       stage: deploy
