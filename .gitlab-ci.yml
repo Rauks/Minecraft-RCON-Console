@@ -13,8 +13,8 @@ stages:
   - quality
   - build
   - publish
-  - deploy
   - audit
+  - deploy
 
 include:
   # Scanners
