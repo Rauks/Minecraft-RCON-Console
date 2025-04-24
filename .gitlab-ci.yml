@@ -7,7 +7,6 @@ default:
     - linux/amd64
 
 stages:
-  - env
   - scan
   - test
   - quality
@@ -109,61 +108,31 @@ include:
         - ./target/aarch64-unknown-linux-gnu/release/minecraft-rcon
 
   # Containers
-  - component: gitlab.kirauks.net/dev-ops/components/containers/kaniko@2.1.4
+  - component: gitlab.kirauks.net/dev-ops/components/containers/kaniko@3.0.0
     inputs:
       job_name: kaniko:amd64
       stage: publish
       dockerfile: Dockerfile.amd64
       platform: linux/amd64
-      base_tag: ${IMAGE_TAG}
 
-  - component: gitlab.kirauks.net/dev-ops/components/containers/kaniko@2.1.4
+  - component: gitlab.kirauks.net/dev-ops/components/containers/kaniko@3.0.0
     inputs:
       job_name: kaniko:arm64
       stage: publish
       dockerfile: Dockerfile.arm64
       platform: linux/arm64
-      base_tag: ${IMAGE_TAG}
 
-  - component: gitlab.kirauks.net/dev-ops/components/containers/manifest@2.1.4
+  - component: gitlab.kirauks.net/dev-ops/components/containers/manifest@3.0.0
     inputs:
       job_name: manifest
       stage: publish
       platforms: linux/amd64,linux/arm64
-      base_tag: ${IMAGE_TAG}
 
-  - component: gitlab.kirauks.net/dev-ops/components/containers/trivy@2.1.4
+  - component: gitlab.kirauks.net/dev-ops/components/containers/trivy@3.0.0
     inputs:
       job_name: trivy
       stage: audit
-      image_tag: ${IMAGE_TAG}
       allow_failure: true
-
-  - component: gitlab.kirauks.net/dev-ops/components/containers/portainer@2.1.4
-    inputs:
-      job_name: portainer
-      stage: deploy
-      portainer_webhook: ${PORTAINER_WEBHOOK}
-      allow_failure: true
-
-env:
-  image: ${CI_DEPENDENCY_PROXY_GROUP_IMAGE_PREFIX}/busybox:1.37.0
-  stage: env
-  script:
-    - echo "IMAGE_TAG=${IMAGE_TAG}" > build.env
-  rules:
-    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
-      variables:
-        IMAGE_TAG: "latest"
-    - if: $CI_COMMIT_BRANCH
-      variables:
-        IMAGE_TAG: "${CI_COMMIT_REF_SLUG}"
-    - if: $CI_COMMIT_TAG
-      variables:
-        IMAGE_TAG: "${CI_COMMIT_REF_SLUG}"
-  artifacts:
-    reports:
-      dotenv: build.env
 
 sonarqube:
   needs:
@@ -226,21 +195,17 @@ rust-build-features:arm64:
         - swagger
 
 kaniko:amd64:
-  dependencies: 
-    - env
+  dependencies:
     - angular-build
     - rust-build:amd64
 
 kaniko:arm64:
-  dependencies: 
-    - env
+  dependencies:
     - angular-build
     - rust-build:arm64
 
 manifest:
   needs:
-    - job: env
-      artifacts: true
     - job: kaniko:amd64
       artifacts: false
     - job: kaniko:arm64
