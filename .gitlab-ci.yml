@@ -1,5 +1,5 @@
 variables:
-  VERSION_SLUG: ${CI_COMMIT_REF_NAME////-}+${CI_COMMIT_SHORT_SHA}
+  VERSION_SLUG: ${CI_COMMIT_REF_NAME}+${CI_COMMIT_SHORT_SHA}
 
 default:
   tags:
