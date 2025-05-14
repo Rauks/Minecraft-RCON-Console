@@ -13,7 +13,6 @@ stages:
   - build
   - publish
   - audit
-  - deploy
 
 include:
   # Scanners
