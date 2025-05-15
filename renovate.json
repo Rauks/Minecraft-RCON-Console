@@ -25,7 +25,8 @@
     {
       "matchCategories": ["docker"],
       "addLabels": ["docker"],
-      "minimumReleaseAge": "1 day"
+      "minimumReleaseAge": "1 day",
+      "pinDigests": true
     },
     {
       "matchCategories": ["rust"],
