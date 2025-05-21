@@ -16,25 +16,25 @@ stages:
 
 include:
   # Scanners
-  - component: gitlab.kirauks.net/dev-ops/components/scanners/gitguardian@3.2.17
+  - component: gitlab.kirauks.net/dev-ops/components/scanners/gitguardian@3.2.18
     inputs:
       job_name: gitguardian
       stage: scan
       allow_failure: true
 
-  - component: gitlab.kirauks.net/dev-ops/components/scanners/syft@3.2.17
+  - component: gitlab.kirauks.net/dev-ops/components/scanners/syft@3.2.18
     inputs:
       job_name: syft
       stage: scan
       allow_failure: true
 
-  - component: gitlab.kirauks.net/dev-ops/components/scanners/sonarqube@3.2.17
+  - component: gitlab.kirauks.net/dev-ops/components/scanners/sonarqube@3.2.18
     inputs:
       job_name: sonarqube
       stage: quality
       allow_failure: true
 
-  - component: gitlab.kirauks.net/dev-ops/components/scanners/grype@3.2.17
+  - component: gitlab.kirauks.net/dev-ops/components/scanners/grype@3.2.18
     inputs:
       job_name: grype
       stage: quality
