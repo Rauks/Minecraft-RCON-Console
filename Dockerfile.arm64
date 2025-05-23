@@ -1,4 +1,4 @@
-FROM arm64v8/debian:12.10-slim@sha256:ec93161e0250504fd3928ade02937386916f77889ebbebf329fad74665283dcf
+FROM arm64v8/debian:12.11-slim@sha256:e28c52cce4e07c012cede9d678f4cb19fd2e6413d9db6a93582ee87dbf29263e
 
 ENV DEBIAN_FRONTEND=noninteractive
 
