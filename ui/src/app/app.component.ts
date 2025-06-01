@@ -1,5 +1,5 @@
-import { AsyncPipe, DOCUMENT } from '@angular/common';
-import { ChangeDetectionStrategy, Component, Inject, OnDestroy, OnInit, Renderer2 } from '@angular/core';
+import { AsyncPipe } from '@angular/common';
+import { ChangeDetectionStrategy, Component, Inject, OnDestroy, OnInit, Renderer2, DOCUMENT } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { SettingsService, StorageService } from 'src/services';
