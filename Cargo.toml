@@ -3,7 +3,7 @@ name = "minecraft-rcon"
 edition = "2024"
 
 [dependencies]
-cfg-if = "1.0.0"
+cfg-if = "1.0.1"
 dotenvy = "0.15.7"
 log = "0.4.27"
 rand = "0.9.1"
