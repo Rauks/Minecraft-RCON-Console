@@ -22,12 +22,12 @@ COPY /ui/dist/browser /opt/www
 ENV ROOT_WWW=/opt/www
 
 # Unprivileged user
-RUN adduser \
+RUN useradd \
         --uid 2300 \
         --no-create-home \
-        --home /opt \
-        --disabled-login \
-        --shell /sbin/nologin \
+        --home-dir /opt \
+        --shell /usr/sbin/nologin \
+        --user-group \
         minecraft-rcon \
     && chown -R minecraft-rcon:minecraft-rcon /opt
 
