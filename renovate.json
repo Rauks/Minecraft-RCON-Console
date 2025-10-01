@@ -23,7 +23,7 @@
       "rangeStrategy": "bump"
     },
     {
-      "matchCategories": ["docker"],
+      "matchDatasources": ["docker"],
       "addLabels": ["docker"],
       "minimumReleaseAge": "1 day",
       "pinDigests": true
