@@ -89,27 +89,27 @@ include:
         - ./target/aarch64-unknown-linux-gnu/release/minecraft-rcon
 
   # Containers
-  - component: gitlab.kirauks.net/dev-ops/components/containers/kaniko@3.0.10
+  - component: gitlab.kirauks.net/dev-ops/components/containers/kaniko@3.0.11
     inputs:
       job_name: kaniko:amd64
       stage: publish
       dockerfile: Dockerfile.amd64
       platform: linux/amd64
 
-  - component: gitlab.kirauks.net/dev-ops/components/containers/kaniko@3.0.10
+  - component: gitlab.kirauks.net/dev-ops/components/containers/kaniko@3.0.11
     inputs:
       job_name: kaniko:arm64
       stage: publish
       dockerfile: Dockerfile.arm64
       platform: linux/arm64
 
-  - component: gitlab.kirauks.net/dev-ops/components/containers/manifest@3.0.10
+  - component: gitlab.kirauks.net/dev-ops/components/containers/manifest@3.0.11
     inputs:
       job_name: manifest
       stage: publish
       platforms: linux/amd64,linux/arm64
 
-  - component: gitlab.kirauks.net/dev-ops/components/containers/trivy@3.0.10
+  - component: gitlab.kirauks.net/dev-ops/components/containers/trivy@3.0.11
     inputs:
       job_name: trivy
       stage: audit
