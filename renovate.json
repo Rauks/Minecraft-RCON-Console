@@ -11,6 +11,22 @@
   ],
   "packageRules": [
     {
+      "matchUpdateTypes": ["major"],
+      "addLabels": ["major update"]
+    },
+    {
+      "matchUpdateTypes": ["minor"],
+      "addLabels": ["minor update"]
+    },
+    {
+      "matchUpdateTypes": ["patch"],
+      "addLabels": ["patch update"]
+    },
+    {
+      "matchUpdateTypes": ["digest"],
+      "addLabels": ["digest update"]
+    },
+    {
       "matchPackageNames": ["@angular/core", "@angular/cli"],
       "postUpgradeTasks": {
         "commands": [
