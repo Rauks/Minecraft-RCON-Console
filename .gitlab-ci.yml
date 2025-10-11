@@ -22,19 +22,13 @@ include:
       stage: scan
       allow_failure: true
 
-  - component: gitlab.kirauks.net/dev-ops/components/scanners/syft@4.0.0
-    inputs:
-      job_name: syft
-      stage: scan
-      allow_failure: true
-
-  - component: gitlab.kirauks.net/dev-ops/components/scanners/sonarqube@4.0.0
+  - component: gitlab.kirauks.net/dev-ops/components/sonarqube/sonarqube@1.0.0
     inputs:
       job_name: sonarqube
       stage: quality
       allow_failure: true
 
-  - component: gitlab.kirauks.net/dev-ops/components/scanners/grype@4.0.0
+  - component: gitlab.kirauks.net/dev-ops/components/sbom/grype@1.0.0
     inputs:
       job_name: grype
       stage: quality
@@ -124,11 +118,6 @@ sonarqube:
     - job: rust-test
       artifacts: true
   
-grype:
-  needs:
-    - job: syft
-      artifacts: true
-
 angular-test:
   before_script:
     - npm -v
