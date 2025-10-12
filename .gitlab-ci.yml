@@ -83,29 +83,29 @@ include:
         - ./target/aarch64-unknown-linux-gnu/release/minecraft-rcon
 
   # Containers
-  - component: gitlab.kirauks.net/dev-ops/components/containers/kaniko@3.0.12
+  - component: gitlab.kirauks.net/dev-ops/components/containers/build@4.0.0
     inputs:
-      job_name: kaniko:amd64
+      job_name: container:amd64
       stage: publish
       dockerfile: Dockerfile.amd64
       platform: linux/amd64
 
-  - component: gitlab.kirauks.net/dev-ops/components/containers/kaniko@3.0.12
+  - component: gitlab.kirauks.net/dev-ops/components/containers/build@4.0.0
     inputs:
-      job_name: kaniko:arm64
+      job_name: container:arm64
       stage: publish
       dockerfile: Dockerfile.arm64
       platform: linux/arm64
 
-  - component: gitlab.kirauks.net/dev-ops/components/containers/manifest@3.0.12
+  - component: gitlab.kirauks.net/dev-ops/components/containers/manifest@4.0.0
     inputs:
       job_name: manifest
       stage: publish
       platforms: linux/amd64,linux/arm64
 
-  - component: gitlab.kirauks.net/dev-ops/components/containers/trivy@3.0.12
+  - component: gitlab.kirauks.net/dev-ops/components/containers/audit@4.0.0
     inputs:
-      job_name: trivy
+      job_name: audit
       stage: audit
       allow_failure: true
 
@@ -150,20 +150,20 @@ rust-test:features:
         - metrics
         - swagger
 
-kaniko:amd64:
+container:amd64:
   dependencies:
     - angular-build
     - rust-build:amd64
 
-kaniko:arm64:
+container:arm64:
   dependencies:
     - angular-build
     - rust-build:arm64
 
 manifest:
   needs:
-    - job: kaniko:amd64
+    - job: container:amd64
       artifacts: false
-    - job: kaniko:arm64
+    - job: container:arm64
       artifacts: false
     
