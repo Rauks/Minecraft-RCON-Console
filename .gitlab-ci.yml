@@ -28,7 +28,7 @@ include:
       stage: quality
       allow_failure: true
 
-  - component: gitlab.kirauks.net/dev-ops/components/sbom/grype@1.0.0
+  - component: gitlab.kirauks.net/dev-ops/components/sbom/grype@1.0.1
     inputs:
       job_name: grype
       stage: quality
