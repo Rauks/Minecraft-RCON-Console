@@ -3,7 +3,7 @@
   "extends": [
     "config:recommended",
     "mergeConfidence:all-badges",
-    "npm:unpublishSafe",
+    "security:minimumReleaseAgeNpm",
     ":prHourlyLimitNone"
   ],
   "labels": [
@@ -11,23 +11,42 @@
   ],
   "packageRules": [
     {
-      "matchUpdateTypes": ["major"],
-      "addLabels": ["major update"]
+      "matchUpdateTypes": [
+        "major"
+      ],
+      "addLabels": [
+        "major update"
+      ]
     },
     {
-      "matchUpdateTypes": ["minor"],
-      "addLabels": ["minor update"]
+      "matchUpdateTypes": [
+        "minor"
+      ],
+      "addLabels": [
+        "minor update"
+      ]
     },
     {
-      "matchUpdateTypes": ["patch"],
-      "addLabels": ["patch update"]
+      "matchUpdateTypes": [
+        "patch"
+      ],
+      "addLabels": [
+        "patch update"
+      ]
     },
     {
-      "matchUpdateTypes": ["digest"],
-      "addLabels": ["digest update"]
+      "matchUpdateTypes": [
+        "digest"
+      ],
+      "addLabels": [
+        "digest update"
+      ]
     },
     {
-      "matchPackageNames": ["@angular/core", "@angular/cli"],
+      "matchPackageNames": [
+        "@angular/core",
+        "@angular/cli"
+      ],
       "postUpgradeTasks": {
         "commands": [
           "cd ./ui && npx ng update {{{depName}}} --from={{{currentVersion}}} --to={{{newVersion}}} --migrate-only --allow-dirty --force"
@@ -35,34 +54,61 @@
       }
     },
     {
-      "matchManagers": ["cargo"],
+      "matchManagers": [
+        "cargo"
+      ],
       "rangeStrategy": "bump"
     },
     {
-      "matchDatasources": ["docker"],
-      "addLabels": ["docker"],
+      "matchDatasources": [
+        "docker"
+      ],
+      "addLabels": [
+        "docker"
+      ],
       "minimumReleaseAge": "1 day",
       "pinDigests": true
     },
     {
-      "matchCategories": ["rust"],
-      "addLabels": ["rust"]
+      "matchCategories": [
+        "rust"
+      ],
+      "addLabels": [
+        "rust"
+      ]
     },
     {
-      "matchCategories": ["js"],
-      "addLabels": ["typescript"]
+      "matchCategories": [
+        "js"
+      ],
+      "addLabels": [
+        "typescript"
+      ]
     },
     {
-      "matchCategories": ["ci"],
-      "addLabels": ["pipeline"]
+      "matchCategories": [
+        "ci"
+      ],
+      "addLabels": [
+        "pipeline"
+      ]
     },
     {
-      "matchSourceUrls": ["https://gitlab.kirauks.net/**"],
-      "extends": [":automergeStableNonMajor"]
+      "matchSourceUrls": [
+        "https://gitlab.kirauks.net/**"
+      ],
+      "extends": [
+        ":automergeStableNonMajor"
+      ]
     },
     {
-      "matchCategories": ["rust", "js"],
-      "extends": [":automergePatch"]
+      "matchCategories": [
+        "rust",
+        "js"
+      ],
+      "extends": [
+        ":automergePatch"
+      ]
     }
   ]
 }
