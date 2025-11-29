@@ -10,15 +10,15 @@
   },
   "private": true,
   "dependencies": {
-    "@angular/animations": "^20.3.14",
-    "@angular/common": "^20.3.14",
-    "@angular/compiler": "^20.3.14",
-    "@angular/core": "^20.3.14",
-    "@angular/forms": "^20.3.14",
-    "@angular/platform-browser": "^20.3.14",
-    "@angular/platform-browser-dynamic": "^20.3.14",
-    "@angular/router": "^20.3.14",
-    "@fortawesome/angular-fontawesome": "^3.0.0",
+    "@angular/animations": "^21.0.0",
+    "@angular/common": "^21.0.0",
+    "@angular/compiler": "^21.0.0",
+    "@angular/core": "^21.0.0",
+    "@angular/forms": "^21.0.0",
+    "@angular/platform-browser": "^21.0.0",
+    "@angular/platform-browser-dynamic": "^21.0.0",
+    "@angular/router": "^21.0.0",
+    "@fortawesome/angular-fontawesome": "^4.0.0",
     "@fortawesome/fontawesome-svg-core": "^7.0.0",
     "@fortawesome/free-brands-svg-icons": "^7.0.0",
     "@fortawesome/pro-regular-svg-icons": "^7.0.0",
@@ -31,9 +31,9 @@
     "zone.js": "^0.15.0"
   },
   "devDependencies": {
-    "@angular-devkit/build-angular": "^20.3.12",
-    "@angular/cli": "^20.3.12",
-    "@angular/compiler-cli": "^20.3.14",
+    "@angular-devkit/build-angular": "^21.0.0",
+    "@angular/cli": "^21.0.0",
+    "@angular/compiler-cli": "^21.0.0",
     "@types/bootstrap": "^5.2.10",
     "@types/jasmine": "^5.1.0",
     "jasmine-core": "^5.5.0",
@@ -47,6 +47,6 @@
     "karma-jasmine-html-reporter": "^2.1.0",
     "karma-spec-reporter": "^0.0.36",
     "puppeteer": "^24.0.0",
-    "typescript": "^5.6.3"
+    "typescript": "^5.9.3"
   }
 }
