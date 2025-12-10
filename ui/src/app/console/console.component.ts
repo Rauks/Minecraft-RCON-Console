@@ -7,7 +7,6 @@ import { BehaviorSubject, debounceTime, map, Observable, take } from 'rxjs';
 import { fade } from 'src/animations';
 import { RconService } from 'src/services';
 import { Localizer } from 'src/utils';
-import { v4 as uuid } from 'uuid';
 import colorCodes from '../../config/minecraft-color-codes.json';
 import statusMatchers from '../../config/minecraft-status-matchers.json';
 import styleCodes from '../../config/minecraft-style-codes.json';
@@ -60,11 +59,19 @@ export class ConsoleComponent {
      * The history of the command results.
      */
     public readonly commandResultHistory$: BehaviorSubject<{
-        id: string,
+        id: number,
         sourceCommand: string,
         matchedStatus: CommandResultStatus,
         decodedReply: string | null
     }[]> = new BehaviorSubject([]);
+
+    /**
+     * Generates a unique ID
+     */
+    private readonly uid = (() => {
+        let uid = 0;
+        return () => ++uid;
+    })();
 
     constructor(
         private readonly rconService: RconService,
@@ -127,7 +134,7 @@ export class ConsoleComponent {
     /**
      * Removes a command result from the history
      */
-    public removeFromHistory(id: string): void {
+    public removeFromHistory(id: number): void {
         this.commandResultHistory$.next(
             this.commandResultHistory$.value.filter(result => result.id !== id)
         );
@@ -172,7 +179,7 @@ export class ConsoleComponent {
                 next: (reply) => {
                     this.commandResultHistory$.next([
                         {
-                            id: uuid(),
+                            id: this.uid(),
                             sourceCommand: command,
                             matchedStatus: this.matchStatus(reply),
                             decodedReply: this.decodeResponse(reply),
@@ -186,7 +193,7 @@ export class ConsoleComponent {
                 error: (error) => {
                     this.commandResultHistory$.next([
                         {
-                            id: uuid(),
+                            id: this.uid(),
                             sourceCommand: command,
                             matchedStatus: "com",
                             decodedReply: error?.message

@@ -7,7 +7,6 @@ import { BehaviorSubject, Subject, throwError } from 'rxjs';
 import { RconService } from 'src/services';
 import { advance, advanceWithDelay } from 'src/testing';
 import { Localizer } from 'src/utils';
-import { v4 as uuid } from 'uuid';
 import colorCodes from '../../config/minecraft-color-codes.json';
 import styleCodes from '../../config/minecraft-style-codes.json';
 import { ConsoleComponent, SLOW_COMMAND_DEBOUNCE_TIME } from './console.component';
@@ -32,6 +31,16 @@ describe('ConsoleComponent', () => {
 
     it("should be created", () => {
         expect(component).toBeTruthy();
+    });
+
+    it("should generate a different and incremental uid", () => {
+        const first = component["uid"]();
+        const second = component["uid"]();
+        const third = component["uid"]();
+
+        expect(first).toBe(1);
+        expect(second).toBe(2);
+        expect(third).toBe(3);
     });
 
     it("should send a command", () => {
@@ -138,19 +147,19 @@ describe('ConsoleComponent', () => {
 
         component.commandResultHistory$.next([
             {
-                id: uuid(),
+                id: 1,
                 sourceCommand: "test 3",
                 matchedStatus: "unknown",
                 decodedReply: component.decodeResponse("test response 3"),
             },
             {
-                id: uuid(),
+                id: 2,
                 sourceCommand: "test 2",
                 matchedStatus: "unknown",
                 decodedReply: component.decodeResponse("test response 2"),
             },
             {
-                id: uuid(),
+                id: 3,
                 sourceCommand: "test 1",
                 matchedStatus: "unknown",
                 decodedReply: component.decodeResponse("test response 1"),
@@ -199,7 +208,7 @@ describe('ConsoleComponent', () => {
         expect(lastReplyCard).toBeNull();
 
         component.commandResultHistory$.next([{
-            id: uuid(),
+            id: 1,
             sourceCommand: "test",
             matchedStatus: "unknown",
             decodedReply: component.decodeResponse("test response"),
@@ -288,7 +297,7 @@ describe('ConsoleComponent', () => {
         fixture.detectChanges();
 
         component.commandResultHistory$.next([{
-            id: uuid(),
+            id: 1,
             sourceCommand: "test",
             matchedStatus: "error",
             decodedReply: component.decodeResponse("test response"),
@@ -303,7 +312,7 @@ describe('ConsoleComponent', () => {
         fixture.detectChanges();
 
         component.commandResultHistory$.next([{
-            id: uuid(),
+            id: 1,
             sourceCommand: "test",
             matchedStatus: "invalid",
             decodedReply: component.decodeResponse("test response"),
@@ -318,7 +327,7 @@ describe('ConsoleComponent', () => {
         fixture.detectChanges();
 
         component.commandResultHistory$.next([{
-            id: uuid(),
+            id: 1,
             sourceCommand: "test",
             matchedStatus: "unknown",
             decodedReply: component.decodeResponse("test response"),
@@ -333,7 +342,7 @@ describe('ConsoleComponent', () => {
         fixture.detectChanges();
 
         component.commandResultHistory$.next([{
-            id: uuid(),
+            id: 1,
             sourceCommand: "test",
             matchedStatus: "com",
             decodedReply: component.decodeResponse("test response"),
@@ -369,13 +378,13 @@ describe('ConsoleComponent', () => {
     it("should remove the command result from the history", () => {
         expect(component.commandResultHistory$.value.length).toBe(0);
 
-        const id = uuid();
+        const id = 1;
         component.commandResultHistory$.next([
             { id, sourceCommand: "test", matchedStatus: "unknown", decodedReply: "test response" },
         ]);
         expect(component.commandResultHistory$.value.length).toBe(1);
 
-        component.removeFromHistory(uuid());
+        component.removeFromHistory(0);
         expect(component.commandResultHistory$.value.length).toBe(1);
 
         component.removeFromHistory(id);
@@ -384,10 +393,10 @@ describe('ConsoleComponent', () => {
 
     it("should disable the resend button if the reply status means the command is not resendable", () => {
         component.commandResultHistory$.next([
-            { id: uuid(), sourceCommand: "test unknown", matchedStatus: "unknown", decodedReply: "test unknown response" },
-            { id: uuid(), sourceCommand: "test error", matchedStatus: "error", decodedReply: "test error response" },
-            { id: uuid(), sourceCommand: "test invalid", matchedStatus: "invalid", decodedReply: "test invalid response" },
-            { id: uuid(), sourceCommand: "test com", matchedStatus: "com", decodedReply: "test com response" },
+            { id: 1, sourceCommand: "test unknown", matchedStatus: "unknown", decodedReply: "test unknown response" },
+            { id: 2, sourceCommand: "test error", matchedStatus: "error", decodedReply: "test error response" },
+            { id: 3, sourceCommand: "test invalid", matchedStatus: "invalid", decodedReply: "test invalid response" },
+            { id: 4, sourceCommand: "test com", matchedStatus: "com", decodedReply: "test com response" },
         ]);
 
         fixture.detectChanges();
@@ -404,7 +413,7 @@ describe('ConsoleComponent', () => {
         const sendSpy = spyOn(component, "onSubmit");
 
         component.commandResultHistory$.next([
-            { id: uuid(), sourceCommand: "test", matchedStatus: "unknown", decodedReply: "test response" },
+            { id: 1, sourceCommand: "test", matchedStatus: "unknown", decodedReply: "test response" },
         ]);
 
         fixture.detectChanges();
@@ -421,7 +430,7 @@ describe('ConsoleComponent', () => {
         const sendSpy = spyOn(component, "onSubmit");
 
         component.commandResultHistory$.next([
-            { id: uuid(), sourceCommand: "test", matchedStatus: "error", decodedReply: "test response" },
+            { id: 1, sourceCommand: "test", matchedStatus: "error", decodedReply: "test response" },
         ]);
 
         fixture.detectChanges();
@@ -437,7 +446,7 @@ describe('ConsoleComponent', () => {
         const prefillSpy = spyOn(component, "prefillCommand").and.callThrough();
 
         component.commandResultHistory$.next([
-            { id: uuid(), sourceCommand: "test", matchedStatus: "unknown", decodedReply: "test response" },
+            { id: 1, sourceCommand: "test", matchedStatus: "unknown", decodedReply: "test response" },
         ]);
 
         fixture.detectChanges();
@@ -452,7 +461,7 @@ describe('ConsoleComponent', () => {
         const sendSpy = spyOn(component, "onSubmit");
 
         component.commandResultHistory$.next([
-            { id: uuid(), sourceCommand: "test", matchedStatus: "unknown", decodedReply: "test response" },
+            { id: 1, sourceCommand: "test", matchedStatus: "unknown", decodedReply: "test response" },
         ]);
 
         fixture.detectChanges();
@@ -466,7 +475,7 @@ describe('ConsoleComponent', () => {
     it("should remove the command result from the history when the remove button is clicked", () => {
         const removeSpy = spyOn(component, "removeFromHistory").and.callThrough();
 
-        const id = uuid();
+        const id = 1;
         component.commandResultHistory$.next([
             { id, sourceCommand: "test", matchedStatus: "unknown", decodedReply: "test response" },
         ]);
