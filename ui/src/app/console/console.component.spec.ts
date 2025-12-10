@@ -8,7 +8,7 @@ import { RconService } from 'src/services';
 import { Localizer } from 'src/utils';
 import colorCodes from '../../config/minecraft-color-codes.json';
 import styleCodes from '../../config/minecraft-style-codes.json';
-import { ConsoleComponent } from './console.component';
+import { ConsoleComponent, SLOW_COMMAND_DEBOUNCE_TIME } from './console.component';
 
 describe('ConsoleComponent', () => {
     let component: ConsoleComponent;
@@ -90,24 +90,33 @@ describe('ConsoleComponent', () => {
         expect(component.commandForm.value.command).toBeNull();
     });
 
-    // it("should display a loader when a command reply is pending and is slow", fakeAsync(() => {
-    //     fixture.detectChanges();
+    it("should display a loader when a command reply is pending and is slow", () => {
+        vi.useFakeTimers();
 
-    //     advance(fixture);
-    //     let loader = fixture.debugElement.query(By.css("loader"));
-    //     expect(loader).toBeNull();
+        fixture.detectChanges();
 
-    //     component.pendingCommandsCount$.next(1);
-    //     fixture.detectChanges();
+        // No pending command, no loader
+        let loader = fixture.debugElement.query(By.css("loader"));
+        expect(loader).toBeNull();
 
-    //     advance(fixture);
-    //     loader = fixture.debugElement.query(By.css("loader"));
-    //     expect(loader).toBeNull();
+        // Simulating a pending command
+        component.pendingCommandsCount$.next(1);
+        fixture.detectChanges();
 
-    //     advanceWithDelay(fixture, SLOW_COMMAND_DEBOUNCE_TIME + 1);
-    //     loader = fixture.debugElement.query(By.css("loader"));
-    //     expect(loader).not.toBeNull();
-    // }));
+        // Before debounce time, no loader
+        vi.advanceTimersByTime(SLOW_COMMAND_DEBOUNCE_TIME - 1);
+        fixture.detectChanges();
+        loader = fixture.debugElement.query(By.css("loader"));
+        expect(loader).toBeNull();
+
+        // Loader should show up
+        vi.advanceTimersByTime(2);
+        fixture.detectChanges();
+        loader = fixture.debugElement.query(By.css("loader"));
+        expect(loader).not.toBeNull();
+
+        vi.useRealTimers();
+    });
 
     it("should add the command result to the top of the history", () => {
         const spy = vi.spyOn(component["rconService"], "sendCommand").mockReturnValueOnce(new BehaviorSubject("test response 1")).mockReturnValueOnce(new BehaviorSubject("test response 2")).mockReturnValueOnce(new BehaviorSubject("test response 3"));
