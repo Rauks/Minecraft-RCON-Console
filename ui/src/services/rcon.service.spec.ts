@@ -38,7 +38,7 @@ describe("RconService", () => {
             next: (response) => {
                 expect(response).toEqual("test response");
             },
-            error: fail,
+            error: (error) => { throw error; },
         });
 
         const req = httpTestingController.expectOne("/api/rcon");

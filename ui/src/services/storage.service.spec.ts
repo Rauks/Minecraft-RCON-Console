@@ -20,12 +20,12 @@ describe("StorageService", () => {
     it("should enable persistence", () => {
         service.enablePeristance();
 
-        expect(service["isPersistanceEnabled"]).toBeTrue();
+        expect(service["isPersistanceEnabled"]).toBe(true);
     });
 
     it("should disable persistence", () => {
         service.disablePeristance();
-        expect(service["isPersistanceEnabled"]).toBeFalse();
+        expect(service["isPersistanceEnabled"]).toBe(false);
     });
 
     it("should persist the settings", () => {
@@ -44,7 +44,7 @@ describe("StorageService", () => {
         expect(JSON.parse(localStorage.getItem(StorageService["LS_SETTINGS"]))).toBeTruthy();
 
         // Reload from storage
-        spyOn(settingsService, "setSettings");
+        vi.spyOn(settingsService, "setSettings");
 
         service.reloadAll();
 

@@ -40,7 +40,7 @@ describe('ShortcutsComponent', () => {
     });
 
     it("should emit the shortcut when clicked", () => {
-        const spy = spyOn(component.shortcutClicked, "emit");
+        const spy = vi.spyOn(component.shortcutClicked, "emit");
 
         fixture.detectChanges();
         const shortcut = component.shortcuts[0];
