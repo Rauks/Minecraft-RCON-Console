@@ -22,7 +22,7 @@ include:
       stage: scan
       allow_failure: true
 
-  - component: gitlab.kirauks.net/dev-ops/components/sonarqube/sonarqube@1.0.1
+  - component: gitlab.kirauks.net/dev-ops/components/sonarqube/sonarqube@1.0.2
     inputs:
       job_name: sonarqube
       stage: quality
