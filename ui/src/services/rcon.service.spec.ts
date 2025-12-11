@@ -16,7 +16,6 @@ describe("RconService", () => {
                 provideHttpClient(withInterceptorsFromDi()),
                 provideHttpClientTesting()
             ],
-
         });
 
         httpClient = TestBed.inject(HttpClient);

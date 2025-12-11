@@ -2,7 +2,7 @@ import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http'
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
-import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { BehaviorSubject, Subject, throwError } from 'rxjs';
 import { RconService } from 'src/services';
 import { Localizer } from 'src/utils';
@@ -16,9 +16,10 @@ describe('ConsoleComponent', () => {
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
-            imports: [ConsoleComponent, NoopAnimationsModule],
+            imports: [ConsoleComponent],
             providers: [
                 RconService,
+                provideNoopAnimations(),
                 provideHttpClient(withInterceptorsFromDi()),
                 provideHttpClientTesting()
             ],
