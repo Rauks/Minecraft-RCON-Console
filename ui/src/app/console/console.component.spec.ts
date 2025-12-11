@@ -1,11 +1,10 @@
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
-import { ComponentFixture, fakeAsync, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { BehaviorSubject, Subject, throwError } from 'rxjs';
 import { RconService } from 'src/services';
-import { advance, advanceWithDelay } from 'src/testing';
 import { Localizer } from 'src/utils';
 import colorCodes from '../../config/minecraft-color-codes.json';
 import styleCodes from '../../config/minecraft-style-codes.json';
@@ -44,9 +43,7 @@ describe('ConsoleComponent', () => {
     });
 
     it("should send a command", () => {
-        const spy = spyOn(component["rconService"], "sendCommand")
-            .and
-            .returnValue(new BehaviorSubject("test response"));
+        const spy = vi.spyOn(component["rconService"], "sendCommand").mockReturnValue(new BehaviorSubject("test response"));
 
         component.commandForm.setValue({ command: "test" });
         component.onSubmit();
@@ -65,9 +62,7 @@ describe('ConsoleComponent', () => {
         const firstResponseSubject = new Subject<string>();
         const secondResponseSubject = new Subject<string>();
 
-        spyOn(component["rconService"], "sendCommand")
-            .and
-            .returnValues(firstResponseSubject, secondResponseSubject);
+        vi.spyOn(component["rconService"], "sendCommand").mockReturnValueOnce(firstResponseSubject).mockReturnValueOnce(secondResponseSubject);
 
         expect(component.pendingCommandsCount$.value).toBe(0);
 
@@ -87,9 +82,7 @@ describe('ConsoleComponent', () => {
     });
 
     it("should reset the command form after sending a command", () => {
-        spyOn(component["rconService"], "sendCommand")
-            .and
-            .returnValue(new BehaviorSubject("test response"));
+        vi.spyOn(component["rconService"], "sendCommand").mockReturnValue(new BehaviorSubject("test response"));
 
         component.commandForm.setValue({ command: "test" });
         component.onSubmit();
@@ -97,33 +90,36 @@ describe('ConsoleComponent', () => {
         expect(component.commandForm.value.command).toBeNull();
     });
 
-    it("should display a loader when a command reply is pending and is slow", fakeAsync(() => {
+    it("should display a loader when a command reply is pending and is slow", () => {
+        vi.useFakeTimers();
+
         fixture.detectChanges();
 
-        advance(fixture);
+        // No pending command, no loader
         let loader = fixture.debugElement.query(By.css("loader"));
         expect(loader).toBeNull();
 
+        // Simulating a pending command
         component.pendingCommandsCount$.next(1);
         fixture.detectChanges();
 
-        advance(fixture);
+        // Before debounce time, no loader
+        vi.advanceTimersByTime(SLOW_COMMAND_DEBOUNCE_TIME - 1);
+        fixture.detectChanges();
         loader = fixture.debugElement.query(By.css("loader"));
         expect(loader).toBeNull();
 
-        advanceWithDelay(fixture, SLOW_COMMAND_DEBOUNCE_TIME + 1);
+        // Loader should show up
+        vi.advanceTimersByTime(2);
+        fixture.detectChanges();
         loader = fixture.debugElement.query(By.css("loader"));
         expect(loader).not.toBeNull();
-    }));
+
+        vi.useRealTimers();
+    });
 
     it("should add the command result to the top of the history", () => {
-        const spy = spyOn(component["rconService"], "sendCommand")
-            .and
-            .returnValues(
-                new BehaviorSubject("test response 1"),
-                new BehaviorSubject("test response 2"),
-                new BehaviorSubject("test response 3"),
-            );
+        const spy = vi.spyOn(component["rconService"], "sendCommand").mockReturnValueOnce(new BehaviorSubject("test response 1")).mockReturnValueOnce(new BehaviorSubject("test response 2")).mockReturnValueOnce(new BehaviorSubject("test response 3"));
 
         component.commandForm.setValue({ command: "test 1" });
         component.onSubmit();
@@ -181,9 +177,7 @@ describe('ConsoleComponent', () => {
     });
 
     it("should send the placeholder command if no command is entered", () => {
-        const spy = spyOn(component["rconService"], "sendCommand")
-            .and
-            .returnValue(new BehaviorSubject("test response"));
+        const spy = vi.spyOn(component["rconService"], "sendCommand").mockReturnValue(new BehaviorSubject("test response"));
 
         component.onSubmit();
 
@@ -191,9 +185,7 @@ describe('ConsoleComponent', () => {
     });
 
     it("should send the placeholder command if the command is only spaces", () => {
-        const spy = spyOn(component["rconService"], "sendCommand")
-            .and
-            .returnValue(new BehaviorSubject("test response"));
+        const spy = vi.spyOn(component["rconService"], "sendCommand").mockReturnValue(new BehaviorSubject("test response"));
 
         component.commandForm.setValue({ command: "    " });
         component.onSubmit();
@@ -221,9 +213,7 @@ describe('ConsoleComponent', () => {
     });
 
     it("should display a com error in case of http error", () => {
-        const spy = spyOn(component["rconService"], "sendCommand")
-            .and
-            .returnValue(throwError(() => new Error("this is a com error")));
+        const spy = vi.spyOn(component["rconService"], "sendCommand").mockReturnValue(throwError(() => new Error("this is a com error")));
 
         fixture.detectChanges();
 
@@ -236,13 +226,11 @@ describe('ConsoleComponent', () => {
         expect(lastReplyCard.nativeElement.textContent).toBe("this is a com error");
 
         let card = fixture.debugElement.query(By.css(".card-header"));
-        expect(card.nativeElement).toHaveClass("border-danger");
+        expect(card.nativeElement.classList.contains("border-danger")).toBe(true);
     });
 
     it("should display a generic communcation error in case of http error without message", () => {
-        const spy = spyOn(component["rconService"], "sendCommand")
-            .and
-            .returnValue(throwError(() => null));
+        const spy = vi.spyOn(component["rconService"], "sendCommand").mockReturnValue(throwError(() => null));
 
         fixture.detectChanges();
 
@@ -255,7 +243,7 @@ describe('ConsoleComponent', () => {
         expect(lastReplyCard.nativeElement.textContent).toBe(Localizer.getInstance().translate("tk.error.com.unknown"));
 
         let card = fixture.debugElement.query(By.css(".card-header"));
-        expect(card.nativeElement).toHaveClass("border-danger");
+        expect(card.nativeElement.classList.contains("border-danger")).toBe(true);
     });
 
     it("should reset the command form", () => {
@@ -268,13 +256,15 @@ describe('ConsoleComponent', () => {
     it("should decode the color codes", () => {
         for (let colorCode of ["1", "2", "3", "4", "5", "6", "7", "8", "9", "a", "b", "c", "d", "e", "f"]) {
             expect(component.decodeResponse(`§${colorCode}test§r`)).toEqual(`<span style="color: ${colorCodes[colorCode]};">test</span>`);
-        };
+        }
+        ;
     });
 
     it("should decode the style codes", () => {
         for (let styleCode of ["k", "l", "m", "n", "o"]) {
             expect(component.decodeResponse(`§${styleCode}test§r`)).toEqual(`<span style="${styleCodes[styleCode]};">test</span>`);
-        };
+        }
+        ;
     });
 
     it("should decode new lines", () => {
@@ -305,7 +295,7 @@ describe('ConsoleComponent', () => {
         fixture.detectChanges();
 
         let card = fixture.debugElement.query(By.css(".card-header"));
-        expect(card.nativeElement).toHaveClass("border-danger");
+        expect(card.nativeElement.classList.contains("border-danger")).toBe(true);
     });
 
     it("should display the command invalid status", () => {
@@ -320,7 +310,7 @@ describe('ConsoleComponent', () => {
         fixture.detectChanges();
 
         let card = fixture.debugElement.query(By.css(".card-header"));
-        expect(card.nativeElement).toHaveClass("border-warning");
+        expect(card.nativeElement.classList.contains("border-warning")).toBe(true);
     });
 
     it("should display the command success status", () => {
@@ -335,7 +325,7 @@ describe('ConsoleComponent', () => {
         fixture.detectChanges();
 
         let card = fixture.debugElement.query(By.css(".card-header"));
-        expect(card.nativeElement).toHaveClass("border-success");
+        expect(card.nativeElement.classList.contains("border-success")).toBe(true);
     });
 
     it("should display the com error status", () => {
@@ -350,7 +340,7 @@ describe('ConsoleComponent', () => {
         fixture.detectChanges();
 
         let card = fixture.debugElement.query(By.css(".card-header"));
-        expect(card.nativeElement).toHaveClass("border-danger");
+        expect(card.nativeElement.classList.contains("border-danger")).toBe(true);
     });
 
     it("should prefill the command form", () => {
@@ -364,7 +354,7 @@ describe('ConsoleComponent', () => {
     });
 
     it("should prefill the command form when a shortcut is clicked", () => {
-        component.prefillCommand = jasmine.createSpy("prefillCommand");
+        component.prefillCommand = vi.fn();
 
         component.onShortcutClicked({ command: "test" });
 
@@ -402,15 +392,15 @@ describe('ConsoleComponent', () => {
         fixture.detectChanges();
 
         let buttons = fixture.debugElement.queryAll(By.css(".reply-resend"));
-        expect(buttons[0].nativeElement).not.toHaveClass("disabled"); // unknown
-        expect(buttons[1].nativeElement).toHaveClass("disabled"); // error
-        expect(buttons[2].nativeElement).toHaveClass("disabled"); // invalid
-        expect(buttons[3].nativeElement).not.toHaveClass("disabled"); // com
+        expect(buttons[0].nativeElement.classList.contains("disabled")).toBe(false); // unknown
+        expect(buttons[1].nativeElement.classList.contains("disabled")).toBe(true); // error
+        expect(buttons[2].nativeElement.classList.contains("disabled")).toBe(true); // invalid
+        expect(buttons[3].nativeElement.classList.contains("disabled")).toBe(false); // com
     });
 
     it("should resend the command when the resent button is clicked", () => {
-        const prefillSpy = spyOn(component, "prefillCommand").and.callThrough();
-        const sendSpy = spyOn(component, "onSubmit");
+        const prefillSpy = vi.spyOn(component, "prefillCommand");
+        const sendSpy = vi.spyOn(component, "onSubmit");
 
         component.commandResultHistory$.next([
             { id: 1, sourceCommand: "test", matchedStatus: "unknown", decodedReply: "test response" },
@@ -426,8 +416,8 @@ describe('ConsoleComponent', () => {
     });
 
     it("should not resend the command when the resent button is clicked and the status is not resendable", () => {
-        const prefillSpy = spyOn(component, "prefillCommand").and.callThrough();
-        const sendSpy = spyOn(component, "onSubmit");
+        const prefillSpy = vi.spyOn(component, "prefillCommand");
+        const sendSpy = vi.spyOn(component, "onSubmit");
 
         component.commandResultHistory$.next([
             { id: 1, sourceCommand: "test", matchedStatus: "error", decodedReply: "test response" },
@@ -443,7 +433,7 @@ describe('ConsoleComponent', () => {
     });
 
     it("should autofill the command form when the autofill button is clicked", () => {
-        const prefillSpy = spyOn(component, "prefillCommand").and.callThrough();
+        const prefillSpy = vi.spyOn(component, "prefillCommand");
 
         component.commandResultHistory$.next([
             { id: 1, sourceCommand: "test", matchedStatus: "unknown", decodedReply: "test response" },
@@ -458,7 +448,7 @@ describe('ConsoleComponent', () => {
     });
 
     it("should not send the command when the autofill button is clicked", () => {
-        const sendSpy = spyOn(component, "onSubmit");
+        const sendSpy = vi.spyOn(component, "onSubmit");
 
         component.commandResultHistory$.next([
             { id: 1, sourceCommand: "test", matchedStatus: "unknown", decodedReply: "test response" },
@@ -473,7 +463,7 @@ describe('ConsoleComponent', () => {
     });
 
     it("should remove the command result from the history when the remove button is clicked", () => {
-        const removeSpy = spyOn(component, "removeFromHistory").and.callThrough();
+        const removeSpy = vi.spyOn(component, "removeFromHistory");
 
         const id = 1;
         component.commandResultHistory$.next([

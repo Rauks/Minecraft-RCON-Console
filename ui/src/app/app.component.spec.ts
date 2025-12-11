@@ -58,21 +58,21 @@ describe('AppComponent', () => {
 
     it("should toggle the navbar collapse", () => {
         // Should be true by default
-        expect(component.navbarState$.value.collapsed).toBeTrue();
+        expect(component.navbarState$.value.collapsed).toBe(true);
 
         component.toggleNavbarCollapse();
-        expect(component.navbarState$.value.collapsed).toBeFalse();
+        expect(component.navbarState$.value.collapsed).toBe(false);
         component.toggleNavbarCollapse();
-        expect(component.navbarState$.value.collapsed).toBeTrue();
+        expect(component.navbarState$.value.collapsed).toBe(true);
     });
 
     it("should close the navbar collapse", () => {
         component.closeNavbarCollapse();
-        expect(component.navbarState$.value.collapsed).toBeTrue();
+        expect(component.navbarState$.value.collapsed).toBe(true);
     });
 
     it("should reload all settings from storage on init", () => {
-        spyOn(component["storageService"], "reloadAll").and.callThrough();
+        vi.spyOn(component["storageService"], "reloadAll");
 
         fixture.detectChanges();
 

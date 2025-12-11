@@ -19,6 +19,6 @@ describe("LoaderComponent", () => {
     });
 
     it("should have small mode disabled by default", () => {
-        expect(component.small).toBeFalse();
+        expect(component.small).toBe(false);
     });
 });
