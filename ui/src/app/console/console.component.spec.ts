@@ -94,29 +94,33 @@ describe('ConsoleComponent', () => {
     it("should display a loader when a command reply is pending and is slow", () => {
         vi.useFakeTimers();
 
-        fixture.detectChanges();
+        try {
+            fixture.detectChanges();
 
-        // No pending command, no loader
-        let loader = fixture.debugElement.query(By.css("loader"));
-        expect(loader).toBeNull();
+            // No pending command, no loader
+            let loader = fixture.debugElement.query(By.css("loader"));
+            expect(loader).toBeNull();
 
-        // Simulating a pending command
-        component.pendingCommandsCount$.next(1);
-        fixture.detectChanges();
+            // Simulating a pending command
+            component.pendingCommandsCount$.next(1);
+            fixture.detectChanges();
 
-        // Before debounce time, no loader
-        vi.advanceTimersByTime(SLOW_COMMAND_DEBOUNCE_TIME - 1);
-        fixture.detectChanges();
-        loader = fixture.debugElement.query(By.css("loader"));
-        expect(loader).toBeNull();
+            // Before debounce time, no loader
+            vi.advanceTimersByTime(SLOW_COMMAND_DEBOUNCE_TIME - 1);
+            fixture.detectChanges();
+            loader = fixture.debugElement.query(By.css("loader"));
+            expect(loader).toBeNull();
 
-        // Loader should show up
-        vi.advanceTimersByTime(2);
-        fixture.detectChanges();
-        loader = fixture.debugElement.query(By.css("loader"));
-        expect(loader).not.toBeNull();
-
-        vi.useRealTimers();
+            // Loader should show up
+            vi.advanceTimersByTime(2);
+            fixture.detectChanges();
+            loader = fixture.debugElement.query(By.css("loader"));
+            expect(loader).not.toBeNull();
+        }
+        finally {
+            vi.clearAllTimers();
+            vi.useRealTimers();
+        }
     });
 
     it("should add the command result to the top of the history", () => {
