@@ -1,22 +1,18 @@
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
-import { provideHttpClientTesting } from '@angular/common/http/testing';
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { By } from '@angular/platform-browser';
-import { RconService } from 'src/services';
-import { ShortcutsComponent } from './shortcuts.component';
+import { provideHttpClient, withInterceptorsFromDi } from "@angular/common/http";
+import { provideHttpClientTesting } from "@angular/common/http/testing";
+import { ComponentFixture, TestBed } from "@angular/core/testing";
+import { By } from "@angular/platform-browser";
+import { RconService } from "src/services";
+import { ShortcutsComponent } from "./shortcuts.component";
 
-describe('ShortcutsComponent', () => {
+describe("ShortcutsComponent", () => {
     let component: ShortcutsComponent;
     let fixture: ComponentFixture<ShortcutsComponent>;
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
             imports: [ShortcutsComponent],
-            providers: [
-                RconService,
-                provideHttpClient(withInterceptorsFromDi()),
-                provideHttpClientTesting()
-            ],
+            providers: [RconService, provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()],
         }).compileComponents();
 
         fixture = TestBed.createComponent(ShortcutsComponent);

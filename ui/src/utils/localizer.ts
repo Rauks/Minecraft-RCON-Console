@@ -20,7 +20,7 @@ export class Localizer {
 
     /**
      * Overrides the default locale with the provided one
-     * 
+     *
      * @param locale The locale to load
      */
     public loadLocale(locale: { [key: string]: string }): void {

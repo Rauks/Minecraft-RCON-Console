@@ -4,10 +4,19 @@
         "editor.formatOnSave": true
     },
     "[typescript]": {
+        "editor.defaultFormatter": "prettier.prettier-vscode",
         "editor.formatOnSave": true,
         "editor.codeActionsOnSave": {
             "source.organizeImports": "always"
-        }
+        },
+        "prettier.printWidth": 120,
+        "prettier.tabWidth": 4
+    },
+    "[html]": {
+        "editor.defaultFormatter": "prettier.prettier-vscode",
+        "editor.formatOnSave": true,
+        "prettier.printWidth": 120,
+        "prettier.tabWidth": 4
     },
     "rust-analyzer.checkOnSave": true,
     "rust-analyzer.check.command": "clippy"

@@ -1,17 +1,16 @@
 @if (ready$ | async) {
     <nav class="navbar navbar-expand-md fixed-top navbar-dark bg-dark">
         <div class="container">
-
             <a class="navbar-brand" routerLink="/">
                 <fa-icon icon="cube"></fa-icon>
-                {{ 'tk.app' | localize }}
+                {{ "tk.app" | localize }}
             </a>
 
             @if (navbarState$ | async; as navbarState) {
-                <button 
-                    class="navbar-toggler" 
-                    (click)="toggleNavbarCollapse()" 
-                    type="button" 
+                <button
+                    class="navbar-toggler"
+                    (click)="toggleNavbarCollapse()"
+                    type="button"
                     data-toggle="collapse"
                     data-target="#navbarNav"
                 >
@@ -24,10 +23,11 @@
                                 @if (theme$ | async; as theme) {
                                     @switch (theme) {
                                         @case ("dark") {
-                                            <fa-icon 
-                                                icon="moon" 
-                                                [title]="'tk.theme.light.enable' | localize" 
-                                                [fixedWidth]="true">
+                                            <fa-icon
+                                                icon="moon"
+                                                [title]="'tk.theme.light.enable' | localize"
+                                                [fixedWidth]="true"
+                                            >
                                             </fa-icon>
                                             <span class="d-inline d-md-none ms-1">{{
                                                 "tk.theme.dark.enabled" | localize
@@ -54,13 +54,12 @@
                             <a class="nav-link" href="/swagger-ui/" target="_blank">
                                 <fa-icon icon="gear-code" [title]="'tk.openapi' | localize" [fixedWidth]="true">
                                 </fa-icon>
-                                <span class="d-inline d-md-none ms-1">{{ 'tk.openapi' | localize }}</span>
+                                <span class="d-inline d-md-none ms-1">{{ "tk.openapi" | localize }}</span>
                             </a>
                         </li>
                     </ul>
                 </div>
             }
-
         </div>
     </nav>
     <div class="container">

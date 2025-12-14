@@ -1,16 +1,16 @@
-import { AsyncPipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
-import { minimatch } from 'minimatch';
-import { BehaviorSubject, debounceTime, map, Observable, take } from 'rxjs';
-import { fade } from 'src/animations';
-import { RconService } from 'src/services';
-import { Localizer } from 'src/utils';
-import colorCodes from '../../config/minecraft-color-codes.json';
-import statusMatchers from '../../config/minecraft-status-matchers.json';
-import styleCodes from '../../config/minecraft-style-codes.json';
-import { IconsModule, LocalizePipe } from '../core';
+import { AsyncPipe } from "@angular/common";
+import { ChangeDetectionStrategy, Component } from "@angular/core";
+import { FormControl, FormGroup, ReactiveFormsModule } from "@angular/forms";
+import { DomSanitizer, SafeHtml } from "@angular/platform-browser";
+import { minimatch } from "minimatch";
+import { BehaviorSubject, debounceTime, map, Observable, take } from "rxjs";
+import { fade } from "src/animations";
+import { RconService } from "src/services";
+import { Localizer } from "src/utils";
+import colorCodes from "../../config/minecraft-color-codes.json";
+import statusMatchers from "../../config/minecraft-status-matchers.json";
+import styleCodes from "../../config/minecraft-style-codes.json";
+import { IconsModule, LocalizePipe } from "../core";
 import { LoaderComponent } from "../core/loader/loader.component";
 import { ShortcutsComponent } from "../shortcuts/shortcuts.component";
 
@@ -19,11 +19,11 @@ export type CommandResultStatus = "unknown" | "error" | "invalid" | "com";
 export const SLOW_COMMAND_DEBOUNCE_TIME = 500;
 
 @Component({
-    selector: 'console',
+    selector: "console",
     imports: [AsyncPipe, LocalizePipe, IconsModule, ReactiveFormsModule, LoaderComponent, ShortcutsComponent],
     providers: [RconService],
-    templateUrl: './console.component.html',
-    styleUrl: './console.component.scss',
+    templateUrl: "./console.component.html",
+    styleUrl: "./console.component.scss",
     animations: [fade],
     changeDetection: ChangeDetectionStrategy.OnPush,
     standalone: true,
@@ -44,7 +44,7 @@ export class ConsoleComponent {
      * The form to send commands to the RCON server.
      */
     public readonly commandForm: FormGroup<{
-        command: FormControl<string | null>
+        command: FormControl<string | null>;
     }> = new FormGroup({
         command: new FormControl(null),
     });
@@ -58,12 +58,14 @@ export class ConsoleComponent {
     /**
      * The history of the command results.
      */
-    public readonly commandResultHistory$: BehaviorSubject<{
-        id: number,
-        sourceCommand: string,
-        matchedStatus: CommandResultStatus,
-        decodedReply: string | null
-    }[]> = new BehaviorSubject([]);
+    public readonly commandResultHistory$: BehaviorSubject<
+        {
+            id: number;
+            sourceCommand: string;
+            matchedStatus: CommandResultStatus;
+            decodedReply: string | null;
+        }[]
+    > = new BehaviorSubject([]);
 
     /**
      * Generates a unique ID
@@ -80,20 +82,19 @@ export class ConsoleComponent {
         this.bypassSecurityTrustHtml = this.sanitizer.bypassSecurityTrustHtml.bind(this.sanitizer);
 
         this.hasPendingSlowCommands$ = this.pendingCommandsCount$.pipe(
-            map(count => count > 0),
+            map((count) => count > 0),
             debounceTime(SLOW_COMMAND_DEBOUNCE_TIME),
         );
     }
 
     /**
      * Decodes the response from the RCON server
-     * 
+     *
      * @param text The text to decode
-     * 
+     *
      * @returns The decoded text
      */
     public decodeResponse(text: string): string {
-
         // Replace new lines with <br> tags
         text = text.replace(/\n/g, "<br>");
 
@@ -115,9 +116,9 @@ export class ConsoleComponent {
 
     /**
      * Matches the reply to a status
-     * 
+     *
      * @param reply The reply to match
-     * 
+     *
      * @returns The status of the reply
      */
     public matchStatus(reply: string): CommandResultStatus {
@@ -135,14 +136,12 @@ export class ConsoleComponent {
      * Removes a command result from the history
      */
     public removeFromHistory(id: number): void {
-        this.commandResultHistory$.next(
-            this.commandResultHistory$.value.filter(result => result.id !== id)
-        );
+        this.commandResultHistory$.next(this.commandResultHistory$.value.filter((result) => result.id !== id));
     }
 
     /**
      * Prefills the command form with a command
-     * 
+     *
      * @param command The command to prefill
      */
     public prefillCommand(command: string): void {
@@ -153,7 +152,7 @@ export class ConsoleComponent {
 
     /**
      * Handles the click event on a shortcut
-     * 
+     *
      * @param shortcut The shortcut that was clicked
      */
     public onShortcutClicked(shortcut: { command: string }): void {
@@ -168,13 +167,10 @@ export class ConsoleComponent {
         const command = rawCommand.length > 0 ? rawCommand : this.placeholderCommand;
 
         // Send the command
-        this.pendingCommandsCount$.next(
-            this.pendingCommandsCount$.value + 1
-        );
-        this.rconService.sendCommand(command)
-            .pipe(
-                take(1),
-            )
+        this.pendingCommandsCount$.next(this.pendingCommandsCount$.value + 1);
+        this.rconService
+            .sendCommand(command)
+            .pipe(take(1))
             .subscribe({
                 next: (reply) => {
                     this.commandResultHistory$.next([
@@ -184,11 +180,9 @@ export class ConsoleComponent {
                             matchedStatus: this.matchStatus(reply),
                             decodedReply: this.decodeResponse(reply),
                         },
-                        ...this.commandResultHistory$.value
+                        ...this.commandResultHistory$.value,
                     ]);
-                    this.pendingCommandsCount$.next(
-                        this.pendingCommandsCount$.value - 1
-                    );
+                    this.pendingCommandsCount$.next(this.pendingCommandsCount$.value - 1);
                 },
                 error: (error) => {
                     this.commandResultHistory$.next([
@@ -196,14 +190,11 @@ export class ConsoleComponent {
                             id: this.uid(),
                             sourceCommand: command,
                             matchedStatus: "com",
-                            decodedReply: error?.message
-                                ?? Localizer.getInstance().translate("tk.error.com.unknown"),
+                            decodedReply: error?.message ?? Localizer.getInstance().translate("tk.error.com.unknown"),
                         },
-                        ...this.commandResultHistory$.value
+                        ...this.commandResultHistory$.value,
                     ]);
-                    this.pendingCommandsCount$.next(
-                        this.pendingCommandsCount$.value - 1
-                    );
+                    this.pendingCommandsCount$.next(this.pendingCommandsCount$.value - 1);
                 },
             });
 

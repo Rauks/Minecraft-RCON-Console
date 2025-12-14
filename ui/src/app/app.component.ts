@@ -1,16 +1,16 @@
-import { AsyncPipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, Inject, OnDestroy, OnInit, Renderer2, DOCUMENT } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
-import { BehaviorSubject, Subscription } from 'rxjs';
-import { SettingsService, StorageService } from 'src/services';
-import { CollapseDirective, IconsModule, LoaderComponent, LocalizePipe } from './core';
+import { AsyncPipe } from "@angular/common";
+import { ChangeDetectionStrategy, Component, DOCUMENT, Inject, OnDestroy, OnInit, Renderer2 } from "@angular/core";
+import { RouterOutlet } from "@angular/router";
+import { BehaviorSubject, Subscription } from "rxjs";
+import { SettingsService, StorageService } from "src/services";
+import { CollapseDirective, IconsModule, LoaderComponent, LocalizePipe } from "./core";
 
 @Component({
-    selector: 'app-root',
+    selector: "app-root",
     imports: [RouterOutlet, AsyncPipe, LocalizePipe, IconsModule, LoaderComponent, CollapseDirective],
     providers: [SettingsService, StorageService],
-    templateUrl: './app.component.html',
-    styleUrl: './app.component.scss',
+    templateUrl: "./app.component.html",
+    styleUrl: "./app.component.scss",
     changeDetection: ChangeDetectionStrategy.OnPush,
     standalone: true,
 })
@@ -30,7 +30,7 @@ export class AppComponent implements OnInit, OnDestroy {
      */
     public navbarState$: BehaviorSubject<{ collapsed: boolean }> = new BehaviorSubject({ collapsed: true });
 
-    /** 
+    /**
      * Holds the current theme of the application.
      */
     public readonly theme$: BehaviorSubject<string>;
@@ -57,7 +57,7 @@ export class AppComponent implements OnInit, OnDestroy {
     }
 
     public ngOnInit() {
-        this.storageService.reloadAll()
+        this.storageService.reloadAll();
 
         // The first load is done, we can enable the persistance now
         this.storageService.enablePeristance();
@@ -103,7 +103,7 @@ export class AppComponent implements OnInit, OnDestroy {
 
     /**
      * Returns the user preferred theme (dark or light, from the browser settings).
-     * 
+     *
      * @returns The user preferred theme.
      */
     public userPreferredTheme(): string {
@@ -114,5 +114,4 @@ export class AppComponent implements OnInit, OnDestroy {
     public ngOnDestroy() {
         this.subscription.unsubscribe();
     }
-
 }

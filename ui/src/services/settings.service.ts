@@ -17,7 +17,7 @@ export class SettingsService {
 
     /**
      * Set the settings
-     * 
+     *
      * @param settings The settings to set
      */
     public setSettings(settings: Settings): void {
@@ -31,7 +31,7 @@ export class SettingsService {
 
     /**
      * Set a setting
-     * 
+     *
      * @param key The key of the setting
      * @param value The value of the setting
      */
@@ -41,7 +41,7 @@ export class SettingsService {
 
     /**
      * Get the settings as an observable
-     * 
+     *
      * @returns The settings as an observable
      */
     public getSettings(): BehaviorSubject<Settings> {
@@ -50,9 +50,9 @@ export class SettingsService {
 
     /**
      * Get a setting
-     * 
+     *
      * @param key The key of the setting
-     * 
+     *
      * @returns The setting
      */
     public getSetting(key: string): Observable<string> {
@@ -65,9 +65,9 @@ export class SettingsService {
 
     /**
      * Get a instant snapshot of a setting
-     * 
+     *
      * @param key The key of the setting
-     * 
+     *
      * @returns The setting snapshot
      */
     public getSettingsnapshot(key: string): string | undefined {

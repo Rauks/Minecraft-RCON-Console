@@ -1,16 +1,16 @@
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
-import { provideHttpClientTesting } from '@angular/common/http/testing';
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { By } from '@angular/platform-browser';
-import { provideNoopAnimations } from '@angular/platform-browser/animations';
-import { BehaviorSubject, Subject, throwError } from 'rxjs';
-import { RconService } from 'src/services';
-import { Localizer } from 'src/utils';
-import colorCodes from '../../config/minecraft-color-codes.json';
-import styleCodes from '../../config/minecraft-style-codes.json';
-import { ConsoleComponent, SLOW_COMMAND_DEBOUNCE_TIME } from './console.component';
+import { provideHttpClient, withInterceptorsFromDi } from "@angular/common/http";
+import { provideHttpClientTesting } from "@angular/common/http/testing";
+import { ComponentFixture, TestBed } from "@angular/core/testing";
+import { By } from "@angular/platform-browser";
+import { provideNoopAnimations } from "@angular/platform-browser/animations";
+import { BehaviorSubject, Subject, throwError } from "rxjs";
+import { RconService } from "src/services";
+import { Localizer } from "src/utils";
+import colorCodes from "../../config/minecraft-color-codes.json";
+import styleCodes from "../../config/minecraft-style-codes.json";
+import { ConsoleComponent, SLOW_COMMAND_DEBOUNCE_TIME } from "./console.component";
 
-describe('ConsoleComponent', () => {
+describe("ConsoleComponent", () => {
     let component: ConsoleComponent;
     let fixture: ComponentFixture<ConsoleComponent>;
 
@@ -21,7 +21,7 @@ describe('ConsoleComponent', () => {
                 RconService,
                 provideNoopAnimations(),
                 provideHttpClient(withInterceptorsFromDi()),
-                provideHttpClientTesting()
+                provideHttpClientTesting(),
             ],
         }).compileComponents();
 
@@ -44,7 +44,9 @@ describe('ConsoleComponent', () => {
     });
 
     it("should send a command", () => {
-        const spy = vi.spyOn(component["rconService"], "sendCommand").mockReturnValue(new BehaviorSubject("test response"));
+        const spy = vi
+            .spyOn(component["rconService"], "sendCommand")
+            .mockReturnValue(new BehaviorSubject("test response"));
 
         component.commandForm.setValue({ command: "test" });
         component.onSubmit();
@@ -63,7 +65,9 @@ describe('ConsoleComponent', () => {
         const firstResponseSubject = new Subject<string>();
         const secondResponseSubject = new Subject<string>();
 
-        vi.spyOn(component["rconService"], "sendCommand").mockReturnValueOnce(firstResponseSubject).mockReturnValueOnce(secondResponseSubject);
+        vi.spyOn(component["rconService"], "sendCommand")
+            .mockReturnValueOnce(firstResponseSubject)
+            .mockReturnValueOnce(secondResponseSubject);
 
         expect(component.pendingCommandsCount$.value).toBe(0);
 
@@ -116,15 +120,18 @@ describe('ConsoleComponent', () => {
             fixture.detectChanges();
             loader = fixture.debugElement.query(By.css("loader"));
             expect(loader).not.toBeNull();
-        }
-        finally {
+        } finally {
             vi.clearAllTimers();
             vi.useRealTimers();
         }
     });
 
     it("should add the command result to the top of the history", () => {
-        const spy = vi.spyOn(component["rconService"], "sendCommand").mockReturnValueOnce(new BehaviorSubject("test response 1")).mockReturnValueOnce(new BehaviorSubject("test response 2")).mockReturnValueOnce(new BehaviorSubject("test response 3"));
+        const spy = vi
+            .spyOn(component["rconService"], "sendCommand")
+            .mockReturnValueOnce(new BehaviorSubject("test response 1"))
+            .mockReturnValueOnce(new BehaviorSubject("test response 2"))
+            .mockReturnValueOnce(new BehaviorSubject("test response 3"));
 
         component.commandForm.setValue({ command: "test 1" });
         component.onSubmit();
@@ -182,7 +189,9 @@ describe('ConsoleComponent', () => {
     });
 
     it("should send the placeholder command if no command is entered", () => {
-        const spy = vi.spyOn(component["rconService"], "sendCommand").mockReturnValue(new BehaviorSubject("test response"));
+        const spy = vi
+            .spyOn(component["rconService"], "sendCommand")
+            .mockReturnValue(new BehaviorSubject("test response"));
 
         component.onSubmit();
 
@@ -190,7 +199,9 @@ describe('ConsoleComponent', () => {
     });
 
     it("should send the placeholder command if the command is only spaces", () => {
-        const spy = vi.spyOn(component["rconService"], "sendCommand").mockReturnValue(new BehaviorSubject("test response"));
+        const spy = vi
+            .spyOn(component["rconService"], "sendCommand")
+            .mockReturnValue(new BehaviorSubject("test response"));
 
         component.commandForm.setValue({ command: "    " });
         component.onSubmit();
@@ -204,12 +215,14 @@ describe('ConsoleComponent', () => {
         let lastReplyCard = fixture.debugElement.query(By.css(".card-text"));
         expect(lastReplyCard).toBeNull();
 
-        component.commandResultHistory$.next([{
-            id: 1,
-            sourceCommand: "test",
-            matchedStatus: "unknown",
-            decodedReply: component.decodeResponse("test response"),
-        }]);
+        component.commandResultHistory$.next([
+            {
+                id: 1,
+                sourceCommand: "test",
+                matchedStatus: "unknown",
+                decodedReply: component.decodeResponse("test response"),
+            },
+        ]);
         fixture.detectChanges();
 
         lastReplyCard = fixture.debugElement.query(By.css(".card-text"));
@@ -218,7 +231,9 @@ describe('ConsoleComponent', () => {
     });
 
     it("should display a com error in case of http error", () => {
-        const spy = vi.spyOn(component["rconService"], "sendCommand").mockReturnValue(throwError(() => new Error("this is a com error")));
+        const spy = vi
+            .spyOn(component["rconService"], "sendCommand")
+            .mockReturnValue(throwError(() => new Error("this is a com error")));
 
         fixture.detectChanges();
 
@@ -260,16 +275,18 @@ describe('ConsoleComponent', () => {
 
     it("should decode the color codes", () => {
         for (let colorCode of ["1", "2", "3", "4", "5", "6", "7", "8", "9", "a", "b", "c", "d", "e", "f"]) {
-            expect(component.decodeResponse(`§${colorCode}test§r`)).toEqual(`<span style="color: ${colorCodes[colorCode]};">test</span>`);
+            expect(component.decodeResponse(`§${colorCode}test§r`)).toEqual(
+                `<span style="color: ${colorCodes[colorCode]};">test</span>`,
+            );
         }
-        ;
     });
 
     it("should decode the style codes", () => {
         for (let styleCode of ["k", "l", "m", "n", "o"]) {
-            expect(component.decodeResponse(`§${styleCode}test§r`)).toEqual(`<span style="${styleCodes[styleCode]};">test</span>`);
+            expect(component.decodeResponse(`§${styleCode}test§r`)).toEqual(
+                `<span style="${styleCodes[styleCode]};">test</span>`,
+            );
         }
-        ;
     });
 
     it("should decode new lines", () => {
@@ -281,22 +298,28 @@ describe('ConsoleComponent', () => {
     });
 
     it("should match the invalid status", () => {
-        expect(component.matchStatus("Unknown or incomplete command, see below for error\nwhitelist<--[HERE]")).toBe("invalid");
+        expect(component.matchStatus("Unknown or incomplete command, see below for error\nwhitelist<--[HERE]")).toBe(
+            "invalid",
+        );
     });
 
     it("should match the error status", () => {
-        expect(component.matchStatus("The tick count must not be less than 0, found -1\n...ime set -1<--[HERE]")).toBe("error");
+        expect(component.matchStatus("The tick count must not be less than 0, found -1\n...ime set -1<--[HERE]")).toBe(
+            "error",
+        );
     });
 
     it("should display the command error status", () => {
         fixture.detectChanges();
 
-        component.commandResultHistory$.next([{
-            id: 1,
-            sourceCommand: "test",
-            matchedStatus: "error",
-            decodedReply: component.decodeResponse("test response"),
-        }]);
+        component.commandResultHistory$.next([
+            {
+                id: 1,
+                sourceCommand: "test",
+                matchedStatus: "error",
+                decodedReply: component.decodeResponse("test response"),
+            },
+        ]);
         fixture.detectChanges();
 
         let card = fixture.debugElement.query(By.css(".card-header"));
@@ -306,12 +329,14 @@ describe('ConsoleComponent', () => {
     it("should display the command invalid status", () => {
         fixture.detectChanges();
 
-        component.commandResultHistory$.next([{
-            id: 1,
-            sourceCommand: "test",
-            matchedStatus: "invalid",
-            decodedReply: component.decodeResponse("test response"),
-        }]);
+        component.commandResultHistory$.next([
+            {
+                id: 1,
+                sourceCommand: "test",
+                matchedStatus: "invalid",
+                decodedReply: component.decodeResponse("test response"),
+            },
+        ]);
         fixture.detectChanges();
 
         let card = fixture.debugElement.query(By.css(".card-header"));
@@ -321,12 +346,14 @@ describe('ConsoleComponent', () => {
     it("should display the command success status", () => {
         fixture.detectChanges();
 
-        component.commandResultHistory$.next([{
-            id: 1,
-            sourceCommand: "test",
-            matchedStatus: "unknown",
-            decodedReply: component.decodeResponse("test response"),
-        }]);
+        component.commandResultHistory$.next([
+            {
+                id: 1,
+                sourceCommand: "test",
+                matchedStatus: "unknown",
+                decodedReply: component.decodeResponse("test response"),
+            },
+        ]);
         fixture.detectChanges();
 
         let card = fixture.debugElement.query(By.css(".card-header"));
@@ -336,12 +363,14 @@ describe('ConsoleComponent', () => {
     it("should display the com error status", () => {
         fixture.detectChanges();
 
-        component.commandResultHistory$.next([{
-            id: 1,
-            sourceCommand: "test",
-            matchedStatus: "com",
-            decodedReply: component.decodeResponse("test response"),
-        }]);
+        component.commandResultHistory$.next([
+            {
+                id: 1,
+                sourceCommand: "test",
+                matchedStatus: "com",
+                decodedReply: component.decodeResponse("test response"),
+            },
+        ]);
         fixture.detectChanges();
 
         let card = fixture.debugElement.query(By.css(".card-header"));
@@ -482,5 +511,4 @@ describe('ConsoleComponent', () => {
 
         expect(removeSpy).toHaveBeenCalledWith(id);
     });
-
 });

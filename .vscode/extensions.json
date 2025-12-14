@@ -1,4 +1,8 @@
 {
   // For more information, visit: https://go.microsoft.com/fwlink/?linkid=827846
-  "recommendations": ["angular.ng-template", "firefox-devtools.vscode-firefox-debug"]
+  "recommendations": [
+    "angular.ng-template",
+    "prettier.prettier-vscode",
+    "firefox-devtools.vscode-firefox-debug"
+  ]
 }

@@ -17,5 +17,5 @@ export class CollapseDirective {
         this.changeDetector.markForCheck();
     }
 
-    constructor(private readonly changeDetector: ChangeDetectorRef) { }
+    constructor(private readonly changeDetector: ChangeDetectorRef) {}
 }

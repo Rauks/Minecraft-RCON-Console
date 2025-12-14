@@ -11,11 +11,7 @@ describe("RconService", () => {
 
     beforeEach(() => {
         TestBed.configureTestingModule({
-            providers: [
-                RconService,
-                provideHttpClient(withInterceptorsFromDi()),
-                provideHttpClientTesting()
-            ],
+            providers: [RconService, provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()],
         });
 
         httpClient = TestBed.inject(HttpClient);
@@ -37,7 +33,9 @@ describe("RconService", () => {
             next: (response) => {
                 expect(response).toEqual("test response");
             },
-            error: (error) => { throw error; },
+            error: (error) => {
+                throw error;
+            },
         });
 
         const req = httpTestingController.expectOne("/api/rcon");
@@ -47,6 +45,4 @@ describe("RconService", () => {
         req.flush(apiResponse);
         httpTestingController.verify();
     });
-
-
 });

@@ -20,14 +20,12 @@ export class StorageService implements OnDestroy {
      */
     private isPersistanceEnabled: boolean = false;
 
-    /** 
+    /**
      * Component subscriptions.
      */
     private readonly persistSubscription: Subscription = new Subscription();
 
-    constructor(
-        protected readonly settingsService: SettingsService,
-    ) {
+    constructor(protected readonly settingsService: SettingsService) {
         this.persistSubscription.add(
             this.settingsService.getSettings().subscribe((value) => {
                 // On any change in the settings, persist them.
@@ -63,7 +61,7 @@ export class StorageService implements OnDestroy {
 
     /**
      * Check if the persistance is available.
-     * 
+     *
      * @returns True if the persistance is available, false otherwise
      */
     private isPersistanceAvailable(): boolean {
@@ -79,7 +77,7 @@ export class StorageService implements OnDestroy {
 
     /**
      * Persist the data in the local storage.
-     * 
+     *
      * @param key The key of the data to persist
      * @param value The data to persist
      */
@@ -91,9 +89,9 @@ export class StorageService implements OnDestroy {
 
     /**
      * Reload the data from the local storage.
-     * 
+     *
      * @param key The key of the data to reload
-     * 
+     *
      * @returns The reloaded data
      */
     private reload<T>(key: string): T {

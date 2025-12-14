@@ -10,7 +10,7 @@ describe("LocalizePipe", () => {
         Localizer.getInstance().loadLocale({
             "tk.test": "Test",
             "tk.test.composed": "Test {0}",
-            "tk.test.multiple": "Test {0} {1} {2}"
+            "tk.test.multiple": "Test {0} {1} {2}",
         });
     });
 

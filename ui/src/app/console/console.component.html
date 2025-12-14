@@ -9,19 +9,10 @@
                 <loader [small]="true"></loader>
             </span>
         }
-        <button 
-            class="btn btn-outline-gray" 
-            type="button" 
-            [title]="'tk.command.reset' | localize"
-            (click)="onReset()"
-        >
+        <button class="btn btn-outline-gray" type="button" [title]="'tk.command.reset' | localize" (click)="onReset()">
             <fa-icon icon="eraser"></fa-icon>
         </button>
-        <button 
-            class="btn btn-outline-green" 
-            type="submit"
-            [title]="'tk.command.send' | localize"
-        >
+        <button class="btn btn-outline-green" type="submit" [title]="'tk.command.send' | localize">
             <fa-icon icon="paper-plane-top"></fa-icon>
         </button>
     </div>
@@ -35,78 +26,66 @@
             @switch (item.matchedStatus) {
                 @case ("error") {
                     <div class="card-header border-danger">
-                        <fa-icon 
-                            class="text-danger" 
-                            icon="triangle-exclamation" 
-                            [fixedWidth]="true">
-                        </fa-icon>
+                        <fa-icon class="text-danger" icon="triangle-exclamation" [fixedWidth]="true"> </fa-icon>
                         <span class="ms-2">{{ item.sourceCommand }}</span>
                     </div>
                 }
                 @case ("invalid") {
                     <div class="card-header border-warning">
-                        <fa-icon 
-                            class="text-warning" 
-                            icon="hexagon-exclamation">
-                        </fa-icon>
+                        <fa-icon class="text-warning" icon="hexagon-exclamation"> </fa-icon>
                         <span class="ms-2">{{ item.sourceCommand }}</span>
                     </div>
                 }
                 @case ("com") {
                     <div class="card-header border-danger">
-                        <fa-icon 
-                            class="text-danger" 
-                            icon="wifi-exclamation">
-                        </fa-icon>
+                        <fa-icon class="text-danger" icon="wifi-exclamation"> </fa-icon>
                         <span class="ms-2">{{ item.sourceCommand }}</span>
                     </div>
                 }
                 @default {
                     <div class="card-header border-success">
-                        <fa-icon 
-                            class="text-success" 
-                            icon="circle-check">
-                        </fa-icon>
+                        <fa-icon class="text-success" icon="circle-check"> </fa-icon>
                         <span class="ms-2">{{ item.sourceCommand }}</span>
                     </div>
                 }
             }
             <div class="card-body">
-                <p 
-                    class="card-text console-output" 
-                    [innerHtml]="bypassSecurityTrustHtml(item.decodedReply)">
-                </p>
+                <p class="card-text console-output" [innerHtml]="bypassSecurityTrustHtml(item.decodedReply)"></p>
             </div>
             <div class="card-footer p-2">
                 <div class="d-grid gap-2 d-flex justify-content-end">
-                    <button 
-                        class="reply-autofill btn btn-sm btn-outline-blue" 
+                    <button
+                        class="reply-autofill btn btn-sm btn-outline-blue"
                         type="button"
                         (click)="prefillCommand(item.sourceCommand); scrollToTop()"
-                        [title]="'tk.reply.autofill' | localize">
+                        [title]="'tk.reply.autofill' | localize"
+                    >
                         <fa-icon icon="rotate-left"></fa-icon>
                     </button>
-                    @if (!['error', 'invalid'].includes(item.matchedStatus)) {
-                        <button 
-                            class="reply-resend btn btn-sm btn-outline-green" 
+                    @if (!["error", "invalid"].includes(item.matchedStatus)) {
+                        <button
+                            class="reply-resend btn btn-sm btn-outline-green"
                             type="button"
                             (click)="prefillCommand(item.sourceCommand); scrollToTop(); onSubmit()"
-                            [title]="'tk.reply.resend' | localize">
+                            [title]="'tk.reply.resend' | localize"
+                        >
                             <fa-icon icon="paper-plane-top"></fa-icon>
                         </button>
                     } @else {
-                        <button 
+                        <button
                             class="reply-resend disabled btn btn-sm btn-outline-gray"
                             type="button"
-                            [title]="'tk.reply.resend' | localize">
+                            [title]="'tk.reply.resend' | localize"
+                        >
                             <fa-icon icon="paper-plane-top"></fa-icon>
                         </button>
                     }
-                    <button 
-                        class="reply-remove btn btn-sm btn-outline-orange" 
+                    <button
+                        class="reply-remove btn btn-sm btn-outline-orange"
                         type="button"
                         (click)="removeFromHistory(item.id)"
-                        [title]="'tk.reply.remove' | localize">
+                        [title]="'tk.reply.remove' | localize"
+                    >
                         <fa-icon icon="trash-can"></fa-icon>
                     </button>
                 </div>

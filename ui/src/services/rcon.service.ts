@@ -14,18 +14,14 @@ export declare interface RconResponse {
     providedIn: "root",
 })
 export class RconService {
-    constructor(protected readonly httpClient: HttpClient) { }
+    constructor(protected readonly httpClient: HttpClient) {}
 
     /**
      * Send a command to the RCON server
-     * 
+     *
      * @param command The command to send
      */
     public sendCommand(command: string): Observable<string> {
-        return this.httpClient
-            .post("/api/rcon", command)
-            .pipe(
-                map((response: RconResponse) => response.payload)
-            );
+        return this.httpClient.post("/api/rcon", command).pipe(map((response: RconResponse) => response.payload));
     }
 }

@@ -1,9 +1,9 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { By } from '@angular/platform-browser';
-import { SettingsService, StorageService } from 'src/services';
-import { AppComponent } from './app.component';
+import { ComponentFixture, TestBed } from "@angular/core/testing";
+import { By } from "@angular/platform-browser";
+import { SettingsService, StorageService } from "src/services";
+import { AppComponent } from "./app.component";
 
-describe('AppComponent', () => {
+describe("AppComponent", () => {
     let component: AppComponent;
     let fixture: ComponentFixture<AppComponent>;
 
@@ -78,5 +78,4 @@ describe('AppComponent', () => {
 
         expect(component["storageService"].reloadAll).toHaveBeenCalled();
     });
-
 });

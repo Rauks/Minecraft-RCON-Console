@@ -6,7 +6,7 @@ import { LocalizePipe } from "../pipes";
     imports: [LocalizePipe],
     templateUrl: "./loader.component.html",
     changeDetection: ChangeDetectionStrategy.OnPush,
-    standalone: true
+    standalone: true,
 })
 export class LoaderComponent {
     @Input()
