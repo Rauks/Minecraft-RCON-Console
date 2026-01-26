@@ -54,6 +54,17 @@
       }
     },
     {
+      "groupName": "playwright",
+      "matchPackageNames": [
+        "registry.kirauks.net/dev-ops/build-images/node",
+        "@vitest/browser-playwright",
+        "playwright"
+      ],
+      "addLabels": [
+        "playwright"
+      ]
+    },
+    {
       "matchManagers": [
         "cargo"
       ],
