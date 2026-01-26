@@ -57,6 +57,7 @@
       "groupName": "playwright",
       "matchPackageNames": [
         "registry.kirauks.net/dev-ops/build-images/node",
+        "dev-ops/components/angular",
         "@vitest/browser-playwright",
         "playwright"
       ],
