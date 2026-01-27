@@ -51,7 +51,10 @@
         "commands": [
           "cd ./ui && npx ng update {{{depName}}} --from={{{currentVersion}}} --to={{{newVersion}}} --migrate-only --allow-dirty --force"
         ]
-      }
+      },
+      "addLabels": [
+        "angular"
+      ]
     },
     {
       "groupName": "playwright",
