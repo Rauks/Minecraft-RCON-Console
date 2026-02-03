@@ -1,4 +1,4 @@
-FROM docker.io/arm64v8/debian:13.3-slim@sha256:5c25cb7ad0368c4168a8e7776d335228416efa8c037ecf8878a2bd67af822c52
+FROM docker.io/arm64v8/debian:13.3-slim@sha256:6f1e030c75f0b8b7c2cbe2cdb0c12ea408d53cd25d34aaffa2786021a1e04177
 
 ENV DEBIAN_FRONTEND=noninteractive
 
