@@ -21,6 +21,11 @@ A simple RCON console for Minecraft servers, with a REST API.
 
 ### Docker
 
+The docker image is available on [Docker Hub](https://hub.docker.com/r/rauks/minecraft-rcon) and can be used to run the console without having to build it from source.
+Two series of tags are available:
+- `master`: Unstable tag built from the `master` branch, with the latest features, dependencies updates and bug fixes, but may contain bugs and breaking changes.
+- `x.z.y` versioned tags (e.g. `2.6.6`): Trying to be stable releases and immutable tags, following the [Semantic Versioning](https://semver.org/) format. Best if you want to use auto-updates bots like [Dependabot](https://dependabot.com/) or [Renovate](https://www.mend.io/renovate/) in a GitOps context.
+
 Below is an example of a `docker-compose.yml` file to run the Minecraft server and the RCON console:
 
 Please really read the [warnings above](#warnings) before running this example.
