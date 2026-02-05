@@ -1,6 +1,7 @@
 {
     "error": [
-        "*must not be*, found*"
+        "*must not be*, found*",
+        "*must not be*: found*"
     ],
     "invalid": [
         "*Unknown command*",
