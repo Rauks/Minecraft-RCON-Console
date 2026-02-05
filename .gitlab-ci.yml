@@ -168,7 +168,9 @@ manifest:
       artifacts: false
 
 mirror:
-  image: quay.io/skopeo/stable:v1.21.0-immutable@sha256:b1d40538c4206869802732714810ef683ee1645ee24e9ac14d39c8f93d159a7e
+  image: 
+    name: quay.io/skopeo/stable:v1.21.0-immutable@sha256:b1d40538c4206869802732714810ef683ee1645ee24e9ac14d39c8f93d159a7e
+    entrypoint: [""]
   stage: publish
   script:
     - |
