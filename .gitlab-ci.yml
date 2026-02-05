@@ -78,21 +78,21 @@ include:
         - ./target/aarch64-unknown-linux-gnu/release/minecraft-rcon
 
   # Containers
-  - component: gitlab.kirauks.net/dev-ops/components/containers/build@5.0.0
+  - component: gitlab.kirauks.net/dev-ops/components/containers/build@5.0.1
     inputs:
       job_name: container:amd64
       stage: publish
       dockerfile: Dockerfile.amd64
       platform: linux/amd64
 
-  - component: gitlab.kirauks.net/dev-ops/components/containers/build@5.0.0
+  - component: gitlab.kirauks.net/dev-ops/components/containers/build@5.0.1
     inputs:
       job_name: container:arm64
       stage: publish
       dockerfile: Dockerfile.arm64
       platform: linux/arm64
 
-  - component: gitlab.kirauks.net/dev-ops/components/containers/manifest@5.0.0
+  - component: gitlab.kirauks.net/dev-ops/components/containers/manifest@5.0.1
     inputs:
       job_name: manifest
       stage: publish
@@ -103,7 +103,7 @@ include:
         - job: container:arm64
           artifacts: false
 
-  - component: gitlab.kirauks.net/dev-ops/components/containers/mirror@5.0.0
+  - component: gitlab.kirauks.net/dev-ops/components/containers/mirror@5.0.1
     inputs:
       job_name: mirror
       stage: publish
@@ -113,7 +113,7 @@ include:
         - job: manifest
           artifacts: false
 
-  - component: gitlab.kirauks.net/dev-ops/components/containers/audit@5.0.0
+  - component: gitlab.kirauks.net/dev-ops/components/containers/audit@5.0.1
     inputs:
       job_name: audit
       stage: audit
