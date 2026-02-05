@@ -107,8 +107,8 @@ include:
     inputs:
       job_name: mirror
       stage: publish
-      target_manifest: docker://docker.io/${MIRROR_DOCKERHUB_IMAGE}:${CI_COMMIT_REF_NAME////-}
-      target_credentials: ${MIRROR_DOCKERHUB_USER}:${MIRROR_DOCKERHUB_TOKEN}
+      mirror_manifest: docker://docker.io/${MIRROR_DOCKERHUB_IMAGE}:${CI_COMMIT_REF_NAME////-}
+      mirror_credentials: ${MIRROR_DOCKERHUB_USER}:${MIRROR_DOCKERHUB_TOKEN}
       needs:
         - job: manifest
           artifacts: false
