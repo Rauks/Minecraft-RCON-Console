@@ -1,3 +1,10 @@
+> This is a **mirror** of a private GitLab project.
+>
+> The code is open source and Docker images are available on [Docker Hub](https://hub.docker.com/r/rauks/minecraft-rcon).
+> Issues and PRs are welcome as feedback; feel free to **fork** the project.
+>
+> More info: [CONTRIBUTING.md](./CONTRIBUTING.md).
+
 # Minecraft-RCON
 
 A simple RCON console for Minecraft servers, with a REST API.
