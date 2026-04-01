@@ -11,7 +11,7 @@ stages:
 
 include:
   # Scanners
-  - component: gitlab.kirauks.net/dev-ops/components/scanners/gitguardian@4.0.5
+  - component: gitlab.kirauks.net/dev-ops/components/scanners/gitguardian@4.0.6
     inputs:
       job_name: gitguardian
       stage: scan
