@@ -2,7 +2,7 @@ use opentelemetry::{global, trace::TracerProvider};
 use opentelemetry_otlp::{SpanExporter, WithExportConfig};
 use opentelemetry_sdk::{Resource, propagation::TraceContextPropagator, trace::SdkTracerProvider};
 use std::env;
-use tracing_subscriber::{EnvFilter, fmt, layer::SubscriberExt, util::SubscriberInitExt};
+use tracing_subscriber::{EnvFilter, Layer, fmt, layer::SubscriberExt, util::SubscriberInitExt};
 
 /// Initializes logs and traces for the application.
 ///
@@ -13,6 +13,9 @@ use tracing_subscriber::{EnvFilter, fmt, layer::SubscriberExt, util::SubscriberI
 ///
 /// - `RUST_LOG`: Configures the log level (e.g., "info", "debug", "error"). Defaults to "info" if
 ///    not set.
+/// - `RUST_TRACES`: Configures the trace level (e.g., "info", "debug", "error"). Defaults to "info"
+///    if not set. Traces will only be exported if the `OTEL_EXPORTER_OTLP_ENDPOINT` environment
+///    variable is set.
 /// - `OTEL_EXPORTER_OTLP_ENDPOINT`: Enables OTLP tracing to the specified endpoint. If not set,
 ///   traces will not be exported.
 /// - `OTEL_SERVICE_NAME`: Specifies the service name for OTLP traces. Defaults to the crate name.
@@ -25,15 +28,18 @@ use tracing_subscriber::{EnvFilter, fmt, layer::SubscriberExt, util::SubscriberI
 #[allow(unused)]
 pub fn init_telemetry() -> Option<SdkTracerProvider> {
     // Configure the environment filter from the value of the `RUST_LOG` environment variable.
-    let env_filter = EnvFilter::try_from_default_env().unwrap_or_else(|_| EnvFilter::new("info"));
+    let log_filter = EnvFilter::try_from_env("RUST_LOG").unwrap_or_else(|_| EnvFilter::new("info"));
+    let trace_filter =
+        EnvFilter::try_from_env("RUST_TRACES").unwrap_or_else(|_| EnvFilter::new("info"));
 
     // Configure the formatted layer to output logs in JSON format with additional context.
-    let fmt_layer = fmt::layer()
+    let log_layer = fmt::layer()
         .json()
         .with_current_span(true)
         .with_span_list(true)
         .with_file(true)
-        .with_line_number(true);
+        .with_line_number(true)
+        .with_filter(log_filter);
 
     // Check if the `OTEL_EXPORTER_OTLP_ENDPOINT` environment variable is set to determine if OTLP
     // tracing should be enabled.
@@ -62,23 +68,21 @@ pub fn init_telemetry() -> Option<SdkTracerProvider> {
             .build();
         let tracer = provider.tracer(env!("CARGO_PKG_NAME"));
 
-        let otel_layer = tracing_opentelemetry::layer().with_tracer(tracer);
+        let otel_layer = tracing_opentelemetry::layer()
+            .with_tracer(tracer)
+            .with_filter(trace_filter);
 
         // Initialize the tracing subscriber with both the OTLP layer and the formatted layer for
         // stdout.
         tracing_subscriber::registry()
-            .with(env_filter)
-            .with(fmt_layer)
+            .with(log_layer)
             .with(otel_layer)
             .init();
 
         Some(provider)
     } else {
         // Initialize the tracing subscriber with only the formatted layer for stdout.
-        tracing_subscriber::registry()
-            .with(env_filter)
-            .with(fmt_layer)
-            .init();
+        tracing_subscriber::registry().with(log_layer).init();
 
         None
     }

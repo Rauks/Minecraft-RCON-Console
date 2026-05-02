@@ -16,6 +16,7 @@ ENV ROCKET_CLI_COLORS=false
 
 # Telemetry
 ENV RUST_LOG="warn,minecraft_rcon=info"
+ENV RUST_TRACES="info"
 
 # Rust API
 COPY /target/aarch64-unknown-linux-gnu/release /opt

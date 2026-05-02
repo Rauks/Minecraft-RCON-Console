@@ -69,8 +69,9 @@ services:
       RCON_PORT: 25575
       RCON_PASSWORD: ${RCON_PASSWORD}
       # Logs
-      RUST_LOG: "warn,minecraft_rcon=trace"
+      RUST_LOG: "warn,minecraft_rcon=info"
       # Telemetry (for traces, optional)
+      RUST_TRACES: "info"
       OTEL_SERVICE_NAME: "minecraft-rcon"
       OTEL_EXPORTER_OTLP_ENDPOINT: "http://grafana-alloy:4317"
     ports:
@@ -91,7 +92,7 @@ The following environment variables can be set to configure the backend:
 - `ROCKET_PORT`: The port to bind the Rocket server to. Set to `8888` by default.
 - `ROCKET_IP_HEADER`: The header to use to get the client IP address from the reverse proxy. Set to `X-Forwarded-For` by default, to be updated depending on your reverse proxy configuration.
 - `RUST_LOG`: The log level for the backend. Set to `warn,minecraft_rcon=info` by default. See the [documentation](https://docs.rs/tracing-subscriber/latest/tracing_subscriber/fmt/index.html#filtering-events-with-environment-variables) for more information about the log levels filtering.
-- `OTEL_EXPORTER_OTLP_ENDPOINT`: The OpenTelemetry collector endpoint to export the traces to, in the format `http://<host>:<port>`. If not set, OpenTelemetry tracing will be disabled.
+- `OTEL_EXPORTER_OTLP_ENDPOINT`: The OpenTelemetry collector endpoint to export the traces to, in the format `http://<host>:<port>`. If not set, OpenTelemetry tracing will be disabled. Traces are sharing the `RUST_LOG` filtering, you should set to `info` for the `minecraft_rcon` module to be able to export traces.
 - `OTEL_SERVICE_NAME`: The OpenTelemetry service name to use for the traces. Set to `minecraft-rcon` by default.
 
 ### Common errors
