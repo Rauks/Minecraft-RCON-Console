@@ -5,7 +5,7 @@ use tokio::{
     net::TcpStream,
     time::timeout,
 };
-use tracing::{debug, info, warn};
+use tracing::{debug, info, trace, warn};
 
 /// Maximum packet size for sending data.
 ///
@@ -186,10 +186,9 @@ impl ConnectedRconClient {
         )
     )]
     async fn send(&mut self, request: &RconRequest) -> Result<(), RconError> {
-        info!("Request: {:?}", request);
-
         let bytes = request.to_rcon_bytes();
-        debug!("Request bytes: {:?}", bytes);
+        trace!("Request: {:?}", request);
+        trace!("Request bytes: {:?}", bytes);
 
         if bytes.len() > MAX_RCON_REQUEST_SIZE {
             return Err(RconError::Send {
@@ -241,7 +240,7 @@ impl ConnectedRconClient {
             cause: err.to_string(),
         })?;
 
-        debug!("Response bytes: {:?}", response_buffer);
+        trace!("Response bytes: {:?}", response_buffer);
 
         let response = RconResponse::try_from_rcon_bytes(&response_buffer).map_err(|err| {
             RconError::Receive {

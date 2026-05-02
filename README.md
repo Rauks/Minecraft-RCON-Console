@@ -69,7 +69,7 @@ services:
       RCON_PORT: 25575
       RCON_PASSWORD: ${RCON_PASSWORD}
       # Logs
-      RUST_LOG: "warn,minecraft-rcon=trace"
+      RUST_LOG: "warn,minecraft_rcon=trace"
       # Telemetry (for traces, optional)
       OTEL_SERVICE_NAME: "minecraft-rcon"
       OTEL_EXPORTER_OTLP_ENDPOINT: "http://grafana-alloy:4317"
@@ -90,7 +90,7 @@ The following environment variables can be set to configure the backend:
 - `ROCKET_ADDRESS`: The address to bind the Rocket server to. Set to `0.0.0.0` by default.
 - `ROCKET_PORT`: The port to bind the Rocket server to. Set to `8888` by default.
 - `ROCKET_IP_HEADER`: The header to use to get the client IP address from the reverse proxy. Set to `X-Forwarded-For` by default, to be updated depending on your reverse proxy configuration.
-- `RUST_LOG`: The log level for the backend. Set to `warn,minecraft-rcon=info` by default. See the [documentation](https://docs.rs/tracing-subscriber/latest/tracing_subscriber/fmt/index.html#filtering-events-with-environment-variables) for more information about the log levels filtering.
+- `RUST_LOG`: The log level for the backend. Set to `warn,minecraft_rcon=info` by default. See the [documentation](https://docs.rs/tracing-subscriber/latest/tracing_subscriber/fmt/index.html#filtering-events-with-environment-variables) for more information about the log levels filtering.
 - `OTEL_EXPORTER_OTLP_ENDPOINT`: The OpenTelemetry collector endpoint to export the traces to, in the format `http://<host>:<port>`. If not set, OpenTelemetry tracing will be disabled.
 - `OTEL_SERVICE_NAME`: The OpenTelemetry service name to use for the traces. Set to `minecraft-rcon` by default.
 
@@ -137,7 +137,7 @@ By default, a Swagger UI is available at `/swagger-ui` to interact with the API.
 The backend allows multiple observability features to monitor and troubleshoot the RCON requests and the backend itself:
 - [Metrics](https://opentelemetry.io/docs/concepts/signals/metrics/) are available at the `/metrics` endpoint.
 - [Traces](https://opentelemetry.io/docs/concepts/signals/traces/) can be exported to an OpenTelemetry collector (e.g. [Grafana Alloy](https://grafana.com/docs/alloy/latest/)). Requires the `opentelemetry` feature to be enabled and the `OTEL_EXPORTER_OTLP_ENDPOINT` environment variable to be set.
-- [Logs](https://opentelemetry.io/fr/docs/concepts/signals/logs/) in stdout. Enablindg the `opentelemetry` feature will change the logs to be JSON formatted with OpenTelemetry trace context, allowing to correlate logs and traces.
+- [Logs](https://opentelemetry.io/fr/docs/concepts/signals/logs/) in stdout. Enablindg the `opentelemetry` feature will change the logs to be JSON formatted with extra fields.
 
 ## Build
 

@@ -57,7 +57,7 @@ async fn rocket() -> Rocket<Build> {
                 rocket = rocket.attach(AdHoc::on_shutdown("Telemetry provider shutdown", |_| {
                     Box::pin(async move {
                         if let Err(err) = provider.shutdown() {
-                            eprintln!("failed to shutdown telemetry provider: {err:?}");
+                            eprintln!("Failed to shutdown telemetry provider: {err:?}");
                         }
                     })
                 }))

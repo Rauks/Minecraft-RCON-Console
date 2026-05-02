@@ -5,7 +5,6 @@ edition = "2024"
 [dependencies]
 cfg-if = "1.0.4"
 dotenvy = "0.15.7"
-#log = "0.4.29"
 opentelemetry = { version = "0.31.0", optional = true }
 opentelemetry_sdk = { version = "0.31.0", features = ["rt-tokio"], optional = true }
 opentelemetry-stdout = { version = "0.31.0", optional = true }
