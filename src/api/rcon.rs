@@ -1,4 +1,7 @@
-use crate::rcon::{RconClient, RconRequest, RconRequestType, RconResponse, RconResponseType};
+use crate::{
+    rcon::{RconClient, RconRequest, RconRequestType, RconResponse, RconResponseType},
+    telemetry::RequestSpan,
+};
 use rocket::{State, http::Status, post, serde::json::Json};
 use serde::Serialize;
 use std::sync::Arc;
@@ -46,8 +49,19 @@ impl From<RconResponse> for ApiRconResponse {
         (status = 511, description = "The RCON login failed"),
     )
 )]
+#[tracing::instrument(
+    name = "POST /api/rcon",
+    parent = request_span.span(),
+    skip(request_span, rcon_state, rcon_command),
+    fields(
+        http.route = "/api/rcon",
+        app.handler = "handle_rcon",
+        app.component = "api",
+    )
+)]
 #[post("/rcon", data = "<rcon_command>")]
 pub async fn handle_rcon(
+    request_span: &RequestSpan,
     rcon_state: &State<RconManagedState>,
     rcon_command: String,
 ) -> Result<Json<ApiRconResponse>, Status> {

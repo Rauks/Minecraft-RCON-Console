@@ -12,6 +12,10 @@ ENV ROCKET_ADDRESS=0.0.0.0
 ENV ROCKET_PORT=8888
 ENV ROCKET_LIMITS={json="1 MiB"}
 ENV ROCKET_IP_HEADER=X-Forwarded-For
+ENV ROCKET_CLI_COLORS=false
+
+# Telemetry
+ENV RUST_LOG="warn,minecraft-rcon=info"
 
 # Rust API
 COPY /target/aarch64-unknown-linux-gnu/release /opt

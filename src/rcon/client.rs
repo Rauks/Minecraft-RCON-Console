@@ -1,11 +1,11 @@
 use super::{RconConfiguration, RconError, RconRequest, RconRequestType, RconResponse};
-use log::{debug, info, warn};
 use std::time::Duration;
 use tokio::{
     io::{AsyncReadExt, AsyncWriteExt},
     net::TcpStream,
     time::timeout,
 };
+use tracing::{debug, info, warn};
 
 /// Maximum packet size for sending data.
 ///
@@ -50,6 +50,13 @@ impl RconClient {
     /// # Returns:
     ///
     /// A connected `TcpStream` instance.
+    #[tracing::instrument(
+        name = "Rcon.GetConnection",
+        skip(self),
+        fields(
+            app.component = "rcon",
+        )
+    )]
     pub async fn get_connection(&self) -> Result<ConnectedRconClient, RconError> {
         let configuration = RconConfiguration::try_new()?;
         let address = format!("{}:{}", configuration.host, configuration.port);
@@ -80,6 +87,13 @@ impl ConnectedRconClient {
     /// # Returns
     ///
     /// The response from the server.
+    #[tracing::instrument(
+        name = "Rcon.Login",
+        skip(self),
+        fields(
+            app.component = "rcon",
+        )
+    )]
     pub async fn login(&mut self) -> Result<bool, RconError> {
         let configuration = RconConfiguration::try_new()?;
         let login_request = RconRequest::new(RconRequestType::Auth, configuration.password);
@@ -112,6 +126,13 @@ impl ConnectedRconClient {
     /// # Returns
     ///
     /// The response from the server.
+    #[tracing::instrument(
+        name = "Rcon.Request",
+        skip(self, request),
+        fields(
+            app.component = "rcon",
+        )
+    )]
     pub async fn request(&mut self, request: &RconRequest) -> Result<RconResponse, RconError> {
         // Send the request
         info!("Sending a request to the RCON server...");
@@ -131,6 +152,13 @@ impl ConnectedRconClient {
     /// # Returns
     ///
     /// A result indicating the success of the operation.
+    #[tracing::instrument(
+        name = "Rcon.Disconnect",
+        skip(self),
+        fields(
+            app.component = "rcon",
+        )
+    )]
     pub async fn disconnect(&mut self) -> Result<(), RconError> {
         info!("Disconnecting from the RCON server...");
         self.stream
@@ -150,6 +178,13 @@ impl ConnectedRconClient {
     /// # Returns
     ///
     /// A result indicating the success of the operation.
+    #[tracing::instrument(
+        name = "Rcon.Send",
+        skip(self, request),
+        fields(
+            app.component = "rcon",
+        )
+    )]
     async fn send(&mut self, request: &RconRequest) -> Result<(), RconError> {
         info!("Request: {:?}", request);
 
@@ -181,6 +216,13 @@ impl ConnectedRconClient {
     /// # Returns
     ///
     /// The response from the server.
+    #[tracing::instrument(
+        name = "Rcon.Receive",
+        skip(self),
+        fields(
+            app.component = "rcon",
+        )
+    )]
     async fn receive(&mut self) -> Result<RconResponse, RconError> {
         let mut response_buffer = [0u8; MAX_RCON_RESPONSE_SIZE];
 

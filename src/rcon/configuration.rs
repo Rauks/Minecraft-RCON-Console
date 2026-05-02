@@ -1,6 +1,6 @@
 use super::RconError;
-use log::debug;
 use std::env;
+use tracing::debug;
 
 /// Default timeout for requests in milliseconds.
 #[allow(unused)]
