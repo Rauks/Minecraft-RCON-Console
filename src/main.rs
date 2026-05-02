@@ -1,6 +1,7 @@
 mod api;
 mod app;
 mod rcon;
+mod telemetry;
 
 use api::RconManagedState;
 use app::ui;
@@ -18,6 +19,24 @@ async fn rocket() -> Rocket<Build> {
     // Load environment
     dotenv().ok();
 
+    // Initialize telemetry
+    cfg_if::cfg_if! {
+        if #[cfg(feature = "opentelemetry")] {
+            use opentelemetry_sdk::trace::SdkTracerProvider;
+
+            let tracer_provider: Option<SdkTracerProvider> = {
+                cfg_if::cfg_if! {
+                    if #[cfg(not(test))] {
+                        telemetry::init_telemetry()
+                    } else {
+                        // Do not enable telemetry in tests.
+                        None
+                    }
+                }
+            };
+        }
+    }
+
     // Rcon client
     let rcon = RconManagedState::default();
 
@@ -28,6 +47,26 @@ async fn rocket() -> Rocket<Build> {
         .mount("/api", routes![api::handle_rcon])
         .mount("/", routes![ui::files]);
 
+    // Attach telemetry request and shutdown fairings if telemetry is enabled
+    cfg_if::cfg_if! {
+        if #[cfg(feature = "opentelemetry")] {
+            use crate::telemetry::TelemetryRequestFairing;
+            use rocket::fairing::AdHoc;
+
+            if let Some(provider) = tracer_provider {
+                rocket = rocket.attach(AdHoc::on_shutdown("Telemetry provider shutdown", |_| {
+                    Box::pin(async move {
+                        if let Err(err) = provider.shutdown() {
+                            eprintln!("Failed to shutdown telemetry provider: {err:?}");
+                        }
+                    })
+                }))
+            }
+            rocket = rocket.attach(TelemetryRequestFairing);
+        }
+    }
+
+    // Attach Prometheus metrics if the feature is enabled
     cfg_if::cfg_if! {
         if #[cfg(feature = "metrics")] {
             use rocket_prometheus::PrometheusMetrics;
@@ -42,6 +81,7 @@ async fn rocket() -> Rocket<Build> {
         }
     }
 
+    // Attach OpenAPI documentation ans Swagger UI if the feature is enabled
     cfg_if::cfg_if! {
         if #[cfg(feature = "swagger")] {
             use api::ApiRconResponse;

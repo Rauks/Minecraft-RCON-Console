@@ -162,6 +162,7 @@ rust-test:features:
       - FEATURES: 
         - metrics
         - swagger
+        - opentelemetry
 
 container:amd64:
   dependencies:

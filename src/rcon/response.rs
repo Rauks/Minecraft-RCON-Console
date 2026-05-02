@@ -24,6 +24,13 @@ impl RconResponse {
     /// # Returns
     ///
     /// An `RconResponse` if the decoding was successful, otherwise a `RconResponseError`.
+    #[tracing::instrument(
+        name = "RconResponse.Decode",
+        skip(rcon_bytes),
+        fields(
+            app.component = "rcon",
+        )
+    )]
     pub fn try_from_rcon_bytes(rcon_bytes: &[u8]) -> Result<Self, RconResponseError> {
         // Remember to use little endian
         let response_size: i32 = i32::from_le_bytes(rcon_bytes[0..4].try_into().map_err(|_| {

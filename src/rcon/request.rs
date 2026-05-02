@@ -31,6 +31,13 @@ impl RconRequest {
     /// # Returns
     ///
     /// A byte vector representing the RCON request.
+    #[tracing::instrument(
+        name = "RconRequest.Encode",
+        skip(self),
+        fields(
+            app.component = "rcon",
+        )
+    )]
     pub fn to_rcon_bytes(&self) -> Vec<u8> {
         let request_id: i32 = self.request_id;
         let request_type: i32 = (&self.request_type).into();

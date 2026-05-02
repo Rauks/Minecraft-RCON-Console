@@ -5,7 +5,11 @@ edition = "2024"
 [dependencies]
 cfg-if = "1.0.4"
 dotenvy = "0.15.7"
-log = "0.4.29"
+opentelemetry = { version = "0.31.0", optional = true }
+opentelemetry_sdk = { version = "0.31.0", features = ["rt-tokio"], optional = true }
+opentelemetry-stdout = { version = "0.31.0", optional = true }
+opentelemetry-otlp = { version = "0.31.1", features = ["grpc-tonic"], optional = true }
+opentelemetry-semantic-conventions = { version = "0.31.0", optional = true }
 rand = "0.10.1"
 rocket = { version = "0.5.1", features = ["json"] }
 rocket_prometheus = { version = "0.10.1", optional = true }
@@ -13,6 +17,10 @@ serde = "1.0.228"
 serde_json = { version = "1.0.149", features = ["indexmap"] }
 thiserror = "2.0.18"
 tokio = { version = "1.52.1", features = ["process"] }
+tracing = "0.1.44"
+tracing-subscriber = { version = "0.3.23", features = ["env-filter", "json"], optional = true }
+tracing-opentelemetry = { version = "0.32.1", optional = true }
+tracing-log = "0.2.0"
 utoipa = { version = "5.4.0", features = ["uuid", "rocket_extras"] }
 utoipa-swagger-ui = { version = "9.0.2", features = ["rocket", "vendored"], optional = true }
 
@@ -22,8 +30,9 @@ temp-env = { version = "0.3.6", features = ["async_closure"] }
 test-case = "3.3.1"
 
 [features]
-default = ["swagger", "metrics"]
-release = ["swagger", "metrics"]
+default = ["swagger", "metrics", "opentelemetry"]
+release = ["swagger", "metrics", "opentelemetry"]
+opentelemetry = ["dep:opentelemetry", "dep:opentelemetry_sdk", "dep:opentelemetry-stdout", "dep:opentelemetry-otlp", "dep:opentelemetry-semantic-conventions", "dep:tracing-opentelemetry", "dep:tracing-subscriber"]
 
 swagger = ["dep:utoipa-swagger-ui"]
 metrics = ["dep:rocket_prometheus"]
