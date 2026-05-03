@@ -29,49 +29,59 @@ include:
       stage: quality
       fail_on_severity: critical
 
-  - component: gitlab.kirauks.net/dev-ops/components/rust/clippy@4.10.1
+  - component: gitlab.kirauks.net/dev-ops/components/rust/clippy@5.0.0
     inputs:
-      job_name: rust-clippy
+      job_name: clippy
       stage: scan
 
   # Tests
   - component: gitlab.kirauks.net/dev-ops/components/node/test@5.1.0
     inputs:
-      job_name: angular-test
+      job_name: test:ui
       stage: test
       context: ./ui
 
-  - component: gitlab.kirauks.net/dev-ops/components/rust/test@4.10.1
+  - component: gitlab.kirauks.net/dev-ops/components/rust/test@5.0.0
     inputs:
-      job_name: rust-test
+      job_name: test:api
       stage: test
-  - component: gitlab.kirauks.net/dev-ops/components/rust/test@4.10.1
+      tags:
+        - docker
+        - linux/amd64
+        - privileged
+        - vlan/dmz # Minecraft server
+  - component: gitlab.kirauks.net/dev-ops/components/rust/test@5.0.0
     inputs:
-      job_name: rust-test:features
+      job_name: test:api:features
       stage: test
+      tags:
+        - docker
+        - linux/amd64
+        - privileged
+        - vlan/dmz # Minecraft server
       no_default_features: true
       features: $FEATURES
 
   # Builds
   - component: gitlab.kirauks.net/dev-ops/components/node/build@5.1.0
     inputs:
-      job_name: angular-build
+      job_name: build:ui
       stage: build
       context: ./ui
       artifacts:
         - ./ui/dist/*
 
-  - component: gitlab.kirauks.net/dev-ops/components/rust/build@4.10.1
+  - component: gitlab.kirauks.net/dev-ops/components/rust/build@5.0.0
     inputs:
-      job_name: rust-build:amd64
+      job_name: build:api:amd64
       stage: build
       target: x86_64-unknown-linux-gnu
       artifacts:
         - ./target/x86_64-unknown-linux-gnu/release/minecraft-rcon
 
-  - component: gitlab.kirauks.net/dev-ops/components/rust/build@4.10.1
+  - component: gitlab.kirauks.net/dev-ops/components/rust/build@5.0.0
     inputs:
-      job_name: rust-build:arm64
+      job_name: build:api:arm64
       stage: build
       target: aarch64-unknown-linux-gnu
       artifacts:
@@ -124,39 +134,27 @@ include:
 
 sonarqube:
   needs:
-    - job: rust-clippy
+    - job: clippy
       artifacts: true
-    - job: angular-test
+    - job: test:ui
       artifacts: true
-    - job: rust-test
+    - job: test:api
       artifacts: true
   
-angular-test:
+test:ui:
   before_script:
     - npm -v
     - node -v
     - npm config set "//npm.fontawesome.com/:_authToken" $FONTAWESOME_PACKAGE_TOKEN
 
-angular-build:
+build:ui:
   before_script:
     - npm -v
     - node -v
     - npm config set "//npm.fontawesome.com/:_authToken" $FONTAWESOME_PACKAGE_TOKEN
     - sed -i -e "s|%VERSION_SLUG%|${VERSION_SLUG}|g" ui/src/environments/environment.prod.ts 
 
-rust-test:
-  tags:
-    - docker
-    - linux/amd64
-    - privileged
-    - vlan/dmz # Minecraft server
-    
-rust-test:features:
-  tags:
-    - docker
-    - linux/amd64
-    - privileged
-    - vlan/dmz # Minecraft server
+test:api:features:
   parallel:
     matrix:
       - FEATURES: 
@@ -166,10 +164,10 @@ rust-test:features:
 
 container:amd64:
   dependencies:
-    - angular-build
-    - rust-build:amd64
+    - build:ui
+    - build:api:amd64
 
 container:arm64:
   dependencies:
-    - angular-build
-    - rust-build:arm64
+    - build:ui
+    - build:api:arm64

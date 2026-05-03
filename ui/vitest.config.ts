@@ -15,5 +15,9 @@ export default defineConfig({
             reporter: ['cobertura', 'html', 'lcovonly', 'text-summary'],
             provider: 'v8',
         },
+        reporters: [
+            'default',
+            ['junit', { outputFile: 'junit.xml' }],
+        ],
     }
 });
