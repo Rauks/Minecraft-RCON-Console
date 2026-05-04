@@ -21,7 +21,7 @@ tracing = "0.1.44"
 tracing-subscriber = { version = "0.3.23", features = ["env-filter", "json"], optional = true }
 tracing-opentelemetry = { version = "0.32.1", optional = true }
 tracing-log = "0.2.0"
-utoipa = { version = "5.4.0", features = ["uuid", "rocket_extras"] }
+utoipa = { version = "5.5.0", features = ["uuid", "rocket_extras"] }
 utoipa-swagger-ui = { version = "9.0.2", features = ["rocket", "vendored"], optional = true }
 
 [dev-dependencies]
