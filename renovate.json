@@ -57,6 +57,13 @@
       ]
     },
     {
+      "groupName": "opentelemetry",
+      "matchSourceUrls": [
+        "https://github.com/open-telemetry/opentelemetry-rust",
+        "https://github.com/tokio-rs/tracing-opentelemetry"
+      ]
+    },
+    {
       "groupName": "playwright",
       "matchPackageNames": [
         "registry.kirauks.net/dev-ops/build-images/node",
