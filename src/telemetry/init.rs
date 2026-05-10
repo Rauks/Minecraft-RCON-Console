@@ -12,10 +12,10 @@ use tracing_subscriber::{EnvFilter, Layer, fmt, layer::SubscriberExt, util::Subs
 /// # Environment Variables:
 ///
 /// - `RUST_LOG`: Configures the log level (e.g., "info", "debug", "error"). Defaults to "info" if
-///    not set.
+///   not set.
 /// - `RUST_TRACES`: Configures the trace level (e.g., "info", "debug", "error"). Defaults to "info"
-///    if not set. Traces will only be exported if the `OTEL_EXPORTER_OTLP_ENDPOINT` environment
-///    variable is set.
+///   if not set. Traces will only be exported if the `OTEL_EXPORTER_OTLP_ENDPOINT` environment
+///   variable is set.
 /// - `OTEL_EXPORTER_OTLP_ENDPOINT`: Enables OTLP tracing to the specified endpoint. If not set,
 ///   traces will not be exported.
 /// - `OTEL_SERVICE_NAME`: Specifies the service name for OTLP traces. Defaults to the crate name.
