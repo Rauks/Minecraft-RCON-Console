@@ -48,7 +48,6 @@ include:
       tags:
         - docker
         - linux/amd64
-        - privileged
         - vlan/dmz # Minecraft server
   - component: gitlab.kirauks.net/dev-ops/components/rust/test@5.0.3
     inputs:
@@ -57,7 +56,6 @@ include:
       tags:
         - docker
         - linux/amd64
-        - privileged
         - vlan/dmz # Minecraft server
       no_default_features: true
       features: $FEATURES
