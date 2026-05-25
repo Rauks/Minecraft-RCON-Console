@@ -41,22 +41,14 @@ include:
       stage: test
       context: ./ui
 
-  - component: gitlab.kirauks.net/dev-ops/components/rust/test@5.0.4
+  - component: gitlab.kirauks.net/dev-ops/components/rust/test@5.0.5
     inputs:
       job_name: test:api
       stage: test
-      tags:
-        - docker
-        - linux/amd64
-        - vlan/dmz # Minecraft server
-  - component: gitlab.kirauks.net/dev-ops/components/rust/test@5.0.4
+  - component: gitlab.kirauks.net/dev-ops/components/rust/test@5.0.5
     inputs:
       job_name: test:api:features
       stage: test
-      tags:
-        - docker
-        - linux/amd64
-        - vlan/dmz # Minecraft server
       no_default_features: true
       features: $FEATURES
 
