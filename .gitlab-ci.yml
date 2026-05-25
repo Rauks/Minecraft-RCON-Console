@@ -29,7 +29,7 @@ include:
       stage: quality
       fail_on_severity: critical
 
-  - component: gitlab.kirauks.net/dev-ops/components/rust/clippy@5.0.4
+  - component: gitlab.kirauks.net/dev-ops/components/rust/clippy@5.0.5
     inputs:
       job_name: clippy
       stage: scan
@@ -61,7 +61,7 @@ include:
       artifacts:
         - ./ui/dist/*
 
-  - component: gitlab.kirauks.net/dev-ops/components/rust/build@5.0.4
+  - component: gitlab.kirauks.net/dev-ops/components/rust/build@5.0.5
     inputs:
       job_name: build:api:amd64
       stage: build
@@ -69,7 +69,7 @@ include:
       artifacts:
         - ./target/x86_64-unknown-linux-gnu/release/minecraft-rcon
 
-  - component: gitlab.kirauks.net/dev-ops/components/rust/build@5.0.4
+  - component: gitlab.kirauks.net/dev-ops/components/rust/build@5.0.5
     inputs:
       job_name: build:api:arm64
       stage: build
