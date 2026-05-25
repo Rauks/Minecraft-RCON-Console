@@ -153,11 +153,15 @@ test:api:features:
         - opentelemetry
 
 container:amd64:
-  dependencies:
-    - build:ui
-    - build:api:amd64
+  needs: 
+    - job: build:ui
+      artifacts: true
+    - job: build:api:amd64
+      artifacts: true
 
 container:arm64:
-  dependencies:
-    - build:ui
-    - build:api:arm64
+  needs: 
+    - job: build:ui
+      artifacts: true
+    - job: build:api:arm64
+      artifacts: true
