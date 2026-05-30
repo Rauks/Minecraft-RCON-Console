@@ -25,7 +25,7 @@ utoipa = { version = "5.5.0", features = ["uuid", "rocket_extras"] }
 utoipa-swagger-ui = { version = "9.0.2", features = ["rocket", "vendored"], optional = true }
 
 [dev-dependencies]
-serial_test = "3.4.0"
+serial_test = "3.5.0"
 temp-env = { version = "0.3.6", features = ["async_closure"] }
 test-case = "3.3.1"
 
