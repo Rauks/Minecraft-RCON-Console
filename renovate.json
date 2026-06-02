@@ -11,6 +11,12 @@
   ],
   "packageRules": [
     {
+      "groupName": "devops",
+      "matchPackageNames": [
+        "dev-ops/components/**"
+      ]
+    },
+    {
       "matchUpdateTypes": [
         "major"
       ],
