@@ -2,11 +2,11 @@ import { AsyncPipe } from "@angular/common";
 import { ChangeDetectionStrategy, Component } from "@angular/core";
 import { FormControl, FormGroup, ReactiveFormsModule } from "@angular/forms";
 import { DomSanitizer, SafeHtml } from "@angular/platform-browser";
+import { fade } from "@app/animations";
+import { RconService } from "@app/services";
+import { Localizer } from "@app/utils";
 import { minimatch } from "minimatch";
 import { BehaviorSubject, debounceTime, map, Observable, take } from "rxjs";
-import { fade } from "src/animations";
-import { RconService } from "src/services";
-import { Localizer } from "src/utils";
 import colorCodes from "../../config/minecraft-color-codes.json";
 import statusMatchers from "../../config/minecraft-status-matchers.json";
 import styleCodes from "../../config/minecraft-style-codes.json";
@@ -15,6 +15,14 @@ import { LoaderComponent } from "../core/loader/loader.component";
 import { ShortcutsComponent } from "../shortcuts/shortcuts.component";
 
 export type CommandResultStatus = "unknown" | "error" | "invalid" | "com";
+export type CommandHistoryEntry = {
+    id: number;
+    sourceCommand: string;
+    matchedStatus: CommandResultStatus;
+    decodedReply: string;
+};
+export type ColorCode = keyof typeof colorCodes;
+export type StyleCode = keyof typeof styleCodes;
 
 export const SLOW_COMMAND_DEBOUNCE_TIME = 500;
 
@@ -23,7 +31,7 @@ export const SLOW_COMMAND_DEBOUNCE_TIME = 500;
     imports: [AsyncPipe, LocalizePipe, IconsModule, ReactiveFormsModule, LoaderComponent, ShortcutsComponent],
     providers: [RconService],
     templateUrl: "./console.component.html",
-    styleUrl: "./console.component.scss",
+    styleUrls: ["./console.component.scss"],
     animations: [fade],
     changeDetection: ChangeDetectionStrategy.OnPush,
     standalone: true,
@@ -45,7 +53,9 @@ export class ConsoleComponent {
      */
     public readonly commandForm: FormGroup<{
         command: FormControl<string | null>;
-    }> = new FormGroup({
+    }> = new FormGroup<{
+        command: FormControl<string | null>;
+    }>({
         command: new FormControl(null),
     });
 
@@ -58,14 +68,9 @@ export class ConsoleComponent {
     /**
      * The history of the command results.
      */
-    public readonly commandResultHistory$: BehaviorSubject<
-        {
-            id: number;
-            sourceCommand: string;
-            matchedStatus: CommandResultStatus;
-            decodedReply: string | null;
-        }[]
-    > = new BehaviorSubject([]);
+    public readonly commandResultHistory$: BehaviorSubject<CommandHistoryEntry[]> = new BehaviorSubject<
+        CommandHistoryEntry[]
+    >([]);
 
     /**
      * Generates a unique ID
@@ -88,6 +93,28 @@ export class ConsoleComponent {
     }
 
     /**
+     * Type guard to check if a value is a ColorCode
+     *
+     * @param value The value to check
+     *
+     * @return true if the value is a ColorCode, false otherwise
+     */
+    private isColorCode(value: any): value is ColorCode {
+        return Object.keys(colorCodes).includes(value);
+    }
+
+    /**
+     * Type guard to check if a value is a StyleCode
+     *
+     * @param value The value to check
+     *
+     * @return true if the value is a StyleCode, false otherwise
+     */
+    private isStyleCode(value: any): value is StyleCode {
+        return Object.keys(styleCodes).includes(value);
+    }
+
+    /**
      * Decodes the response from the RCON server
      *
      * @param text The text to decode
@@ -99,13 +126,19 @@ export class ConsoleComponent {
         text = text.replace(/\n/g, "<br>");
 
         // Replace color codes with spans
-        text = text.replace(/§([0-9a-f])/g, (match, group) => {
-            return `<span style="color: ${colorCodes[group]};">`;
+        text = text.replace(/§([0-9a-f])/g, (_match, group) => {
+            if (this.isColorCode(group)) {
+                return `<span style="color: ${colorCodes[group]};">`;
+            }
+            return "";
         });
 
         // Replace style codes with spans
-        text = text.replace(/§([k-o])/g, (match, group) => {
-            return `<span style="${styleCodes[group]};">`;
+        text = text.replace(/§([k-o])/g, (_match, group) => {
+            if (this.isStyleCode(group)) {
+                return `<span style="${styleCodes[group]};">`;
+            }
+            return "";
         });
 
         // Replace reset code with closing span

@@ -3,12 +3,12 @@ import { provideHttpClientTesting } from "@angular/common/http/testing";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { By } from "@angular/platform-browser";
 import { provideNoopAnimations } from "@angular/platform-browser/animations";
+import { RconService } from "@app/services";
+import { Localizer } from "@app/utils";
 import { BehaviorSubject, Subject, throwError } from "rxjs";
-import { RconService } from "src/services";
-import { Localizer } from "src/utils";
 import colorCodes from "../../config/minecraft-color-codes.json";
 import styleCodes from "../../config/minecraft-style-codes.json";
-import { ConsoleComponent, SLOW_COMMAND_DEBOUNCE_TIME } from "./console.component";
+import { ColorCode, ConsoleComponent, SLOW_COMMAND_DEBOUNCE_TIME, StyleCode } from "./console.component";
 
 describe("ConsoleComponent", () => {
     let component: ConsoleComponent;
@@ -274,7 +274,23 @@ describe("ConsoleComponent", () => {
     });
 
     it("should decode the color codes", () => {
-        for (let colorCode of ["1", "2", "3", "4", "5", "6", "7", "8", "9", "a", "b", "c", "d", "e", "f"]) {
+        for (let colorCode of <ColorCode[]>[
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "6",
+            "7",
+            "8",
+            "9",
+            "a",
+            "b",
+            "c",
+            "d",
+            "e",
+            "f",
+        ]) {
             expect(component.decodeResponse(`§${colorCode}test§r`)).toEqual(
                 `<span style="color: ${colorCodes[colorCode]};">test</span>`,
             );
@@ -282,7 +298,7 @@ describe("ConsoleComponent", () => {
     });
 
     it("should decode the style codes", () => {
-        for (let styleCode of ["k", "l", "m", "n", "o"]) {
+        for (let styleCode of <StyleCode[]>["k", "l", "m", "n", "o"]) {
             expect(component.decodeResponse(`§${styleCode}test§r`)).toEqual(
                 `<span style="${styleCodes[styleCode]};">test</span>`,
             );

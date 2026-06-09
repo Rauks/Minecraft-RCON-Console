@@ -2,7 +2,7 @@ import { provideHttpClient, withInterceptorsFromDi } from "@angular/common/http"
 import { provideHttpClientTesting } from "@angular/common/http/testing";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { By } from "@angular/platform-browser";
-import { RconService } from "src/services";
+import { RconService } from "@app/services";
 import { ShortcutsComponent } from "./shortcuts.component";
 
 describe("ShortcutsComponent", () => {

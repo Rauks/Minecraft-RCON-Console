@@ -32,13 +32,13 @@ export class Localizer {
      *
      * @param key The translation
      */
-    public translate(key: string): string {
+    public translate(key: string | undefined): string {
         if (key == undefined) {
             return "?";
         }
         if (key.includes("#")) {
             const parts: string[] = key.split("#");
-            const translation: string = this.getTranslation(parts.shift());
+            const translation: string = this.getTranslation(parts.shift() || "");
             return parts.reduce((tr: string, part: string, currentIndex: number): string => {
                 return tr.replace(`{${currentIndex}}`, part);
             }, translation);

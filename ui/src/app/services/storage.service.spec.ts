@@ -36,12 +36,18 @@ describe("StorageService", () => {
         // Persistance is disabled, so the settings should not be persisted
         const settingsService: SettingsService = TestBed.inject(SettingsService);
         settingsService.setSetting("test-key", "test-value");
-        expect(JSON.parse(localStorage.getItem(StorageService["LS_SETTINGS"]))).toBeNull();
+        expect(localStorage.getItem(StorageService["LS_SETTINGS"])).toBeNull();
 
         // Enable persistance, the settings should be persisted now
         service.enablePeristance();
         settingsService.setSetting("test-key", "test-value");
-        expect(JSON.parse(localStorage.getItem(StorageService["LS_SETTINGS"]))).toBeTruthy();
+        const rawSettings = localStorage.getItem(StorageService["LS_SETTINGS"]);
+
+        if (rawSettings) {
+            expect(JSON.parse(rawSettings)).toBeTruthy();
+        } else {
+            throw new Error("Settings were not persisted in the local storage");
+        }
 
         // Reload from storage
         vi.spyOn(settingsService, "setSettings");
