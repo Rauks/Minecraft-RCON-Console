@@ -1,4 +1,4 @@
-import { Injectable } from "@angular/core";
+import { Service } from "@angular/core";
 import { BehaviorSubject, Observable } from "rxjs";
 import { map } from "rxjs/operators";
 
@@ -9,9 +9,7 @@ export declare interface Settings {
 /**
  * Singleton service
  */
-@Injectable({
-    providedIn: "root",
-})
+@Service()
 export class SettingsService {
     private readonly settings$: BehaviorSubject<Settings> = new BehaviorSubject<Settings>({});
 

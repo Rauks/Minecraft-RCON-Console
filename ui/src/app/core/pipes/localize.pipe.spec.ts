@@ -1,4 +1,4 @@
-import { Localizer } from "src/utils";
+import { Localizer } from "@app/utils";
 import { LocalizePipe } from "./localize.pipe";
 
 describe("LocalizePipe", () => {

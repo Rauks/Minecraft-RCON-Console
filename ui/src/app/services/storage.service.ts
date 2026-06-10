@@ -1,14 +1,14 @@
-import { Injectable, OnDestroy } from "@angular/core";
+import { inject, OnDestroy, Service } from "@angular/core";
 import { Subscription } from "rxjs";
 import { Settings, SettingsService } from "./settings.service";
 
 /**
  * Singleton service used to manage the local storage
  */
-@Injectable({
-    providedIn: "root",
-})
+@Service()
 export class StorageService implements OnDestroy {
+    protected readonly settingsService: SettingsService = inject(SettingsService);
+
     /**
      * Local storage key for the settings.
      */
@@ -25,7 +25,7 @@ export class StorageService implements OnDestroy {
      */
     private readonly persistSubscription: Subscription = new Subscription();
 
-    constructor(protected readonly settingsService: SettingsService) {
+    constructor() {
         this.persistSubscription.add(
             this.settingsService.getSettings().subscribe((value) => {
                 // On any change in the settings, persist them.
@@ -55,7 +55,10 @@ export class StorageService implements OnDestroy {
      */
     public reloadAll(): void {
         if (this.isPersistanceAvailable()) {
-            this.settingsService.setSettings(this.reload<Settings>(StorageService.LS_SETTINGS));
+            const settings = this.reload<Settings>(StorageService.LS_SETTINGS);
+            if (settings != undefined) {
+                this.settingsService.setSettings(settings);
+            }
         }
     }
 
@@ -94,9 +97,12 @@ export class StorageService implements OnDestroy {
      *
      * @returns The reloaded data
      */
-    private reload<T>(key: string): T {
+    private reload<T>(key: string): T | undefined {
         try {
-            return JSON.parse(localStorage.getItem(key));
+            const stored = localStorage.getItem(key);
+            if (stored != undefined) {
+                return JSON.parse(stored);
+            }
         } catch (error) {
             if (console) {
                 console.warn(error);

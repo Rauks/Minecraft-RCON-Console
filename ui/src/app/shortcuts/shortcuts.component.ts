@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Output } from "@angular/core";
+import { RconService } from "@app/services";
 import { IconLookup, IconName } from "@fortawesome/angular-fontawesome";
-import { RconService } from "src/services";
 import shortcuts from "../../config/shortcuts.json";
 import { IconsModule } from "../core";
 
@@ -16,7 +16,7 @@ export type Shortcut = {
     imports: [IconsModule],
     providers: [RconService],
     templateUrl: "./shortcuts.component.html",
-    styleUrl: "./shortcuts.component.scss",
+    styleUrls: ["./shortcuts.component.scss"],
     changeDetection: ChangeDetectionStrategy.OnPush,
     standalone: true,
 })

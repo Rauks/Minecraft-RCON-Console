@@ -1,8 +1,17 @@
 import { AsyncPipe } from "@angular/common";
-import { ChangeDetectionStrategy, Component, DOCUMENT, Inject, OnDestroy, OnInit, Renderer2 } from "@angular/core";
+import {
+    ChangeDetectionStrategy,
+    Component,
+    DOCUMENT,
+    inject,
+    Inject,
+    OnDestroy,
+    OnInit,
+    Renderer2,
+} from "@angular/core";
 import { RouterOutlet } from "@angular/router";
+import { SettingsService, StorageService } from "@app/services";
 import { BehaviorSubject, Subscription } from "rxjs";
-import { SettingsService, StorageService } from "src/services";
 import { CollapseDirective, IconsModule, LoaderComponent, LocalizePipe } from "./core";
 
 @Component({
@@ -10,11 +19,14 @@ import { CollapseDirective, IconsModule, LoaderComponent, LocalizePipe } from ".
     imports: [RouterOutlet, AsyncPipe, LocalizePipe, IconsModule, LoaderComponent, CollapseDirective],
     providers: [SettingsService, StorageService],
     templateUrl: "./app.component.html",
-    styleUrl: "./app.component.scss",
+    styleUrls: ["./app.component.scss"],
     changeDetection: ChangeDetectionStrategy.OnPush,
     standalone: true,
 })
 export class AppComponent implements OnInit, OnDestroy {
+    private readonly settingsService: SettingsService = inject(SettingsService);
+    private readonly storageService: StorageService = inject(StorageService);
+
     /**
      * The key for the theme setting.
      */
@@ -28,7 +40,9 @@ export class AppComponent implements OnInit, OnDestroy {
     /**
      * Navbar collapsed state.
      */
-    public navbarState$: BehaviorSubject<{ collapsed: boolean }> = new BehaviorSubject({ collapsed: true });
+    public navbarState$: BehaviorSubject<{ collapsed: boolean }> = new BehaviorSubject<{ collapsed: boolean }>({
+        collapsed: true,
+    });
 
     /**
      * Holds the current theme of the application.
@@ -41,8 +55,6 @@ export class AppComponent implements OnInit, OnDestroy {
     private readonly subscription: Subscription = new Subscription();
 
     constructor(
-        private readonly settingsService: SettingsService,
-        private readonly storageService: StorageService,
         @Inject(DOCUMENT) private readonly document: Document,
         private readonly renderer: Renderer2,
     ) {
@@ -108,7 +120,7 @@ export class AppComponent implements OnInit, OnDestroy {
      */
     public userPreferredTheme(): string {
         const window = this.document.defaultView;
-        return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+        return window?.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
     }
 
     public ngOnDestroy() {
