@@ -38,7 +38,7 @@ export class Localizer {
         }
         if (key.includes("#")) {
             const parts: string[] = key.split("#");
-            const translation: string = this.getTranslation(parts.shift() || "");
+            const translation: string = this.getTranslation(parts.shift() || "?");
             return parts.reduce((tr: string, part: string, currentIndex: number): string => {
                 return tr.replace(`{${currentIndex}}`, part);
             }, translation);
