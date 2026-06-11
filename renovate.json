@@ -63,6 +63,13 @@
       ]
     },
     {
+      "groupName": "debian",
+      "matchPackageNames": [
+        "docker.io/debian",
+        "docker.io/arm64v8/debian"
+      ]
+    },
+    {
       "groupName": "opentelemetry",
       "matchSourceUrls": [
         "https://github.com/open-telemetry/opentelemetry-rust",
