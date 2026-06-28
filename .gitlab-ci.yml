@@ -35,7 +35,7 @@ include:
       stage: scan
 
   # Tests
-  - component: gitlab.kirauks.net/dev-ops/components/node/test@5.1.8
+  - component: gitlab.kirauks.net/dev-ops/components/node/test@5.1.9
     inputs:
       job_name: test:ui
       stage: test
@@ -53,7 +53,7 @@ include:
       features: $FEATURES
 
   # Builds
-  - component: gitlab.kirauks.net/dev-ops/components/node/build@5.1.8
+  - component: gitlab.kirauks.net/dev-ops/components/node/build@5.1.9
     inputs:
       job_name: build:ui
       stage: build
