@@ -8,6 +8,7 @@ stages:
   - build
   - publish
   - audit
+  - release
 
 include:
   # Scanners
@@ -128,6 +129,12 @@ include:
       needs:
         - job: manifest
           artifacts: false
+
+  # Release
+  - component: gitlab.kirauks.net/dev-ops/components/gitlab/release@2.2.1
+    inputs:
+      job_name: release
+      stage: release
 
 test:ui:
   before_script:
