@@ -22,6 +22,13 @@ include:
       job_name: sonarqube
       stage: quality
       allow_failure: true
+      needs:
+        - job: clippy
+          artifacts: true
+        - job: test:ui
+          artifacts: true
+        - job: test:api
+          artifacts: true
 
   - component: gitlab.kirauks.net/dev-ops/components/sbom/grype@1.2.5
     inputs:
@@ -122,15 +129,6 @@ include:
         - job: manifest
           artifacts: false
 
-sonarqube:
-  needs:
-    - job: clippy
-      artifacts: true
-    - job: test:ui
-      artifacts: true
-    - job: test:api
-      artifacts: true
-  
 test:ui:
   before_script:
     - npm -v
