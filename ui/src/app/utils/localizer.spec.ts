@@ -40,7 +40,7 @@ describe("Localizer", () => {
     });
 
     it("should translate composed keys with empty parameters", () => {
-        expect(localizer.translate("tk.test.composed#")).toBe("Test ");
+        expect(localizer.translate("tk.test.composed#")).toBe("Test ?");
     });
 
     it("should translate composed keys with extra parameters", () => {

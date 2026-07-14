@@ -40,7 +40,7 @@ export class Localizer {
             const parts: string[] = key.split("#");
             const translation: string = this.getTranslation(parts.shift() || "");
             return parts.reduce((tr: string, part: string, currentIndex: number): string => {
-                return tr.replace(`{${currentIndex}}`, part);
+                return tr.replace(`{${currentIndex}}`, part || "?");
             }, translation);
         }
         return this.getTranslation(key);
