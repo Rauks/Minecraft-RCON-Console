@@ -131,7 +131,7 @@ include:
           artifacts: false
 
   # Release
-  - component: gitlab.kirauks.net/dev-ops/components/gitlab/release@2.2.1
+  - component: gitlab.kirauks.net/dev-ops/components/gitlab/release@2.2.2
     inputs:
       job_name: release
       stage: release
