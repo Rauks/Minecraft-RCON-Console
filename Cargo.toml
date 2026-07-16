@@ -16,7 +16,7 @@ rocket_prometheus = { version = "0.10.1", optional = true }
 serde = "1.0.228"
 serde_json = { version = "1.0.150", features = ["indexmap"] }
 thiserror = "2.0.18"
-tokio = { version = "1.52.3", features = ["process"] }
+tokio = { version = "1.52.4", features = ["process"] }
 tracing = "0.1.44"
 tracing-subscriber = { version = "0.3.23", features = ["env-filter", "json"], optional = true }
 tracing-opentelemetry = { version = "0.33.0", optional = true }
