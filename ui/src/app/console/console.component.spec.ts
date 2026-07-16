@@ -2,7 +2,6 @@ import { provideHttpClient, withInterceptorsFromDi } from "@angular/common/http"
 import { provideHttpClientTesting } from "@angular/common/http/testing";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { By } from "@angular/platform-browser";
-import { provideNoopAnimations } from "@angular/platform-browser/animations";
 import { RconService } from "@app/services";
 import { Localizer } from "@app/utils";
 import { BehaviorSubject, Subject, throwError } from "rxjs";
@@ -17,12 +16,7 @@ describe("ConsoleComponent", () => {
     beforeEach(async () => {
         await TestBed.configureTestingModule({
             imports: [ConsoleComponent],
-            providers: [
-                RconService,
-                provideNoopAnimations(),
-                provideHttpClient(withInterceptorsFromDi()),
-                provideHttpClientTesting(),
-            ],
+            providers: [RconService, provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()],
         }).compileComponents();
 
         fixture = TestBed.createComponent(ConsoleComponent);

@@ -2,7 +2,6 @@ import { AsyncPipe } from "@angular/common";
 import { ChangeDetectionStrategy, Component } from "@angular/core";
 import { FormControl, FormGroup, ReactiveFormsModule } from "@angular/forms";
 import { DomSanitizer, SafeHtml } from "@angular/platform-browser";
-import { fade } from "@app/animations";
 import { RconService } from "@app/services";
 import { Localizer } from "@app/utils";
 import { minimatch } from "minimatch";
@@ -32,7 +31,6 @@ export const SLOW_COMMAND_DEBOUNCE_TIME = 500;
     providers: [RconService],
     templateUrl: "./console.component.html",
     styleUrls: ["./console.component.scss"],
-    animations: [fade],
     changeDetection: ChangeDetectionStrategy.OnPush,
     standalone: true,
 })

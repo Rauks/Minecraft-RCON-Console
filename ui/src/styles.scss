@@ -55,3 +55,12 @@ $theme-colors: map.merge(
     --minecraft-rcon-navbar-border-color: var(--bs-dark);
     --minecraft-rcon-console-reply-bg-color: var(--bs-gray-200);
 }
+
+.fade-in {
+    opacity: 1;
+    transition: opacity 0.5s;
+
+    @starting-style {
+        opacity: 0;
+    }
+}
