@@ -12,7 +12,7 @@ stages:
 
 include:
   # Scanners
-  - component: gitlab.kirauks.net/dev-ops/components/scanners/gitguardian@4.1.6
+  - component: gitlab.kirauks.net/dev-ops/components/scanners/gitguardian@4.1.7
     inputs:
       job_name: gitguardian
       stage: scan
@@ -31,13 +31,13 @@ include:
         - job: test:api
           artifacts: true
 
-  - component: gitlab.kirauks.net/dev-ops/components/sbom/grype@1.2.8
+  - component: gitlab.kirauks.net/dev-ops/components/sbom/grype@1.2.9
     inputs:
       job_name: grype
       stage: quality
       fail_on_severity: critical
 
-  - component: gitlab.kirauks.net/dev-ops/components/rust/clippy@5.3.0
+  - component: gitlab.kirauks.net/dev-ops/components/rust/clippy@5.3.1
     inputs:
       job_name: clippy
       stage: scan
@@ -49,11 +49,11 @@ include:
       stage: test
       context: ./ui
 
-  - component: gitlab.kirauks.net/dev-ops/components/rust/test@5.3.0
+  - component: gitlab.kirauks.net/dev-ops/components/rust/test@5.3.1
     inputs:
       job_name: test:api
       stage: test
-  - component: gitlab.kirauks.net/dev-ops/components/rust/test@5.3.0
+  - component: gitlab.kirauks.net/dev-ops/components/rust/test@5.3.1
     inputs:
       job_name: test:api:features
       stage: test
@@ -69,7 +69,7 @@ include:
       artifacts:
         - ./ui/dist/*
 
-  - component: gitlab.kirauks.net/dev-ops/components/rust/build@5.3.0
+  - component: gitlab.kirauks.net/dev-ops/components/rust/build@5.3.1
     inputs:
       job_name: build:api:amd64
       stage: build
@@ -77,7 +77,7 @@ include:
       artifacts:
         - ./target/x86_64-unknown-linux-gnu/release/minecraft-rcon
 
-  - component: gitlab.kirauks.net/dev-ops/components/rust/build@5.3.0
+  - component: gitlab.kirauks.net/dev-ops/components/rust/build@5.3.1
     inputs:
       job_name: build:api:arm64
       stage: build
@@ -131,7 +131,7 @@ include:
           artifacts: false
 
   # Release
-  - component: gitlab.kirauks.net/dev-ops/components/gitlab/release@2.2.7
+  - component: gitlab.kirauks.net/dev-ops/components/gitlab/release@2.2.8
     inputs:
       job_name: release
       stage: release
