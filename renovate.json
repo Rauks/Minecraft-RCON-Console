@@ -89,6 +89,13 @@
       ]
     },
     {
+      "groupName": "utoipa",
+      "matchPackageNames": [
+        "utoipa",
+        "utoipa-swagger-ui"
+      ]
+    },
+    {
       "matchManagers": [
         "cargo"
       ],
