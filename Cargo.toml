@@ -27,7 +27,7 @@ utoipa-swagger-ui = { version = "10.0.1", features = ["rocket", "vendored"], opt
 [dev-dependencies]
 serial_test = "4.0.1"
 temp-env = { version = "0.3.6", features = ["async_closure"] }
-test-case = "3.3.1"
+test-case = "3.4.0"
 
 [features]
 default = ["swagger", "metrics", "opentelemetry"]
