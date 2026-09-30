@@ -63,33 +63,39 @@
       ]
     },
     {
-      "groupName": "debian",
+      "groupName": "debian images",
       "matchPackageNames": [
         "docker.io/debian",
         "docker.io/arm64v8/debian"
       ]
     },
     {
-      "groupName": "opentelemetry",
+      "groupName": "opentelemetry monorepo",
+      "extends": ["monorepo:opentelemetry-rust"]
+    },
+    {
+      "groupName": "opentelemetry monorepo",
       "matchSourceUrls": [
-        "https://github.com/open-telemetry/opentelemetry-rust",
         "https://github.com/tokio-rs/tracing-opentelemetry"
       ]
     },
     {
-      "groupName": "playwright",
+      "groupName": "test environment",
+      "extends": ["monorepo:playwright"]
+    },
+    {
+      "groupName": "test environment",
+      "extends": ["monorepo:vitest"]
+    },
+    {
+      "groupName": "test environment",
       "matchPackageNames": [
         "registry.kirauks.net/dev-ops/build-images/node",
-        "dev-ops/components/node",
-        "@vitest/browser-playwright",
-        "playwright"
-      ],
-      "addLabels": [
-        "playwright"
+        "dev-ops/components/node"
       ]
     },
     {
-      "groupName": "utoipa",
+      "groupName": "utoipa monorepo",
       "matchPackageNames": [
         "utoipa",
         "utoipa-swagger-ui"
