@@ -12,13 +12,13 @@ stages:
 
 include:
   # Scanners
-  - component: gitlab.kirauks.net/dev-ops/components/scanners/gitguardian@4.1.9
+  - component: gitlab.kirauks.net/dev-ops/components/scanners/gitguardian@4.1
     inputs:
       job_name: gitguardian
       stage: scan
       allow_failure: true
 
-  - component: gitlab.kirauks.net/dev-ops/components/sonarqube/sonarqube@3.0.1
+  - component: gitlab.kirauks.net/dev-ops/components/sonarqube/sonarqube@3.0
     inputs:
       job_name: sonarqube
       stage: quality
@@ -31,29 +31,29 @@ include:
         - job: test:api
           artifacts: true
 
-  - component: gitlab.kirauks.net/dev-ops/components/sbom/grype@1.2.12
+  - component: gitlab.kirauks.net/dev-ops/components/sbom/grype@1.2
     inputs:
       job_name: grype
       stage: quality
       fail_on_severity: critical
 
-  - component: gitlab.kirauks.net/dev-ops/components/rust/clippy@5.4.2
+  - component: gitlab.kirauks.net/dev-ops/components/rust/clippy@5.4
     inputs:
       job_name: clippy
       stage: scan
 
   # Tests
-  - component: gitlab.kirauks.net/dev-ops/components/node/test@5.1.17
+  - component: gitlab.kirauks.net/dev-ops/components/node/test@5.1
     inputs:
       job_name: test:ui
       stage: test
       context: ./ui
 
-  - component: gitlab.kirauks.net/dev-ops/components/rust/test@5.4.2
+  - component: gitlab.kirauks.net/dev-ops/components/rust/test@5.4
     inputs:
       job_name: test:api
       stage: test
-  - component: gitlab.kirauks.net/dev-ops/components/rust/test@5.4.2
+  - component: gitlab.kirauks.net/dev-ops/components/rust/test@5.4
     inputs:
       job_name: test:api:features
       stage: test
@@ -61,7 +61,7 @@ include:
       features: $FEATURES
 
   # Builds
-  - component: gitlab.kirauks.net/dev-ops/components/node/build@5.1.17
+  - component: gitlab.kirauks.net/dev-ops/components/node/build@5.1
     inputs:
       job_name: build:ui
       stage: build
