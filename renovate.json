@@ -4,6 +4,7 @@
     "config:recommended",
     "mergeConfidence:all-badges",
     "security:minimumReleaseAgeNpm",
+    "security:minimumReleaseAgeCrate",
     ":prHourlyLimitNone"
   ],
   "labels": [
