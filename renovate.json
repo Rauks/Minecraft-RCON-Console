@@ -53,7 +53,7 @@
       "commitMessageExtra": "{{#each upgrades}}{{#if (equals depName '@angular/core')}}to {{{prettyNewVersion}}}{{/if}}{{/each}}",
       "postUpgradeTasks": {
         "commands": [
-          "{{#if (or (equals packageName '@angular/core') (equals packageName '@angular/cli'))}}npx ng update {{{depName}}} --from={{{currentVersion}}} --to={{{newVersion}}} --migrate-only --allow-dirty --force{{/if}}"
+          "{{#if (or (equals packageName '@angular/core') (equals packageName '@angular/cli'))}}cd ./ui && npx ng update {{{depName}}} --from={{{currentVersion}}} --to={{{newVersion}}} --migrate-only --allow-dirty --force{{/if}}"
         ]
       }
     },
