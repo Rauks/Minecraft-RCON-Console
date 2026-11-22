@@ -44,57 +44,51 @@
       ]
     },
     {
-      "matchPackageNames": [
-        "@angular/core",
-        "@angular/cli"
+      "matchDatasources": ["npm"],
+      "matchSourceUrls": [
+        "https://github.com/angular/angular",
+        "https://github.com/angular/angular-cli"
       ],
+      "groupName": "angular monorepo",
+      "commitMessageExtra": "{{#each upgrades}}{{#if (equals depName '@angular/core')}}to {{{prettyNewVersion}}}{{/if}}{{/each}}",
       "postUpgradeTasks": {
         "commands": [
-          "cd ./ui && npx ng update {{{depName}}} --from={{{currentVersion}}} --to={{{newVersion}}} --migrate-only --allow-dirty --force"
+          "{{#if (or (equals packageName '@angular/core') (equals packageName '@angular/cli'))}}npx ng update {{{depName}}} --from={{{currentVersion}}} --to={{{newVersion}}} --migrate-only --allow-dirty --force{{/if}}"
         ]
-      },
-      "addLabels": [
-        "angular"
-      ]
+      }
     },
     {
       "groupName": "debian images",
       "matchPackageNames": [
         "docker.io/debian",
         "docker.io/arm64v8/debian"
-      ]
-    },
-    {
-      "groupName": "opentelemetry monorepo",
-      "extends": ["monorepo:opentelemetry-rust"]
+      ],
+      "commitMessageExtra": "{{#each (distinct (lookupArray upgrades 'newVersion'))}}{{#if @first}}to {{else}}, {{/if}}{{{this}}}{{/each}}"
     },
     {
       "groupName": "opentelemetry monorepo",
       "matchSourceUrls": [
+        "https://github.com/open-telemetry/opentelemetry-rust",
         "https://github.com/tokio-rs/tracing-opentelemetry"
-      ]
+      ],
+      "commitMessageExtra": "{{#each upgrades}}{{#if (equals depName 'opentelemetry')}}to {{{prettyNewVersion}}}{{/if}}{{/each}}"
     },
     {
+      "matchJsonata": [
+        "sourceUrl in ['https://github.com/microsoft/playwright', 'https://github.com/vitest-dev/vitest']",
+        "packageName in ['registry.kirauks.net/dev-ops/build-images/node', 'dev-ops/components/node']"
+      ],
       "groupName": "test environment",
-      "extends": ["monorepo:playwright"]
-    },
-    {
-      "groupName": "test environment",
-      "extends": ["monorepo:vitest"]
-    },
-    {
-      "groupName": "test environment",
-      "matchPackageNames": [
-        "registry.kirauks.net/dev-ops/build-images/node",
-        "dev-ops/components/node"
-      ]
+      "separateMinorPatch": false,
+      "commitMessageExtra": "{{#each upgrades}}{{#if (equals depName 'playwright')}}(playwright {{{prettyNewVersion}}}){{/if}}{{/each}}"
     },
     {
       "groupName": "utoipa monorepo",
       "matchPackageNames": [
         "utoipa",
         "utoipa-swagger-ui"
-      ]
+      ],
+      "commitMessageExtra": "{{#each upgrades}}{{#if (equals depName 'utoipa')}}to {{{prettyNewVersion}}}{{/if}}{{/each}}"
     },
     {
       "matchManagers": [
